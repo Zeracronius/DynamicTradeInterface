@@ -1,0 +1,50 @@
+<Defs>
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeIconDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawIcon</callbackHandler>
+		<defaultWidth>40</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeInfoDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawInfo</callbackHandler>
+		<defaultWidth>20</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeCaptionDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawCaption</callbackHandler>
+		<defaultWidth>1</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeExtraIconsDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawExtraIcons</callbackHandler>
+		<defaultWidth>50</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradePriceDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawPrice</callbackHandler>
+		<defaultWidth>75</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeCounterDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawCounter</callbackHandler>
+		<defaultWidth>100</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeButtonsDef</defName>
+		<label></label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawButtons</callbackHandler>
+		<defaultWidth>150</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+</Defs>
