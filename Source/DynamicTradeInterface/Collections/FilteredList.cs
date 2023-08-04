@@ -97,7 +97,7 @@ namespace DynamicTradeInterface.Collections
 		{
 			if (string.IsNullOrEmpty(_filterString))
 			{
-				_filteredCollection = _totalCollection.ToList().AsReadOnly();
+				_filteredCollection = _totalCollection.AsReadOnly();
 				return;
 			}
 

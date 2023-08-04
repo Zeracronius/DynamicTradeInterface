@@ -219,6 +219,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void Draw(Rect boundingBox)
 		{
 			Text.Font = GameFont.Small;
+			bool selectionChanged = false;
 
 			float clearButtonSize = Text.LineHeight;
 			Rect searchBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width - clearButtonSize - CELL_SPACING, clearButtonSize);
@@ -278,63 +279,73 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			Rect rowRect = new Rect(0, 0, tableWidth, Text.LineHeight + ROW_SPACING);
 			Rect listbox = new Rect(0, 0, tableWidth, (_rows.Filtered.Count + 1) * rowRect.height);
 
-			Widgets.BeginScrollView(boundingBox, ref _scrollPosition, listbox);
-			rowRect.y = _scrollPosition.y;
-
-			T currentRow;
-			// Get index of first row visible in scrollbox
-			int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
-			for (; currentIndex < _rows.Filtered.Count; currentIndex++)
+			try
 			{
-				currentRow = _rows.Filtered[currentIndex];
-				rowRect.x = 0;
-				for (int i = 0; i < _columns.Count; i++)
+				Widgets.BeginScrollView(boundingBox, ref _scrollPosition, listbox);
+
+				rowRect.y = _scrollPosition.y;
+
+				T currentRow;
+				// Get index of first row visible in scrollbox
+				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
+				for (; currentIndex < _rows.Filtered.Count; currentIndex++)
 				{
-					column = _columns[i];
-					if (column.IsFixedWidth)
+					currentRow = _rows.Filtered[currentIndex];
+					rowRect.x = 0;
+					for (int i = 0; i < _columns.Count; i++)
 					{
-						rowRect.width = column.Width;
+						column = _columns[i];
+						if (column.IsFixedWidth)
+						{
+							rowRect.width = column.Width;
+						}
+						else
+							rowRect.width = column.Width / _dynamicColumnWidth * leftoverWidth;
+
+						if (column.Callback != null)
+							column.Callback(ref rowRect, currentRow);
+						else
+							Widgets.Label(rowRect, currentRow[column]);
+
+
+						rowRect.x = rowRect.xMax + CELL_SPACING;
 					}
-					else
-						rowRect.width = column.Width / _dynamicColumnWidth * leftoverWidth;
 
-					if (column.Callback != null)
-						column.Callback(ref rowRect, currentRow);
-					else
-						Widgets.Label(rowRect, currentRow[column]);
+					rowRect.x = 0;
+					rowRect.width = tableWidth;
 
+					// Hightlight entire row if selected.
+					if (_selectedRows.Contains(currentRow))
+						Widgets.DrawHighlightSelected(rowRect);
 
-					rowRect.x = rowRect.xMax + CELL_SPACING;
+					// Hightlight row if moused over.
+					Widgets.DrawHighlightIfMouseover(rowRect);
+
+					if (Widgets.ButtonInvisible(rowRect, false))
+					{
+						if (_multiSelect == false || Event.current.control == false)
+							_selectedRows.Clear();
+
+						_selectedRows.Add(currentRow);
+						selectionChanged = true;
+					}
+
+					rowRect.y += rowRect.height;
+
+					// Break if next row starts outside bottom of scrollbox + 1 row to ensure smooth scrolling - though this should possibly not be needed for IMGUI.
+					if (rowRect.y > boundingBox.height + _scrollPosition.y + rowRect.height)
+						break;
 				}
 
-				rowRect.x = 0;
-				rowRect.width = tableWidth;
-
-				// Hightlight entire row if selected.
-				if (_selectedRows.Contains(currentRow))
-					Widgets.DrawHighlightSelected(rowRect);
-
-				// Hightlight row if moused over.
-				Widgets.DrawHighlightIfMouseover(rowRect);
-
-				if (Widgets.ButtonInvisible(rowRect, false))
-				{
-					if (_multiSelect == false || Event.current.control == false)
-						_selectedRows.Clear();
-
-					_selectedRows.Add(currentRow);
-
-					SelectionChanged?.Invoke(this, _selectedRows);
-				}
-
-				rowRect.y += rowRect.height;
-
-				// Break if next row starts outside bottom of scrollbox + 1 row to ensure smooth scrolling - though this should possibly not be needed for IMGUI.
-				if (rowRect.y > boundingBox.height + _scrollPosition.y + rowRect.height)
-					break;
+			}
+			finally
+			{
+				Widgets.EndScrollView();
 			}
 
-			Widgets.EndScrollView();
+			// Handle any potential event handlers when selection is modified.
+			if (selectionChanged && SelectionChanged != null)
+				SelectionChanged.Invoke(this, _selectedRows);
 		}
 
 	}
