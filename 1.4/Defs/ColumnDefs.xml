@@ -2,49 +2,56 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeIconDef</defName>
 		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawIcon</callbackHandler>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnIcon:Draw</callbackHandler>
 		<defaultWidth>40</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeInfoDef</defName>
 		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawInfo</callbackHandler>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnInfo:Draw</callbackHandler>
 		<defaultWidth>20</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCaptionDef</defName>
-		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawCaption</callbackHandler>
+		<label>caption</label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:Draw</callbackHandler>
 		<defaultWidth>1</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeExtraIconsDef</defName>
 		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawExtraIcons</callbackHandler>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIcons:Draw</callbackHandler>
 		<defaultWidth>50</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeQuantityDef</defName>
+		<label>available</label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:Draw</callbackHandler>
+		<defaultWidth>75</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradePriceDef</defName>
-		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawPrice</callbackHandler>
+		<label>price</label>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:Draw</callbackHandler>
 		<defaultWidth>75</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCounterDef</defName>
 		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawCounter</callbackHandler>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:Draw</callbackHandler>
 		<defaultWidth>100</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeButtonsDef</defName>
 		<label></label>
-		<callbackHandler>DynamicTradeInterface.UserInterface.ColumnHandlers:DrawButtons</callbackHandler>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
 		<defaultWidth>150</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>

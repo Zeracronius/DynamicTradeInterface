@@ -8,6 +8,7 @@ using Verse;
 
 namespace DynamicTradeInterface.Mod
 {
+	[StaticConstructorOnStartup]
 	internal static class Textures
 	{
 		public static readonly Texture2D TradeArrow = ContentFinder<Texture2D>.Get("UI/Widgets/TradeArrow");

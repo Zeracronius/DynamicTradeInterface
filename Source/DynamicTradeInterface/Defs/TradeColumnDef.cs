@@ -12,7 +12,7 @@ namespace DynamicTradeInterface.Defs
 {
 	internal class TradeColumnDef : Def
 	{
-		internal delegate void TradeColumnCallback(ref Rect boundingBox, Tradeable item, TradeAction action);
+		internal delegate void TradeColumnCallback(ref Rect boundingBox, Tradeable item, Transactor transactor);
 
 		/// <summary>
 		/// Colon-based method identifier string for column draw callback.
