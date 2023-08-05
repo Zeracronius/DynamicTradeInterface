@@ -18,8 +18,8 @@ namespace DynamicTradeInterface.Mod
 		private List<TradeColumnDef> _validColumnDefs;
 		private HashSet<TradeColumnDef> _visibleColumns;
 
-        public DynamicTradeInterfaceSettings()
-        {
+		public DynamicTradeInterfaceSettings()
+		{
 			_validColumnDefs = new List<TradeColumnDef>();
 			_visibleColumns = new HashSet<TradeColumnDef>();
 		}

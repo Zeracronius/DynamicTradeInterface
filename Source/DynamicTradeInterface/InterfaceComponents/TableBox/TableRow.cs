@@ -13,7 +13,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public T RowObject { get; private set; }
 		public object Tag;
 
-        public string SearchString;
+		public string SearchString;
 
 		public string this[TableColumn key]
 		{

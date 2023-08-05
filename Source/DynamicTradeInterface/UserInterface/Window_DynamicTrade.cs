@@ -16,15 +16,15 @@ namespace DynamicTradeInterface.UserInterface
 {
 	[HotSwappable]
 	internal class Window_DynamicTrade : Window
-    {
-        Table<TableRow<Tradeable>> _colonyTable;
+	{
+		Table<TableRow<Tradeable>> _colonyTable;
 		Table<TableRow<Tradeable>> _traderTable;
 		Mod.DynamicTradeInterfaceSettings _settings;
 		Tradeable? _currency;
 		List<Tradeable>? _tradeables;
 		CaravanWidget _caravanWidget;
 
-        public Window_DynamicTrade()
+		public Window_DynamicTrade()
 		{
 			_colonyTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text));
 			_colonyTable.LineFont = GameFont.Small;
@@ -66,8 +66,8 @@ namespace DynamicTradeInterface.UserInterface
 			table.Refresh();
 		}
 
-        public override void DoWindowContents(Rect inRect)
-        {
+		public override void DoWindowContents(Rect inRect)
+		{
 			if (_caravanWidget.InCaravan)
 			{
 				_caravanWidget.Draw(new Rect(12f, 0f, inRect.width - 24f, 40f));

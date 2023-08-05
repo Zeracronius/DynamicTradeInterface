@@ -41,10 +41,10 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public Func<T, bool>? RowFilter { get; set; }
 
 
-        /// <summary>
-        /// Returns the current selected rows.
-        /// </summary>
-        public IReadOnlyList<T> SelectedRows => _selectedRows;
+		/// <summary>
+		/// Returns the current selected rows.
+		/// </summary>
+		public IReadOnlyList<T> SelectedRows => _selectedRows;
 
 		/// <summary>
 		/// Triggered when selected rows is changed.
@@ -129,21 +129,21 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			return column;
 		}
 
-        /// <summary>
-        /// Add a new row to the table.
-        /// </summary>
-        /// <param name="item">Row to add.</param>
-        public void AddRow(T item)
-        {
-            if (RowFilter != null && RowFilter(item) == false)
-                return;
+		/// <summary>
+		/// Add a new row to the table.
+		/// </summary>
+		/// <param name="item">Row to add.</param>
+		public void AddRow(T item)
+		{
+			if (RowFilter != null && RowFilter(item) == false)
+				return;
 
 			// Ensure new rows have every column in data cache to avoid needing to check for every single cell during rendering.
 			foreach (TableColumn column in _columns)
-            {
-                if (item.HasColumn(column) == false)
-                    item[column] = String.Empty;
-            }
+			{
+				if (item.HasColumn(column) == false)
+					item[column] = String.Empty;
+			}
 
 			_rows.Items.Add(item);
 		}
