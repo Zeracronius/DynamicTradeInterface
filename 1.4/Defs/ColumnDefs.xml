@@ -52,6 +52,6 @@
 		<defName>colTradeButtonsDef</defName>
 		<label></label>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
-		<defaultWidth>150</defaultWidth>
+		<defaultWidth>100</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>

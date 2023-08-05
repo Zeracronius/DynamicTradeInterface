@@ -12,7 +12,7 @@ using Verse.Sound;
 namespace DynamicTradeInterface.UserInterface.Columns
 {
 	[HotSwappable]
-	internal static class ColumnButtons
+	internal static class ColumnButtonsInverted
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
 		{
@@ -20,6 +20,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				return;
 
 			TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
+
+			// If table is trader, flip direction.
+			if (transactor == Transactor.Trader)
+				positiveDirection = positiveDirection == TransferablePositiveCountDirection.Source ? TransferablePositiveCountDirection.Destination : TransferablePositiveCountDirection.Source;
 
 			int baseCount = positiveDirection == TransferablePositiveCountDirection.Source ? 1 : -1;
 

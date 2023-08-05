@@ -11,7 +11,7 @@ using Verse;
 namespace DynamicTradeInterface.UserInterface.Columns
 {
 	[HotSwappable]
-	internal static class ColumnCounter
+	internal static class ColumnCounterInverted
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
 		{
