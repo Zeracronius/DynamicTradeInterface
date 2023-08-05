@@ -23,7 +23,7 @@ namespace DynamicTradeInterface.UserInterface
 		Tradeable? _currency;
 		List<Tradeable>? _tradeables;
 		CaravanWidget _caravanWidget;
-		bool _dirty = false;
+		bool _refresh = false;
 
 		public Window_DynamicTrade()
 		{
@@ -50,12 +50,12 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.75f, UI.screenHeight * 0.8f);
 
-		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor, ref bool tradeDirty)
+		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)
 		{
 			table.Clear();
 			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
 			{
-				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, (ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor, ref _dirty));
+				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, (ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor, ref _refresh));
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
 			}
@@ -86,9 +86,11 @@ namespace DynamicTradeInterface.UserInterface
 
 
 
-			if (_dirty)
+			if (_refresh)
 			{
-				_dirty = false;
+				_refresh = false;
+				_colonyTable.Refresh();
+				_traderTable.Refresh();
 				_caravanWidget.SetDirty();
 				TradeSession.deal.UpdateCurrencyCount();
 			}

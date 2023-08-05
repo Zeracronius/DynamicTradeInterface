@@ -11,7 +11,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnPrice
 	{
-		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool tradeDirty)
+		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			if (row.IsCurrency || !row.TraderWillTrade)
 			{
