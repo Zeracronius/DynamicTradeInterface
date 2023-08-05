@@ -1,15 +1,12 @@
 ﻿using DynamicTradeInterface.Attributes;
-using DynamicTradeInterface.Defs;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using RimWorld;
-using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Verse;
 
 namespace DynamicTradeInterface.UserInterface
@@ -23,17 +20,32 @@ namespace DynamicTradeInterface.UserInterface
 		Tradeable? _currency;
 		List<Tradeable>? _tradeables;
 		CaravanWidget _caravanWidget;
-		bool _refresh = false;
+		bool _refresh;
+
+
+
+		float _headerHeight;
+		string _colonyHeader;
+		string _colonyHeaderDescription;
+		string _traderHeader;
+		string _traderHeaderDescription;
 
 		public Window_DynamicTrade()
 		{
-			_colonyTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text));
+			_colonyTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
+			{
+				DrawScrollbarAlways = true,
+			};
 			_colonyTable.LineFont = GameFont.Small;
-			_traderTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text));
+			_traderTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
+			{
+				DrawScrollbarAlways = true,
+			};
 			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 			resizeable = true;
 			draggable = true;
+			_refresh = false;
 
 			_colonyTable.OnSorting += Table_OnSorting;
 			_traderTable.OnSorting += Table_OnSorting;
@@ -51,6 +63,16 @@ namespace DynamicTradeInterface.UserInterface
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);
 
+
+			_colonyHeader = Faction.OfPlayer.Name;
+			string negotiatorName = TradeSession.playerNegotiator.Name.ToStringFull;
+			string negotiatorValue = TradeSession.playerNegotiator.GetStatValue(StatDefOf.TradePriceImprovement).ToStringPercent();
+			_colonyHeaderDescription = "NegotiatorTradeDialogInfo".Translate(negotiatorName, negotiatorValue);
+
+			_headerHeight = Text.LineHeightOf(GameFont.Medium) + Text.LineHeightOf(GameFont.Small);
+
+			_traderHeader = TradeSession.trader.TraderName;
+			_traderHeaderDescription = TradeSession.trader.TraderKind.LabelCap;
 
 			_caravanWidget = new CaravanWidget(tradeables, currency);
 		}
@@ -84,8 +106,35 @@ namespace DynamicTradeInterface.UserInterface
 
 			Rect left, right;
 			inRect.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
-			_colonyTable.Draw(left.ContractedBy(GenUI.GapTiny));
-			_traderTable.Draw(right.ContractedBy(GenUI.GapTiny));
+
+			Rect top, bottom;
+			// Colony
+			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
+
+			Text.Anchor = TextAnchor.UpperCenter;
+			Text.Font = GameFont.Medium;
+			Widgets.Label(top, _colonyHeader);
+
+			Text.Anchor = TextAnchor.LowerCenter;
+			Text.Font = GameFont.Small;
+			Widgets.Label(top, _colonyHeaderDescription);
+
+
+			_colonyTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
+
+
+			// Trader
+			right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
+
+			Text.Anchor = TextAnchor.UpperCenter;
+			Text.Font = GameFont.Medium;
+			Widgets.Label(top, _traderHeader);
+
+			Text.Anchor = TextAnchor.LowerCenter;
+			Text.Font = GameFont.Small;
+			Widgets.Label(top, _traderHeaderDescription);
+
+			_traderTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
 
 
 

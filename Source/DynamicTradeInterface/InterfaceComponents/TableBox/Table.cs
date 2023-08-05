@@ -17,14 +17,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		private readonly float SEARCH_PLACEHOLDER_SIZE;
 
-
-		private Table()
-		{
-			Text.Font = GameFont.Small;
-			SEARCH_PLACEHOLDER_SIZE = Text.CalcSize(SEARCH_PLACEHOLDER).x;
-		}
-
-
 		private const float CELL_SPACING = 5;
 		private const float ROW_SPACING = 3;
 
@@ -33,13 +25,15 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private string _searchText;
 		private Vector2 _scrollPosition;
 		private bool _ascendingOrder;
-		private TableColumn<T> _currentOrderColumn;
+		private TableColumn<T>? _currentOrderColumn;
 		private List<T> _selectedRows;
 		private float _fixedColumnWidth;
 		private float _dynamicColumnWidth;
 		private GameFont _lineFont;
 		private bool _multiSelect;
 		private bool _drawHeaders;
+		private bool _drawSearchBox;
+		private bool _drawScrollbar;
 
 		/// <summary>
 		/// Gets or sets the row filter function. Return true to include row and fall to skip.
@@ -58,12 +52,21 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public event EventHandler<IReadOnlyList<T>>? SelectionChanged;
 
 		/// <summary>
-		/// Gets or sets the line font.
+		/// Gets or sets the text filter on the underlying rows collection.
 		/// </summary>
-		/// <value>
-		/// The line font.
-		/// </value>
-		public GameFont LineFont
+		public string Filter
+		{
+			get => _rows.Filter;
+			set => _rows.Filter = value;
+		}
+
+        /// <summary>
+        /// Gets or sets the line font.
+        /// </summary>
+        /// <value>
+        /// The line font.
+        /// </value>
+        public GameFont LineFont
 		{
 			get => _lineFont;
 			set => _lineFont = value;
@@ -94,18 +97,51 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		}
 
 
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the search box should be drawn.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if search box is visible; otherwise, <c>false</c>.
+		/// </value>
+		public bool DrawSearchBox
+		{
+			get => _drawSearchBox;
+			set => _drawSearchBox = value;
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the scroll bar should always be visible.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if the scroll bar is always visible; otherwise, <c>false</c>.
+		/// </value>
+		public bool DrawScrollbarAlways
+		{
+			get => _drawScrollbar;
+			set => _drawScrollbar = value;
+		}
+
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Table{T}" /> class.
 		/// </summary>
 		/// <param name="filterCallback">Callback used to apply filter text.</param>
 		public Table(Func<T, string, bool> filterCallback)
-			: this()
 		{
-			_columns = new List<TableColumn<T>>();
+			Text.Font = GameFont.Small;
+			SEARCH_PLACEHOLDER_SIZE = Text.CalcSize(SEARCH_PLACEHOLDER).x;
+
 			_rows = new ListFilter<T>(filterCallback);
+
+			_searchText = string.Empty;
+			_selectedRows = new List<T>(20);
+			_columns = new List<TableColumn<T>>();
 			_ascendingOrder = false;
 			_drawHeaders = true;
-			_selectedRows = new List<T>(20);
+			_drawSearchBox = true;
+			_drawScrollbar = false;
 		}
 
 
@@ -229,20 +265,23 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			Text.Font = GameFont.Small;
 			bool selectionChanged = false;
 
-			float clearButtonSize = Text.LineHeight;
-			Rect searchBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width - clearButtonSize - CELL_SPACING, clearButtonSize);
-			_searchText = Widgets.TextField(searchBox, _searchText);
-			if (Widgets.ButtonText(new Rect(boundingBox.xMax - clearButtonSize, boundingBox.y, clearButtonSize, clearButtonSize), "X"))
-				_searchText = "";
+			if (_drawSearchBox)
+			{
+				float clearButtonSize = Text.LineHeight;
+				Rect searchBox = new Rect(boundingBox.x, boundingBox.y, boundingBox.width - clearButtonSize - CELL_SPACING, clearButtonSize);
+				_searchText = Widgets.TextField(searchBox, _searchText);
+				if (Widgets.ButtonText(new Rect(boundingBox.xMax - clearButtonSize, boundingBox.y, clearButtonSize, clearButtonSize), "X"))
+					_searchText = "";
 
 
-			if (_searchText == String.Empty)
-				Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + CELL_SPACING, searchBox.y, SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), SEARCH_PLACEHOLDER);
+				if (_searchText == String.Empty)
+					Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + CELL_SPACING, searchBox.y, SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), SEARCH_PLACEHOLDER);
 
-			_rows.Filter = _searchText;
+				_rows.Filter = _searchText;
 
-			boundingBox.y += clearButtonSize + 7;
-			boundingBox.height -= clearButtonSize + 7;
+				boundingBox.y += clearButtonSize + 7;
+				boundingBox.height -= clearButtonSize + 7;
+			}
 
 
 			float tableWidth = boundingBox.width - GenUI.ScrollBarWidth - CELL_SPACING;
@@ -289,7 +328,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 			try
 			{
-				Widgets.BeginScrollView(boundingBox, ref _scrollPosition, listbox);
+				Widgets.BeginScrollView(boundingBox, ref _scrollPosition, listbox, _drawScrollbar);
 
 				rowRect.y = _scrollPosition.y;
 
@@ -302,6 +341,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					rowRect.x = 0;
 					for (int i = 0; i < _columns.Count; i++)
 					{
+						Text.Font = _lineFont;
 						column = _columns[i];
 						if (column.IsFixedWidth)
 						{
