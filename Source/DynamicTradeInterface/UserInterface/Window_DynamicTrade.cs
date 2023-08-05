@@ -35,6 +35,13 @@ namespace DynamicTradeInterface.UserInterface
 			resizeable = true;
 			draggable = true;
 
+			_colonyTable.OnSorting += Table_OnSorting;
+			_traderTable.OnSorting += Table_OnSorting;
+		}
+
+		private void Table_OnSorting(IEnumerable<TableRow<Tradeable>> originalCollection, ref IOrderedEnumerable<TableRow<Tradeable>>? ordering)
+		{
+			ordering = originalCollection.OrderByDescending(x => x.RowObject.CountToTransfer != 0);
 		}
 
 		public void Initialize(Tradeable currency, List<Tradeable> tradeables)

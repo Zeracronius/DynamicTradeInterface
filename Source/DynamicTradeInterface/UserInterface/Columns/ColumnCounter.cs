@@ -45,9 +45,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				int countToTransfer = row.CountToTransfer;
 
 				TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
-				if (transactor == Transactor.Trader)
-					positiveDirection = positiveDirection == TransferablePositiveCountDirection.Source ? TransferablePositiveCountDirection.Destination : TransferablePositiveCountDirection.Source;
-
 
 				if (!row.Interactive)
 				{
@@ -64,23 +61,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 					int minTransfer, maxTransfer;
 
-					if (positiveDirection == TransferablePositiveCountDirection.Destination)
-					{
-						val *= -1;
-						minTransfer = row.GetMaximumToTransfer() * -1;
-						maxTransfer = row.GetMinimumToTransfer();
-					}
-					else
-					{
-						minTransfer = row.GetMinimumToTransfer();
-						maxTransfer = row.GetMaximumToTransfer();
-					}
+					minTransfer = row.GetMinimumToTransfer();
+					maxTransfer = row.GetMaximumToTransfer();
 
 					string buffer = val.ToStringCached();
 					Widgets.TextFieldNumeric(rect3, ref val, ref buffer, minTransfer, maxTransfer);
-
-					if (positiveDirection == TransferablePositiveCountDirection.Destination)
-						val *= -1;
 
 					if (val != countToTransfer)
 					{

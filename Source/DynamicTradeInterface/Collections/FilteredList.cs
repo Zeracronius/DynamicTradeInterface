@@ -7,10 +7,15 @@ namespace DynamicTradeInterface.Collections
 {
 	internal class ListFilter<T>
 	{
+		public delegate void OnSortEventHandler(IEnumerable<T> originalCollection, ref IOrderedEnumerable<T>? ordering);
+		public event OnSortEventHandler OnSorting;
+
 		ReadOnlyCollection<T> _filteredCollection;
 		List<T> _totalCollection;
+		List<T> _bufferList;
 		Func<T, string, bool> _filterCallback;
-		private string _filterString;
+		string _filterString;
+		bool _sorting;
 
 		/// <summary>
 		/// Gets the filtered collection of items.
@@ -54,7 +59,9 @@ namespace DynamicTradeInterface.Collections
 		public ListFilter(IEnumerable<T> collection, Func<T, string, bool> filterCallback)
 		{
 			_totalCollection = collection.ToList();
+			_bufferList = new List<T>();
 			_filterCallback = filterCallback;
+			_sorting = false;
 			Invalidate();
 		}
 
@@ -65,7 +72,9 @@ namespace DynamicTradeInterface.Collections
 		public ListFilter(Func<T, string, bool> filterCallback)
 		{
 			_totalCollection = new List<T>();
+			_bufferList = new List<T>();
 			_filterCallback = filterCallback;
+			_sorting = false;
 		}
 
 		/// <summary>
@@ -75,8 +84,22 @@ namespace DynamicTradeInterface.Collections
 		/// <param name="keySelector">The key selector.</param>
 		public void OrderBy<TKey>(Func<T, TKey> keySelector)
 		{
-			_totalCollection = _totalCollection.OrderBy(keySelector).ToList();
+			_sorting = true;
+			_bufferList.Clear();
+
+			IOrderedEnumerable<T>? ordering = null;
+			OnSorting?.Invoke(_totalCollection, ref ordering);
+
+			if (ordering != null)
+				_bufferList.AddRange(ordering.ThenByDescending(keySelector));
+			else
+				_bufferList.AddRange(_totalCollection.OrderByDescending(keySelector));
+
+			List<T> old = _totalCollection;
+			_totalCollection = _bufferList;
+			_bufferList = old;
 			Invalidate();
+			_sorting = false;
 		}
 
 		/// <summary>
@@ -86,8 +109,22 @@ namespace DynamicTradeInterface.Collections
 		/// <param name="keySelector">The key selector.</param>
 		public void OrderByDescending<TKey>(Func<T, TKey> keySelector)
 		{
-			_totalCollection = _totalCollection.OrderByDescending(keySelector).ToList();
+			_sorting = true;
+			_bufferList.Clear();
+
+			IOrderedEnumerable<T>? ordering = null;
+			OnSorting?.Invoke(_totalCollection, ref ordering);
+
+			if (ordering != null) 
+				_bufferList.AddRange(ordering.ThenByDescending(keySelector));
+			else
+				_bufferList.AddRange(_totalCollection.OrderByDescending(keySelector));
+
+			List<T> old = _totalCollection;
+			_totalCollection = _bufferList;
+			_bufferList = old;
 			Invalidate();
+			_sorting = false;
 		}
 
 		/// <summary>
@@ -95,14 +132,34 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		public void Invalidate()
 		{
+			if (_sorting == false)
+			{
+				IOrderedEnumerable<T>? ordering = null;
+				OnSorting?.Invoke(_totalCollection, ref ordering);
+				if (ordering != null)
+				{
+					_bufferList.Clear();
+					_bufferList.AddRange(ordering);
+
+					List<T> old = _totalCollection;
+					_totalCollection = _bufferList;
+					_bufferList = old;
+				}
+			}
+			ApplyFilter();
+		}
+
+		private void ApplyFilter()
+		{
 			if (string.IsNullOrEmpty(_filterString))
 			{
 				_filteredCollection = _totalCollection.AsReadOnly();
 				return;
 			}
 
-			_filteredCollection = _totalCollection.Where(x => _filterCallback(x, _filterString)).ToList().AsReadOnly();
+			_bufferList.Clear();
+			_bufferList.AddRange(_totalCollection.Where(x => _filterCallback(x, _filterString)));
+			_filteredCollection = _bufferList.AsReadOnly();
 		}
-
 	}
 }

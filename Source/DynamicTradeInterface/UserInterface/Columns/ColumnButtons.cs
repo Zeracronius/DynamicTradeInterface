@@ -81,6 +81,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (Widgets.ButtonText(baseButtonRect, "0"))
 			{
 				row.AdjustTo(0);
+				refresh = true;
+				SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 			}
 			baseButtonRect.x += baseButtonRect.width + gap;
 

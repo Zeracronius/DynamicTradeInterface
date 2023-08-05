@@ -8,6 +8,12 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
 	internal class Table<T> where T : ITableRow
 	{
+		public event ListFilter<T>.OnSortEventHandler OnSorting
+		{
+			add { _rows.OnSorting += value; }
+			remove { _rows.OnSorting -= value; }
+		}
+
 		private readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		private readonly float SEARCH_PLACEHOLDER_SIZE;
 
@@ -27,7 +33,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private string _searchText;
 		private Vector2 _scrollPosition;
 		private bool _ascendingOrder;
-		private TableColumn _currentOrderColumn;
+		private TableColumn<T> _currentOrderColumn;
 		private List<T> _selectedRows;
 		private float _fixedColumnWidth;
 		private float _dynamicColumnWidth;
@@ -163,7 +169,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void Refresh()
 		{
 			_rows.Invalidate();
-
 			_fixedColumnWidth = 0;
 			_dynamicColumnWidth = 0;
 			TableColumn column;
@@ -176,6 +181,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				else
 					_dynamicColumnWidth += column.Width;
 			}
+
+			if (_currentOrderColumn != null)
+				Sort(_currentOrderColumn);
 		}
 
 		/// <summary>
