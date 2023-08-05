@@ -2,12 +2,14 @@
 using DynamicTradeInterface.Defs;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Verse;
 
 namespace DynamicTradeInterface.UserInterface
@@ -20,11 +22,14 @@ namespace DynamicTradeInterface.UserInterface
 		Mod.DynamicTradeInterfaceSettings _settings;
 		Tradeable? _currency;
 		List<Tradeable>? _tradeables;
+		CaravanWidget _caravanWidget;
 
         public Window_DynamicTrade()
 		{
 			_colonyTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text));
+			_colonyTable.LineFont = GameFont.Small;
 			_traderTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text));
+			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 			resizeable = true;
 			draggable = true;
@@ -37,9 +42,12 @@ namespace DynamicTradeInterface.UserInterface
 			_tradeables = tradeables;
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);
+
+
+			_caravanWidget = new CaravanWidget(tradeables, currency);
 		}
 
-		public override Vector2 InitialSize => new Vector2(1024f, UI.screenHeight);
+		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.75f, UI.screenHeight * 0.8f);
 
 		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)
 		{
@@ -60,27 +68,16 @@ namespace DynamicTradeInterface.UserInterface
 
         public override void DoWindowContents(Rect inRect)
         {
-			Rect left, right;
-			inRect.SplitVertically(inRect.width / 2, out left, out right);
-			try
+			if (_caravanWidget.InCaravan)
 			{
-				Widgets.BeginGroup(left);
-				_colonyTable.Draw(left);
-			}
-			finally
-			{
-				Widgets.EndGroup();
+				_caravanWidget.Draw(new Rect(12f, 0f, inRect.width - 24f, 40f));
+				inRect.yMin += 52f;
 			}
 
-			try
-			{
-				Widgets.BeginGroup(right);
-				_traderTable.Draw(right);
-			}
-			finally
-			{
-				Widgets.EndGroup();
-			}
+			Rect left, right;
+			inRect.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
+			_colonyTable.Draw(left.ContractedBy(GenUI.GapTiny));
+			_traderTable.Draw(right.ContractedBy(GenUI.GapTiny));
 		}
 	}
 }
