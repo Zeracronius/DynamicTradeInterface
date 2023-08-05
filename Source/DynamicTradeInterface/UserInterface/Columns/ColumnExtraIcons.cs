@@ -10,7 +10,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal class ColumnExtraIcons
 	{
-		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
+		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool tradeDirty)
 		{
 			float width = 0f;
 			TransferableUIUtility.DoExtraIcons(row, rect, ref width);

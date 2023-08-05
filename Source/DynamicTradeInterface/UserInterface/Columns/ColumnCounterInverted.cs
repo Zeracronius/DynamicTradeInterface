@@ -13,7 +13,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnCounterInverted
 	{
-		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
+		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool tradeDirty)
 		{
 			if (!row.TraderWillTrade)
 			{
@@ -82,7 +82,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					if (positiveDirection == TransferablePositiveCountDirection.Destination)
 						val *= -1;
 
-					row.AdjustTo(val);
+					if (val != countToTransfer)
+					{
+						row.AdjustTo(val);
+						tradeDirty = true;
+					}
 				}
 				Text.Anchor = TextAnchor.UpperLeft;
 				GUI.color = Color.white;

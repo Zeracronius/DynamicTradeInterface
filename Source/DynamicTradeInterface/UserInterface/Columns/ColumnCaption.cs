@@ -11,7 +11,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCaption
 	{
-		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
+		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool tradeDirty)
 		{
 			Text.Anchor = TextAnchor.MiddleLeft;
 			GUI.color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor;

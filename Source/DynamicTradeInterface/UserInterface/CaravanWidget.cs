@@ -42,6 +42,17 @@ namespace DynamicTradeInterface.UserInterface
 		public bool InCaravan => _inCaravan;
 
 
+		public void SetDirty()
+		{
+			massUsageDirty = true;
+			massCapacityDirty = true;
+			tilesPerDayDirty = true;
+			daysWorthOfFoodDirty = true;
+			foragedFoodPerDayDirty = true;
+			visibilityDirty = true;
+		}
+
+
 		public Pair<float, float> DaysWorthOfFood
 		{
 			get

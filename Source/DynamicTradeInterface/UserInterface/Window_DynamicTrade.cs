@@ -23,6 +23,7 @@ namespace DynamicTradeInterface.UserInterface
 		Tradeable? _currency;
 		List<Tradeable>? _tradeables;
 		CaravanWidget _caravanWidget;
+		bool _dirty = false;
 
 		public Window_DynamicTrade()
 		{
@@ -49,12 +50,12 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.75f, UI.screenHeight * 0.8f);
 
-		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)
+		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor, ref bool tradeDirty)
 		{
 			table.Clear();
 			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
 			{
-				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, (ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor));
+				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, (ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor, ref _dirty));
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
 			}
@@ -78,6 +79,19 @@ namespace DynamicTradeInterface.UserInterface
 			inRect.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
 			_colonyTable.Draw(left.ContractedBy(GenUI.GapTiny));
 			_traderTable.Draw(right.ContractedBy(GenUI.GapTiny));
+
+
+
+
+
+
+
+			if (_dirty)
+			{
+				_dirty = false;
+				_caravanWidget.SetDirty();
+				TradeSession.deal.UpdateCurrencyCount();
+			}
 		}
 	}
 }

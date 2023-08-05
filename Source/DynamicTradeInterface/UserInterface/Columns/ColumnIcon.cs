@@ -11,7 +11,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnIcon
 	{
-		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
+		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool tradeDirty)
 		{
 			if (row.IsThing)
 			{

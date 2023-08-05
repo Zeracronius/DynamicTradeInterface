@@ -14,7 +14,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnButtons
 	{
-		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor)
+		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool tradeDirty)
 		{
 			if (row.Interactive == false)
 				return;
@@ -54,6 +54,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 						{
 							row.AdjustTo(minQuantity);
 						}
+						tradeDirty = true;
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
 					}
 					button.x += button.width + gap;
@@ -66,6 +67,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (Widgets.ButtonText(button, "<"))
 				{
 					row.AdjustBy(adjustAmount);
+					tradeDirty = true;
 					SoundDefOf.Tick_High.PlayOneShotOnCamera();
 				}
 				baseButtonRect.x = button.xMax + gap;
@@ -92,6 +94,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (Widgets.ButtonText(baseButtonRect, ">"))
 				{
 					row.AdjustBy(-adjustAmount);
+					tradeDirty = true;
 					SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 
 				}
@@ -109,6 +112,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 						{
 							row.AdjustTo(maxQuantity);
 						}
+						tradeDirty = true;
 						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 					}
 				}
