@@ -17,6 +17,7 @@
 		<defName>colTradeCaptionDef</defName>
 		<label>caption</label>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>1</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
@@ -31,6 +32,7 @@
 		<defName>colTradeQuantityDef</defName>
 		<label>available</label>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>75</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
@@ -38,6 +40,7 @@
 		<defName>colTradePriceDef</defName>
 		<label>price</label>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>75</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 

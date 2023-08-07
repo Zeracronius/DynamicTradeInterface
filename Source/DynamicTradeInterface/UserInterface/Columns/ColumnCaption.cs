@@ -39,5 +39,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			Text.Anchor = TextAnchor.UpperLeft;
 		}
+
+
+		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
+		{
+			return (Tradeable row) => row.LabelCap;
+		}
 	}
 }

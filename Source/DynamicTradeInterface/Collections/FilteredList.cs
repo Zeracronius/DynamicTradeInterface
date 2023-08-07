@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -82,7 +83,7 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		/// <typeparam name="TKey">The type of the key.</typeparam>
 		/// <param name="keySelector">The key selector.</param>
-		public void OrderBy<TKey>(Func<T, TKey> keySelector)
+		public void OrderBy<TKey>(Func<T, TKey> keySelector) where TKey : IComparable
 		{
 			_sorting = true;
 			_bufferList.Clear();
@@ -107,7 +108,7 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		/// <typeparam name="TKey">The type of the key.</typeparam>
 		/// <param name="keySelector">The key selector.</param>
-		public void OrderByDescending<TKey>(Func<T, TKey> keySelector)
+		public void OrderByDescending<TKey>(Func<T, TKey> keySelector) where TKey : IComparable
 		{
 			_sorting = true;
 			_bufferList.Clear();

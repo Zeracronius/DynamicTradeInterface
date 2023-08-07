@@ -1,4 +1,6 @@
 ﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.Collections;
+using DynamicTradeInterface.Defs;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using DynamicTradeInterface.Mod;
 using RimWorld;
@@ -121,7 +123,9 @@ namespace DynamicTradeInterface.UserInterface
 			table.Clear();
 			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
 			{
-				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, (ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor, ref _refresh));
+				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth,
+						(ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor, ref _refresh),
+						(rows, ascending, column) => OrderByColumn(rows, ascending, columnDef, transactor));
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
 			}
@@ -131,6 +135,21 @@ namespace DynamicTradeInterface.UserInterface
 				table.AddRow(new TableRow<Tradeable>(item, item.Label + " " + item.ThingDef?.label));
 			}
 			table.Refresh();
+		}
+
+		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, bool ascending, Defs.TradeColumnDef columnDef, Transactor transactor)
+		{
+			if (columnDef._orderValueCallback == null)
+				return;
+			Func<Tradeable, IComparable> keySelector = columnDef._orderValueCallback(transactor);
+
+			if (keySelector != null)
+			{
+				if (ascending)
+					rows.OrderBy((row) => keySelector(row.RowObject));
+				else
+					rows.OrderByDescending((row) => keySelector(row.RowObject));
+			}
 		}
 
 		public override void DoWindowContents(Rect inRect)

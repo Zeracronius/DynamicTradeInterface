@@ -15,13 +15,13 @@ namespace DynamicTradeInterface.Mod
 {
 	internal class DynamicTradeInterfaceSettings : ModSettings
 	{
-		private List<TradeColumnDef> _validColumnDefs;
-		private HashSet<TradeColumnDef> _visibleColumns;
+		private HashSet<TradeColumnDef> _validColumnDefs;
+		private List<TradeColumnDef> _visibleColumns;
 
 		public DynamicTradeInterfaceSettings()
 		{
-			_validColumnDefs = new List<TradeColumnDef>();
-			_visibleColumns = new HashSet<TradeColumnDef>();
+			_validColumnDefs = new HashSet<TradeColumnDef>();
+			_visibleColumns = new List<TradeColumnDef>();
 		}
 
 		//const int DEFAULT_PORT = 8339;
@@ -33,6 +33,16 @@ namespace DynamicTradeInterface.Mod
 		//}
 
 
+		public override void ExposeData()
+		{
+			base.ExposeData();
+
+
+			List<TradeColumnDef> visibleColumns = _visibleColumns;
+			Scribe_Collections.Look(ref visibleColumns, nameof(visibleColumns));
+			if (visibleColumns != null && visibleColumns.Count > 0)
+				_visibleColumns = visibleColumns;
+		}
 
 
 		internal void Initialize()
@@ -42,32 +52,44 @@ namespace DynamicTradeInterface.Mod
 
 			foreach (TradeColumnDef columnDef in tradeColumns)
 			{
-				try
+				if (String.IsNullOrWhiteSpace(columnDef.callbackHandler) == false)
 				{
-					if (String.IsNullOrWhiteSpace(columnDef.callbackHandler) == false)
+					try
 					{
 						columnDef._callback = AccessTools.MethodDelegate<TradeColumnCallback>(columnDef.callbackHandler);
 						if (columnDef._callback != null)
 						{
 							_validColumnDefs.Add(columnDef);
 							_visibleColumns.Add(columnDef);
-							continue;
 						}
 					}
+					catch (Exception e)
+					{
+						Logging.Error($"Unable to locate draw callback '{columnDef.callbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has following arguments: 'ref Rect, Tradeable, TradeAction'");
+						Logging.Error(e);
+					}
 				}
-				catch (Exception e)
+
+				if (String.IsNullOrWhiteSpace(columnDef.orderValueCallbackHandler) == false)
 				{
-					Logging.Error($"Unable to locate draw callback '{columnDef.callbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has following arguments: 'ref Rect, Tradeable, TradeAction'");
-					Logging.Error(e);
+					try
+					{
+						columnDef._orderValueCallback = AccessTools.MethodDelegate<TradeColumnOrderValueCallback>(columnDef.orderValueCallbackHandler);
+					}
+					catch (Exception e)
+					{
+						Logging.Error($"Unable to locate order value callback '{columnDef.orderValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
+						Logging.Error(e);
+					}
 				}
 			}
 		}
 
 		internal IEnumerable<TradeColumnDef> GetVisibleTradeColumns()
 		{
-			foreach (TradeColumnDef columnDef in _validColumnDefs)
+			foreach (TradeColumnDef columnDef in _visibleColumns)
 			{
-				if (_visibleColumns.Contains(columnDef))
+				if (_validColumnDefs.Contains(columnDef))
 					yield return columnDef;
 			}
 		}

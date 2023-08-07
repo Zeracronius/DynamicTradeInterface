@@ -13,22 +13,37 @@ namespace DynamicTradeInterface.Defs
 	internal class TradeColumnDef : Def
 	{
 		internal delegate void TradeColumnCallback(ref Rect boundingBox, Tradeable item, Transactor transactor, ref bool refresh);
+		internal delegate Func<Tradeable, IComparable> TradeColumnOrderValueCallback(Transactor transactor);
 
 		/// <summary>
 		/// Colon-based method identifier string for column draw callback.
 		/// </summary> 
-		public string callbackHandler = null;
+		public string? callbackHandler = null;
+		public string? orderValueCallbackHandler = null;
 		public float defaultWidth = 100;
+		public bool defaultVisible = true;
 
 
 		//TODO way to define sorting logic.
 		//TODO way to add additional data to search string.
 
-		internal TradeColumnCallback _callback;
+		internal TradeColumnCallback? _callback;
+		internal TradeColumnOrderValueCallback? _orderValueCallback;
 
 		public override void ResolveReferences()
 		{
 			base.ResolveReferences();
+		}
+
+		public override IEnumerable<string> ConfigErrors()
+		{
+			foreach (var error in base.ConfigErrors()) 
+			{
+				yield return error;
+			}
+
+			if (String.IsNullOrEmpty(callbackHandler))
+				yield return "TradeColumnDef must have a callbackHandler defined.";
 		}
 
 	}

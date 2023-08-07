@@ -15,5 +15,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			Widgets.Label(rect, row.CountHeldBy(transactor).ToStringCached());
 		}
+
+		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
+		{
+			return (Tradeable row) => row.CountHeldBy(transactor);
+		}
 	}
 }
