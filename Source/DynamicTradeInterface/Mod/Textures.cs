@@ -12,5 +12,8 @@ namespace DynamicTradeInterface.Mod
 	internal static class Textures
 	{
 		public static readonly Texture2D TradeArrow = ContentFinder<Texture2D>.Get("UI/Widgets/TradeArrow");
+
+		public static readonly Texture2D ShowSellableItemsIcon = ContentFinder<Texture2D>.Get("UI/Commands/SellableItems");
+
 	}
 }

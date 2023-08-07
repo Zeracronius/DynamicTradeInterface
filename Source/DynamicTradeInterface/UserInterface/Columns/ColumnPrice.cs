@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using DynamicTradeInterface.Attributes;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
+	[HotSwappable]
 	internal static class ColumnPrice
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
@@ -74,7 +76,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 
 
-			float priceFor = row.GetPriceFor(TradeAction.PlayerSells);
+			float priceFor = row.GetPriceFor(action);
 
 			string label = TradeSession.TradeCurrency == TradeCurrency.Silver ? priceFor.ToStringMoney() : priceFor.ToString();
 			//Rect rect2 = new Rect(rect);

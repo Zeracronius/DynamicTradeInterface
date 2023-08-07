@@ -32,16 +32,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				Rect rect2 = new Rect(rect.center.x - 45f, rect.center.y - 12.5f, 90f, 25f).Rounded();
 
-				bool shouldFlash = false;
-				if (Dialog_Trade.lastCurrencyFlashTime > 0)
-				{
-					shouldFlash = Time.time - Dialog_Trade.lastCurrencyFlashTime < 1f;
-					if (shouldFlash && row.IsCurrency)
-					{
-						GUI.DrawTexture(rect2, TransferableUIUtility.FlashTex);
-					}
-				}
-
 				int countToTransfer = row.CountToTransfer;
 
 				TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
@@ -88,10 +78,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					}
 					GUI.DrawTexture(position, tradeArrow);
 				}
-
-
-				if (shouldFlash == false)
-					Dialog_Trade.lastCurrencyFlashTime = 0;
 			}
 		}
 

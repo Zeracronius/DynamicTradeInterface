@@ -27,10 +27,10 @@ namespace DynamicTradeInterface.Patches
 			__state = null;
 		}
 
-		static void Postfix(Dialog_Trade __instance, UserInterface.Window_DynamicTrade? __state, Tradeable ___cachedCurrencyTradeable, List<Tradeable> ___cachedTradeables)
+		static void Postfix(UserInterface.Window_DynamicTrade? __state, List<Tradeable> ___cachedTradeables)
 		{
 			if (__state != null)
-				__state.Initialize(___cachedCurrencyTradeable, ___cachedTradeables);
+				__state.Initialize(___cachedTradeables);
 		}
 	}
 }
