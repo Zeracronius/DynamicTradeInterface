@@ -26,9 +26,12 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private float _dynamicColumnWidth;
 		private GameFont _lineFont;
 		private bool _multiSelect;
+		private string _caption;
 		private bool _drawHeaders;
 		private bool _drawSearchBox;
 		private bool _drawScrollbar;
+		private bool _drawBorder;
+		private bool _allowSorting;
 
 		public IList<T> RowItems => _rows.Items;
 
@@ -124,6 +127,35 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			set => _drawScrollbar = value;
 		}
 
+		/// <summary>
+		/// Gets or Sets a value for whether a border should be drawn around the table and filter box.
+		/// </summary>
+		public bool DrawBorder
+		{
+			get => _drawBorder;
+			set => _drawBorder = value;
+		}
+
+
+		/// <summary>
+		/// Gets or Sets a value indicating if clicking the column headers should sort the table.
+		/// </summary>
+		public bool AllowSorting
+		{
+			get => _allowSorting;
+			set => _allowSorting = value;
+		}
+
+
+		/// <summary>
+		/// Gets or Sets the caption drawn above the table.
+		/// </summary>
+		public string Caption
+		{
+			get => _caption;
+			set => _caption = value;
+		}
+
 
 
 		/// <summary>
@@ -144,6 +176,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			_drawHeaders = true;
 			_drawSearchBox = true;
 			_drawScrollbar = false;
+			_drawBorder = false;
+			_allowSorting = true;
 		}
 
 
@@ -275,6 +309,22 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void Draw(Rect boundingBox)
 		{
 			Text.Font = GameFont.Small;
+			if (String.IsNullOrEmpty(_caption) == false)
+			{
+				float height = Text.LineHeight;
+				Text.Anchor = TextAnchor.UpperCenter;
+				Widgets.Label(boundingBox, _caption);
+				Text.Anchor = TextAnchor.UpperLeft;
+				boundingBox.y += height + GenUI.GapTiny;
+				boundingBox.height -= height + GenUI.GapTiny;
+			}
+
+			if (_drawBorder)
+			{
+				Widgets.DrawBoxSolidWithOutline(boundingBox, Widgets.WindowBGFillColor, Color.gray);
+				boundingBox = boundingBox.ContractedBy(2);
+			}
+
 			bool selectionChanged = false;
 
 			if (_drawSearchBox)
@@ -315,7 +365,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					else
 						columnHeader.width = column.Width / _dynamicColumnWidth * leftoverWidth;
 
-					bool canOrder = column.Callback == null || column.OrderByCallback != null;
+					bool canOrder = _allowSorting && (column.Callback == null || column.OrderByCallback != null);
 					if (canOrder)
 						Widgets.DrawHighlightIfMouseover(columnHeader);
 

@@ -28,6 +28,9 @@ namespace DynamicTradeInterface.UserInterface
 		List<TradeColumnDef> _visibleColumns;
 		string _cancelButtonText;
 		string _acceptButtonText;
+		string _windowTitle;
+
+		float _headerHeight;
 
 		public bool Accepted { get; private set; }
 
@@ -39,6 +42,8 @@ namespace DynamicTradeInterface.UserInterface
 			forcePause = true;
 			resizeable = true;
 			draggable = true;
+			forcePause = true;
+			absorbInputAroundWindow = true;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -51,9 +56,17 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				_acceptButtonText = "AcceptButton".Translate();
 				_cancelButtonText = "CancelButton".Translate();
-				
+				_windowTitle = "Trade window Configuration";
+				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
+
+
 				_selectedColumnsTable = InitializeTable(_visibleColumns);
 				_availableColumnsTable = InitializeTable(_validColumnDefs.Except(_visibleColumns));
+
+				_selectedColumnsTable.Caption = "Selected columns";
+				_selectedColumnsTable.AllowSorting = false;
+
+				_availableColumnsTable.Caption = "Available columns";
 
 				_selectedColumnsTable.Refresh();
 				_availableColumnsTable.Refresh();
@@ -69,6 +82,7 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			Table<TableRow<TradeColumnDef>> result = new Table<TableRow<TradeColumnDef>>((row, value) => row.SearchString.Contains(value));
 			result.MultiSelect = true;
+			result.DrawBorder = true;
 
 			TableColumn<TableRow<TradeColumnDef>> colDef = result.AddColumn("Def", 0.5f);
 			colDef.IsFixedWidth = false;
@@ -82,14 +96,23 @@ namespace DynamicTradeInterface.UserInterface
 				row[colLabel] = item.LabelCap;
 				result.AddRow(row);
 			}
-
 			return result;
 		}
 
 		public override void DoWindowContents(Rect inRect)
 		{
-			inRect.SplitHorizontallyWithMargin(out Rect body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: MAIN_BUTTON_SIZE.y + GenUI.GapTiny);
-			body.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, COLUMN_BUTTON_SIZE + GenUI.GapSmall, leftWidth: inRect.width / 2);
+			inRect.SplitHorizontallyWithMargin(out Rect header, out Rect body, out _, GenUI.GapTiny, topHeight: _headerHeight);
+
+			Text.Anchor = TextAnchor.UpperCenter;
+			Text.Font = GameFont.Medium;
+			Widgets.Label(header, _windowTitle);
+			Text.Font = GameFont.Small;
+			Text.Anchor = TextAnchor.UpperLeft;
+
+			body.SplitHorizontallyWithMargin(out body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: MAIN_BUTTON_SIZE.y + GenUI.GapTiny);
+
+			float margin = COLUMN_BUTTON_SIZE + GenUI.GapSmall;
+			body.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, margin, leftWidth: inRect.width / 2 - margin / 2);
 
 			_selectedColumnsTable!.Draw(left);
 			_availableColumnsTable!.Draw(right);
