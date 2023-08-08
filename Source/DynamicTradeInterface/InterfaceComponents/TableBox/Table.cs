@@ -8,12 +8,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
 	internal class Table<T> where T : ITableRow
 	{
-		public event ListFilter<T>.OnSortEventHandler OnSorting
-		{
-			add { _rows.OnSorting += value; }
-			remove { _rows.OnSorting -= value; }
-		}
-
 		private readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		private readonly float SEARCH_PLACEHOLDER_SIZE;
 
@@ -217,9 +211,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				else
 					_dynamicColumnWidth += column.Width;
 			}
-
-			if (_currentOrderColumn != null)
-				Sort(_currentOrderColumn);
 		}
 
 		/// <summary>
@@ -236,12 +227,16 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			if (column.Callback != null && column.OrderByCallback == null)
 				return;
 
+			bool reset = true;
+			if (Event.current.modifiers == EventModifiers.Shift)
+				reset = false;
+
 			// If current sorting is ascending or new column is clicked.
 			if (_ascendingOrder == false || _currentOrderColumn != column)
 			{
 				_ascendingOrder = true;
 				if (column.OrderByCallback == null)
-					_rows.OrderBy(x => x[column]);
+					_rows.OrderBy(x => x[column], reset);
 				else
 					column.OrderByCallback(_rows, _ascendingOrder, column);
 				_currentOrderColumn = column;
@@ -250,7 +245,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			{
 				_ascendingOrder = false;
 				if (column.OrderByCallback == null)
-					_rows.OrderByDescending(x => x[column]);
+					_rows.OrderByDescending(x => x[column], reset);
 				else
 					column.OrderByCallback(_rows, _ascendingOrder, column);
 			}

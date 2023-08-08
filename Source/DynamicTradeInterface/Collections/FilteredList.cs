@@ -2,21 +2,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.OleDb;
 using System.Linq;
 
 namespace DynamicTradeInterface.Collections
 {
 	internal class ListFilter<T>
 	{
-		public delegate void OnSortEventHandler(IEnumerable<T> originalCollection, ref IOrderedEnumerable<T>? ordering);
-		public event OnSortEventHandler OnSorting;
+		private struct SortingEntry
+		{
+			public bool Ascending;
+			public object? Key;
+			public Func<T, IComparable> SortFunction;
+
+			public SortingEntry(Func<T, IComparable> sortFunction, bool ascending, object? key)
+			{
+				Ascending = ascending;
+				Key = key;
+				SortFunction = sortFunction;
+			}
+		}
 
 		ReadOnlyCollection<T> _filteredCollection;
 		List<T> _totalCollection;
 		List<T> _bufferList;
 		Func<T, string, bool> _filterCallback;
 		string _filterString;
-		bool _sorting;
+		Queue<SortingEntry> _sortingQueue;
+		Queue<SortingEntry> _sortingQueueBuffer;
 
 		/// <summary>
 		/// Gets the filtered collection of items.
@@ -62,7 +76,8 @@ namespace DynamicTradeInterface.Collections
 			_totalCollection = collection.ToList();
 			_bufferList = new List<T>();
 			_filterCallback = filterCallback;
-			_sorting = false;
+			_sortingQueue = new Queue<SortingEntry>();
+			_sortingQueueBuffer = new Queue<SortingEntry>();
 			Invalidate();
 		}
 
@@ -75,7 +90,8 @@ namespace DynamicTradeInterface.Collections
 			_totalCollection = new List<T>();
 			_bufferList = new List<T>();
 			_filterCallback = filterCallback;
-			_sorting = false;
+			_sortingQueue = new Queue<SortingEntry>();
+			_sortingQueueBuffer = new Queue<SortingEntry>();
 		}
 
 		/// <summary>
@@ -83,24 +99,10 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		/// <typeparam name="TKey">The type of the key.</typeparam>
 		/// <param name="keySelector">The key selector.</param>
-		public void OrderBy<TKey>(Func<T, TKey> keySelector) where TKey : IComparable
+		/// <param name="reset">Whether to reset sorting stack or not.</param>
+		public void OrderBy(Func<T, IComparable> keySelector, bool reset, object? key = null)
 		{
-			_sorting = true;
-			_bufferList.Clear();
-
-			IOrderedEnumerable<T>? ordering = null;
-			OnSorting?.Invoke(_totalCollection, ref ordering);
-
-			if (ordering != null)
-				_bufferList.AddRange(ordering.ThenByDescending(keySelector));
-			else
-				_bufferList.AddRange(_totalCollection.OrderByDescending(keySelector));
-
-			List<T> old = _totalCollection;
-			_totalCollection = _bufferList;
-			_bufferList = old;
-			Invalidate();
-			_sorting = false;
+			AddOrdering(keySelector, true, reset, key);
 		}
 
 		/// <summary>
@@ -108,24 +110,43 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		/// <typeparam name="TKey">The type of the key.</typeparam>
 		/// <param name="keySelector">The key selector.</param>
-		public void OrderByDescending<TKey>(Func<T, TKey> keySelector) where TKey : IComparable
+		/// <param name="reset">Whether to reset sorting stack or not.</param>
+		public void OrderByDescending(Func<T, IComparable> keySelector, bool reset, object? key = null)
 		{
-			_sorting = true;
-			_bufferList.Clear();
+			AddOrdering(keySelector, false, reset, key);
+		}
 
-			IOrderedEnumerable<T>? ordering = null;
-			OnSorting?.Invoke(_totalCollection, ref ordering);
+		private void AddOrdering(Func<T, IComparable> keySelector, bool ascending, bool reset, object? key = null)
+		{
+			if (reset)
+				_sortingQueue.Clear();
 
-			if (ordering != null) 
-				_bufferList.AddRange(ordering.ThenByDescending(keySelector));
-			else
-				_bufferList.AddRange(_totalCollection.OrderByDescending(keySelector));
+			_sortingQueueBuffer.Clear();
 
-			List<T> old = _totalCollection;
-			_totalCollection = _bufferList;
-			_bufferList = old;
+			bool exists = false;
+			if (key != null)
+			{
+				while (_sortingQueue.TryDequeue(out SortingEntry entry))
+				{
+					if (entry.Key == key)
+					{
+						// Found existing sorting entry by key, update ascending value and block inserting new entry.
+						exists = true;
+						entry.Ascending = ascending;
+					}
+
+					_sortingQueueBuffer.Enqueue(entry);
+				}
+
+				Queue<SortingEntry> oldStack = _sortingQueue;
+				_sortingQueue = _sortingQueueBuffer;
+				_sortingQueueBuffer = oldStack;
+			}
+
+			if (exists == false)
+				_sortingQueue.Enqueue(new SortingEntry(keySelector, ascending, key));
+
 			Invalidate();
-			_sorting = false;
 		}
 
 		/// <summary>
@@ -133,25 +154,34 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		public void Invalidate()
 		{
-			if (_sorting == false)
+			int sortingCount = _sortingQueue.Count;
+			if (sortingCount > 0)
 			{
-				IOrderedEnumerable<T>? ordering = null;
-				OnSorting?.Invoke(_totalCollection, ref ordering);
-				if (ordering != null)
+				_bufferList.Clear();
+				IOrderedEnumerable<T>? orderedEnumeration = null;
+				foreach (SortingEntry item in _sortingQueue)
 				{
-					_bufferList.Clear();
-					_bufferList.AddRange(ordering);
-
-					List<T> old = _totalCollection;
-					_totalCollection = _bufferList;
-					_bufferList = old;
+					if (orderedEnumeration == null)
+					{
+						if (item.Ascending)
+							orderedEnumeration = _totalCollection.OrderBy(item.SortFunction);
+						else
+							orderedEnumeration = _totalCollection.OrderByDescending(item.SortFunction);
+					}
+					else
+					{
+						if (item.Ascending)
+							orderedEnumeration = orderedEnumeration.ThenBy(item.SortFunction);
+						else
+							orderedEnumeration = orderedEnumeration.ThenByDescending(item.SortFunction);
+					}
 				}
+				_bufferList.AddRange(orderedEnumeration);
+				List<T> old = _totalCollection;
+				_totalCollection = _bufferList;
+				_bufferList = old;
 			}
-			ApplyFilter();
-		}
 
-		private void ApplyFilter()
-		{
 			if (string.IsNullOrEmpty(_filterString))
 			{
 				_filteredCollection = _totalCollection.AsReadOnly();

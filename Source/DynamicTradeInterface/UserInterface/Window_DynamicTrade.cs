@@ -67,16 +67,8 @@ namespace DynamicTradeInterface.UserInterface
 			resizeable = true;
 			draggable = true;
 			_refresh = false;
-
-			_colonyTable.OnSorting += Table_OnSorting;
-			_traderTable.OnSorting += Table_OnSorting;
-
 		}
 
-		private void Table_OnSorting(IEnumerable<TableRow<Tradeable>> originalCollection, ref IOrderedEnumerable<TableRow<Tradeable>>? ordering)
-		{
-			ordering = originalCollection.OrderByDescending(x => x.RowObject.CountToTransfer != 0);
-		}
 
 		public void Initialize(List<Tradeable> tradeables)
 		{
@@ -145,10 +137,15 @@ namespace DynamicTradeInterface.UserInterface
 
 			if (keySelector != null)
 			{
+				bool reset = true;
+				if (Event.current.modifiers == EventModifiers.Shift)
+					reset = false;
+
+
 				if (ascending)
-					rows.OrderBy((row) => keySelector(row.RowObject));
+					rows.OrderBy((row) => keySelector(row.RowObject), reset, columnDef);
 				else
-					rows.OrderByDescending((row) => keySelector(row.RowObject));
+					rows.OrderByDescending((row) => keySelector(row.RowObject), reset, columnDef);
 			}
 		}
 
