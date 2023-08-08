@@ -93,5 +93,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Text.Font = GameFont.Small;
 			GUI.color = Color.white;
 		}
+
+
+		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
+		{
+			TradeAction action = TradeAction.PlayerSells;
+			if (transactor == Transactor.Trader)
+				action = TradeAction.PlayerBuys;
+
+			return (Tradeable row) => row.GetPriceFor(action);
+		}
 	}
 }

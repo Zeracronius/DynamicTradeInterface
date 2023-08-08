@@ -120,6 +120,8 @@ namespace DynamicTradeInterface.UserInterface
 						(rows, ascending, column) => OrderByColumn(rows, ascending, columnDef, transactor));
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
+
+				column.ShowHeader = columnDef.showCaption;
 			}
 
 			foreach (Tradeable item in _tradeables.Where(x => x.CountHeldBy(transactor) > 0))

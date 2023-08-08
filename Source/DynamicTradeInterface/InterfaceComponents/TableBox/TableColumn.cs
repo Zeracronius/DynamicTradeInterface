@@ -19,13 +19,18 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public float Width { get; }
 
 		/// <summary>
-		/// Gets or sets whether this column has a fixed width.
-		/// Set width as a value between 0 and 1 as a percentage of how much of the remaining width after all fixed columns are added this column should use.
+		/// Gets or sets a value indicating whether the header of this column should be shown.
 		/// </summary>
-		/// <value>
-		///   <c>true</c> if this column is fixed width; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsFixedWidth { get; set; }
+		public bool ShowHeader { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether this column has a fixed width.
+        /// Set width as a value between 0 and 1 as a percentage of how much of the remaining width after all fixed columns are added this column should use.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this column is fixed width; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsFixedWidth { get; set; }
 
 		public TableColumn(string caption, float width)
 		{

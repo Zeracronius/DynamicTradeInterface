@@ -1,4 +1,5 @@
 ﻿using DynamicTradeInterface.Collections;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,10 +30,12 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private bool _drawSearchBox;
 		private bool _drawScrollbar;
 
-		/// <summary>
-		/// Gets or sets the row filter function. Return true to include row and fall to skip.
-		/// </summary>
-		public Func<T, bool>? RowFilter { get; set; }
+		public IList<T> RowItems => _rows.Items;
+
+        /// <summary>
+        /// Gets or sets the row filter function. Return true to include row and fall to skip.
+        /// </summary>
+        public Func<T, bool>? RowFilter { get; set; }
 
 
 		/// <summary>
@@ -303,7 +306,13 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 						Widgets.DrawHighlightIfMouseover(columnHeader);
 
 					if (String.IsNullOrWhiteSpace(column.Caption) == false)
-						Widgets.Label(columnHeader, column.Caption);
+					{
+						if (column.ShowHeader)
+							Widgets.Label(columnHeader, column.Caption);
+
+						if (Mouse.IsOver(columnHeader))
+							TooltipHandler.TipRegion(columnHeader, column.Caption);
+					}
 
 					if (canOrder && Widgets.ButtonInvisible(columnHeader, true))
 						Sort(column);

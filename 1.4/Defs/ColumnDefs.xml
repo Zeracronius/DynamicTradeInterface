@@ -1,14 +1,16 @@
 <Defs>
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeIconDef</defName>
-		<label></label>
+		<label>icon</label>
+		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnIcon:Draw</callbackHandler>
 		<defaultWidth>40</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeInfoDef</defName>
-		<label></label>
+		<label>info button</label>
+		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnInfo:Draw</callbackHandler>
 		<defaultWidth>20</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
@@ -23,7 +25,8 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeExtraIconsDef</defName>
-		<label></label>
+		<label>extra icons</label>
+		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIcons:Draw</callbackHandler>
 		<defaultWidth>50</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
@@ -46,14 +49,17 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCounterDef</defName>
-		<label></label>
+		<label>counter box</label>
+		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>100</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeButtonsDef</defName>
-		<label></label>
+		<label>trade buttons</label>
+		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
 		<defaultWidth>100</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>

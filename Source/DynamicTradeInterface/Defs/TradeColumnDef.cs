@@ -22,6 +22,7 @@ namespace DynamicTradeInterface.Defs
 		public string? orderValueCallbackHandler = null;
 		public float defaultWidth = 100;
 		public bool defaultVisible = true;
+		public bool showCaption = true;
 
 
 		//TODO way to define sorting logic.
