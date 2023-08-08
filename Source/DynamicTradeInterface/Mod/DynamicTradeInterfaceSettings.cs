@@ -24,6 +24,9 @@ namespace DynamicTradeInterface.Mod
 			_visibleColumns = new List<TradeColumnDef>();
 		}
 
+		internal HashSet<TradeColumnDef> ValidColumns => _validColumnDefs;
+		internal List<TradeColumnDef> VisibleColumns => _visibleColumns;
+
 		//const int DEFAULT_PORT = 8339;
 		//public int port = DEFAULT_PORT;
 

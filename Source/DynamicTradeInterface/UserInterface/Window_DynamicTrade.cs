@@ -67,6 +67,8 @@ namespace DynamicTradeInterface.UserInterface
 			resizeable = true;
 			draggable = true;
 			_refresh = false;
+			forcePause = true;
+			absorbInputAroundWindow = true;
 		}
 
 
@@ -157,6 +159,13 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				_caravanWidget.Draw(new Rect(12f, 0f, inRect.width - 24f, 40f));
 				inRect.yMin += 52f;
+			}
+
+			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), TexButton.OpenDebugActionsMenu))
+			{
+				var settingsMenu = new Dialog_TradeConfiguration();
+				settingsMenu.OnClosed += SettingsMenu_OnClosed;
+				Find.WindowStack.Add(settingsMenu);
 			}
 
 			float currencyLineHeight = 0;
@@ -251,6 +260,12 @@ namespace DynamicTradeInterface.UserInterface
 					_acceptButtonText = $"{_offerGiftsText} ({goodwillChange})";
 				}
 			}
+		}
+
+		private void SettingsMenu_OnClosed(object sender, bool e)
+		{
+			PopulateTable(_colonyTable, Transactor.Colony);
+			PopulateTable(_traderTable, Transactor.Trader);
 		}
 
 		private void DrawCurrencyRow(Rect currencyRowRect, Tradeable currency)

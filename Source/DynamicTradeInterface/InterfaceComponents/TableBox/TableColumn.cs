@@ -37,6 +37,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			Width = width;
 			Caption = caption;
 			IsFixedWidth = true;
+			ShowHeader = true;
 		}
 	}
 

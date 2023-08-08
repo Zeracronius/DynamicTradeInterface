@@ -44,6 +44,11 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public IReadOnlyList<T> SelectedRows => _selectedRows;
 
 		/// <summary>
+		/// Returns a list of columns.
+		/// </summary>
+		public IReadOnlyList<TableColumn<T>> Columns => _columns;
+
+		/// <summary>
 		/// Triggered when selected rows is changed.
 		/// </summary>
 		public event EventHandler<IReadOnlyList<T>>? SelectionChanged;
@@ -222,7 +227,16 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void Clear()
 		{
 			_rows.Items.Clear();
+			_selectedRows.Clear();
 			_columns.Clear();
+		}
+
+		/// <summary>
+		/// Clears currently selected rows.
+		/// </summary>
+		public void ClearSelection()
+		{
+			_selectedRows.Clear();
 		}
 
 		private void Sort(TableColumn<T> column)
