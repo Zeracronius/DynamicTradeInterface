@@ -1,4 +1,13 @@
 <LanguageData>
 	<DynamicTableControlSearchPlaceholder>Search...</DynamicTableControlSearchPlaceholder>
 
+	<ConfigurationWindowTitle>Trade window Configuration</ConfigurationWindowTitle>
+	<ConfigurationWindowSelectedColumns>Selected columns</ConfigurationWindowSelectedColumns>
+	<ConfigurationWindowAvailableColumns>Available columns</ConfigurationWindowAvailableColumns>
+	<ConfigurationWindowEnableProfiling>Enable profiling</ConfigurationWindowEnableProfiling>
+	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
+	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
+	<ConfigurationWindowColumnAvgMs>Avg ms</ConfigurationWindowColumnAvgMs>
+	<ConfigurationWindowColumnMaxMs>Max ms</ConfigurationWindowColumnMaxMs>
+
 </LanguageData>

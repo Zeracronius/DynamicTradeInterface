@@ -16,7 +16,7 @@ namespace DynamicTradeInterface.UserInterface
 	[HotSwappable]
 	internal class Dialog_TradeConfiguration : Window
 	{
-		public event EventHandler<bool> OnClosed;
+		public event EventHandler<bool>? OnClosed;
 
 		const float COLUMN_BUTTON_SIZE = 30f;
 		static Vector2 MAIN_BUTTON_SIZE = new Vector2(160f, 40f);
@@ -29,6 +29,7 @@ namespace DynamicTradeInterface.UserInterface
 		string _cancelButtonText;
 		string _acceptButtonText;
 		string _windowTitle;
+		string _enableProfilingText;
 
 		float _headerHeight;
 
@@ -44,6 +45,11 @@ namespace DynamicTradeInterface.UserInterface
 			draggable = true;
 			forcePause = true;
 			absorbInputAroundWindow = true;
+
+			_acceptButtonText = string.Empty;
+			_cancelButtonText = string.Empty;
+			_windowTitle = string.Empty;
+			_enableProfilingText = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -56,18 +62,19 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				_acceptButtonText = "AcceptButton".Translate();
 				_cancelButtonText = "CancelButton".Translate();
-				_windowTitle = "Trade window Configuration";
+				_windowTitle = "ConfigurationWindowTitle".Translate();
+				_enableProfilingText = "ConfigurationWindowEnableProfiling".Translate();
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
 
 
 				_selectedColumnsTable = InitializeTable(_visibleColumns);
 				_availableColumnsTable = InitializeTable(_validColumnDefs.Except(_visibleColumns));
 
-				_selectedColumnsTable.Caption = "Selected columns";
+				_selectedColumnsTable.Caption = "ConfigurationWindowSelectedColumns".Translate();
 				_selectedColumnsTable.AllowSorting = false;
 				_selectedColumnsTable.DrawSearchBox = false;
 
-				_availableColumnsTable.Caption = "Available columns";
+				_availableColumnsTable.Caption = "ConfigurationWindowAvailableColumns".Translate();
 
 				_selectedColumnsTable.Refresh();
 				_availableColumnsTable.Refresh();
@@ -85,13 +92,13 @@ namespace DynamicTradeInterface.UserInterface
 			result.MultiSelect = true;
 			result.DrawBorder = true;
 
-			TableColumn<TableRow<TradeColumnDef>> colDef = result.AddColumn("Def", 0.5f);
+			TableColumn<TableRow<TradeColumnDef>> colDef = result.AddColumn("ConfigurationWindowColumnDef".Translate(), 0.5f);
 			colDef.IsFixedWidth = false;
-			TableColumn<TableRow<TradeColumnDef>> colLabel = result.AddColumn("Caption", 0.5f);
+			TableColumn<TableRow<TradeColumnDef>> colLabel = result.AddColumn("ConfigurationWindowColumnCaption".Translate(), 0.5f);
 			colLabel.IsFixedWidth = false;
 
-			TableColumn<TableRow<TradeColumnDef>> colProfiledAvg = result.AddColumn("Avg ms", 50f, callback: ProfilingAverageCallback);
-			TableColumn<TableRow<TradeColumnDef>> colProfiledMax = result.AddColumn("Max ms", 50f, callback: ProfilingMaxCallback);
+			TableColumn<TableRow<TradeColumnDef>> colProfiledAvg = result.AddColumn("ConfigurationWindowColumnAvgMs".Translate(), 50f, callback: ProfilingAverageCallback);
+			TableColumn<TableRow<TradeColumnDef>> colProfiledMax = result.AddColumn("ConfigurationWindowColumnMaxMs".Translate(), 50f, callback: ProfilingMaxCallback);
 
 			foreach (var item in rows)
 			{
@@ -131,7 +138,7 @@ namespace DynamicTradeInterface.UserInterface
 			bool profiling = _settings.ProfilingEnabled;
 			Text.Anchor = TextAnchor.UpperLeft;
 			Rect checkbox = new Rect(header.x, header.y, 300, header.height);
-			Widgets.CheckboxLabeled(checkbox, "Enable profiling", ref profiling);
+			Widgets.CheckboxLabeled(checkbox, _enableProfilingText, ref profiling);
 			_settings.ProfilingEnabled = profiling;
 
 
