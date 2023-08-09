@@ -62,7 +62,7 @@ namespace DynamicTradeInterface.Mod
 
 			foreach (TradeColumnDef columnDef in tradeColumns)
 			{
-				if (String.IsNullOrWhiteSpace(columnDef.callbackHandler) == false)
+				if (string.IsNullOrWhiteSpace(columnDef.callbackHandler) == false)
 				{
 					try
 					{
@@ -80,7 +80,7 @@ namespace DynamicTradeInterface.Mod
 					}
 				}
 
-				if (String.IsNullOrWhiteSpace(columnDef.orderValueCallbackHandler) == false)
+				if (string.IsNullOrWhiteSpace(columnDef.orderValueCallbackHandler) == false)
 				{
 					try
 					{

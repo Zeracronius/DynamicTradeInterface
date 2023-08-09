@@ -174,10 +174,7 @@ namespace DynamicTradeInterface.UserInterface
 
 			if (keySelector != null)
 			{
-				bool reset = true;
-				if (Event.current.modifiers == EventModifiers.Shift)
-					reset = false;
-
+				bool reset = Event.current.modifiers != EventModifiers.Shift;
 
 				if (ascending)
 					rows.OrderBy((row) => keySelector(row.RowObject), reset, columnDef);

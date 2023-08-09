@@ -166,11 +166,9 @@ namespace DynamicTradeInterface.UserInterface
 				IList<TableRow<TradeColumnDef>> rows = _selectedColumnsTable.RowItems;
 				for (int i = 0; i < rows.Count; i++)
 				{
-					TableRow<TradeColumnDef> row = rows[i];
-					if (i > 0 && selectedRows.Contains(row))
+					if (i > 0 && selectedRows.Contains(rows[i]))
 					{
-						rows[i] = rows[i - 1];
-						rows[i - 1] = row;
+						(rows[i], rows[i - 1]) = (rows[i - 1], rows[i]);
 					}
 				}
 				_selectedColumnsTable.Refresh();
@@ -236,11 +234,9 @@ namespace DynamicTradeInterface.UserInterface
 				IList<TableRow<TradeColumnDef>> rows = _selectedColumnsTable.RowItems;
 				for (int i = rows.Count - 1; i >= 0; i--)
 				{
-					TableRow<TradeColumnDef> row = rows[i];
-					if (i < rows.Count - 1 && selectedRows.Contains(row))
+					if (i < rows.Count - 1 && selectedRows.Contains(rows[i]))
 					{
-						rows[i] = rows[i + 1];
-						rows[i + 1] = row;
+						(rows[i], rows[i + 1]) = (rows[i + 1], rows[i]);
 					}
 				}
 				_selectedColumnsTable.Refresh();
