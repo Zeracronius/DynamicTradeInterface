@@ -3,7 +3,7 @@
   <PropertyGroup>
 	<TargetFramework>NET48</TargetFramework>
 		<langVersion>10.0</langVersion>
-	<Nullable>enable</Nullable>
+		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>..\..\1.4\Assemblies\</OutputPath>
 		<Configurations>Debug;Release;Hotswap</Configurations>

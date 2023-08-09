@@ -65,6 +65,7 @@ namespace DynamicTradeInterface.UserInterface
 
 				_selectedColumnsTable.Caption = "Selected columns";
 				_selectedColumnsTable.AllowSorting = false;
+				_selectedColumnsTable.DrawSearchBox = false;
 
 				_availableColumnsTable.Caption = "Available columns";
 
@@ -89,6 +90,9 @@ namespace DynamicTradeInterface.UserInterface
 			TableColumn<TableRow<TradeColumnDef>> colLabel = result.AddColumn("Caption", 0.5f);
 			colLabel.IsFixedWidth = false;
 
+			TableColumn<TableRow<TradeColumnDef>> colProfiledAvg = result.AddColumn("Avg ms", 50f, callback: ProfilingAverageCallback);
+			TableColumn<TableRow<TradeColumnDef>> colProfiledMax = result.AddColumn("Max ms", 50f, callback: ProfilingMaxCallback);
+
 			foreach (var item in rows)
 			{
 				var row = new TableRow<TradeColumnDef>(item, item.defName + " " + item.label);
@@ -99,9 +103,39 @@ namespace DynamicTradeInterface.UserInterface
 			return result;
 		}
 
+
+		private void ProfilingAverageCallback(ref Rect boundingBox, TableRow<TradeColumnDef> item)
+		{
+			if (_settings.ProfilingEnabled)
+			{
+				// Timings are measured in ticks, and 1ms is 10.000 ticks.
+				if (_settings.TradeColumnProfilings.TryGetValue(item.RowObject, out Queue<long> timings))
+					Widgets.Label(boundingBox, (timings.Average() / 10000d).ToString("N3"));
+			}
+		}
+
+
+		private void ProfilingMaxCallback(ref Rect boundingBox, TableRow<TradeColumnDef> item)
+		{
+			if (_settings.ProfilingEnabled)
+			{
+				// Timings are measured in ticks, and 1ms is 10.000 ticks.
+				if (_settings.TradeColumnProfilings.TryGetValue(item.RowObject, out Queue<long> timings))
+					Widgets.Label(boundingBox, (timings.Max() / 10000d).ToString("N3"));
+			}
+		}
+
 		public override void DoWindowContents(Rect inRect)
 		{
 			inRect.SplitHorizontallyWithMargin(out Rect header, out Rect body, out _, GenUI.GapTiny, topHeight: _headerHeight);
+			bool profiling = _settings.ProfilingEnabled;
+			Text.Anchor = TextAnchor.UpperLeft;
+			Rect checkbox = new Rect(header.x, header.y, 300, header.height);
+			Widgets.CheckboxLabeled(checkbox, "Enable profiling", ref profiling);
+			_settings.ProfilingEnabled = profiling;
+
+
+
 
 			Text.Anchor = TextAnchor.UpperCenter;
 			Text.Font = GameFont.Medium;

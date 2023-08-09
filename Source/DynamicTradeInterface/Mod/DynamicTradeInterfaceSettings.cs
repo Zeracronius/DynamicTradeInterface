@@ -18,22 +18,29 @@ namespace DynamicTradeInterface.Mod
 		private HashSet<TradeColumnDef> _validColumnDefs;
 		private List<TradeColumnDef> _visibleColumns;
 
+
+
+		bool _profilingEnabled;
+		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;
+
 		public DynamicTradeInterfaceSettings()
 		{
 			_validColumnDefs = new HashSet<TradeColumnDef>();
 			_visibleColumns = new List<TradeColumnDef>();
+			_tradeColumnProfilings = new Dictionary<TradeColumnDef, Queue<long>>();
 		}
 
 		internal HashSet<TradeColumnDef> ValidColumns => _validColumnDefs;
 		internal List<TradeColumnDef> VisibleColumns => _visibleColumns;
 
-		//const int DEFAULT_PORT = 8339;
-		//public int port = DEFAULT_PORT;
+		internal bool ProfilingEnabled
+		{
+			get => _profilingEnabled;
+			set => _profilingEnabled = value;
+		}
 
-		//public override void ExposeData()
-		//{
-		//	Scribe_Values.Look(ref port, "port", DEFAULT_PORT);
-		//}
+		internal Dictionary<TradeColumnDef, Queue<long>> TradeColumnProfilings => _tradeColumnProfilings;
+
 
 
 		public override void ExposeData()

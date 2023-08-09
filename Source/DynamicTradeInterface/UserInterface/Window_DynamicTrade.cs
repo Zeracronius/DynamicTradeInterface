@@ -7,6 +7,7 @@ using RimWorld;
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +48,9 @@ namespace DynamicTradeInterface.UserInterface
 		string _offerGiftsText;
 		string _cannotAffordText;
 
+		// Profiling
+		Stopwatch _stopWatch;
+
 		public Window_DynamicTrade()
 		{
 			_rowFont = GameFont.Small;
@@ -69,6 +73,8 @@ namespace DynamicTradeInterface.UserInterface
 			_refresh = false;
 			forcePause = true;
 			absorbInputAroundWindow = true;
+
+			_stopWatch = new Stopwatch();
 		}
 
 
@@ -105,20 +111,24 @@ namespace DynamicTradeInterface.UserInterface
 			_confirmShortFundsText = "ConfirmTraderShortFunds".Translate();
 			_cannotAffordText = "MessageColonyCannotAfford".Translate();
 
-
-
 			_caravanWidget = new CaravanWidget(tradeables, _currency);
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.75f, UI.screenHeight * 0.8f);
 
+		private delegate void ColumnCallback(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor);
 		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)
 		{
 			table.Clear();
+
+			ColumnCallback callback = ColumnCallbackSimple;
+
+			if (_settings.ProfilingEnabled)
+				callback = ColumnCallbackProfiled;
 			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth,
-						(ref Rect rect, TableRow<Tradeable> row) => columnDef._callback(ref rect, row.RowObject, transactor, ref _refresh),
+						(ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
 						(rows, ascending, column) => OrderByColumn(rows, ascending, columnDef, transactor));
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
@@ -131,6 +141,29 @@ namespace DynamicTradeInterface.UserInterface
 				table.AddRow(new TableRow<Tradeable>(item, item.Label + " " + item.ThingDef?.label));
 			}
 			table.Refresh();
+		}
+
+		private void ColumnCallbackSimple(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor)
+		{
+			columnDef._callback!(ref rect, row.RowObject, transactor, ref _refresh);
+		}
+
+		private void ColumnCallbackProfiled(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor)
+		{
+			_stopWatch.Restart();
+			columnDef._callback!(ref rect, row.RowObject, transactor, ref _refresh);
+			_stopWatch.Stop();
+
+			if (_settings.TradeColumnProfilings.TryGetValue(columnDef, out Queue<long> profilings) == false)
+			{
+				profilings = new Queue<long>();
+			}
+
+			profilings.Enqueue(_stopWatch.ElapsedTicks);
+			if (profilings.Count > 200)
+				profilings.Dequeue();
+
+			_settings.TradeColumnProfilings[columnDef] = profilings;
 		}
 
 		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, bool ascending, Defs.TradeColumnDef columnDef, Transactor transactor)
