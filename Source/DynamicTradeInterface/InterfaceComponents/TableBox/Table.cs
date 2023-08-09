@@ -35,11 +35,10 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 		public IList<T> RowItems => _rows.Items;
 
-        /// <summary>
-        /// Gets or sets the row filter function. Return true to include row and fall to skip.
-        /// </summary>
-        public Func<T, bool>? RowFilter { get; set; }
-
+		/// <summary>
+		/// Gets or sets the row filter function. Return true to include row and fall to skip.
+		/// </summary>
+		public Func<T, bool>? RowFilter { get; set; }
 
 		/// <summary>
 		/// Returns the current selected rows.
@@ -65,13 +64,13 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			set => _rows.Filter = value;
 		}
 
-        /// <summary>
-        /// Gets or sets the line font.
-        /// </summary>
-        /// <value>
-        /// The line font.
-        /// </value>
-        public GameFont LineFont
+		/// <summary>
+		/// Gets or sets the line font.
+		/// </summary>
+		/// <value>
+		/// The line font.
+		/// </value>
+		public GameFont LineFont
 		{
 			get => _lineFont;
 			set => _lineFont = value;
@@ -220,7 +219,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			foreach (TableColumn column in _columns)
 			{
 				if (item.HasColumn(column) == false)
-					item[column] = String.Empty;
+					item[column] = string.Empty;
 			}
 
 			_rows.Items.Add(item);
@@ -243,10 +242,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			_rows.Invalidate();
 			_fixedColumnWidth = 0;
 			_dynamicColumnWidth = 0;
-			TableColumn column;
 			for (int i = 0; i < _columns.Count; i++)
 			{
-				column = _columns[i];
+				TableColumn column = _columns[i];
 
 				if (column.IsFixedWidth)
 					_fixedColumnWidth += column.Width;
@@ -278,9 +276,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			if (column.Callback != null && column.OrderByCallback == null)
 				return;
 
-			bool reset = true;
-			if (Event.current.modifiers == EventModifiers.Shift)
-				reset = false;
+			bool reset = Event.current.modifiers != EventModifiers.Shift;
 
 			// If current sorting is ascending or new column is clicked.
 			if (_ascendingOrder == false || _currentOrderColumn != column)
@@ -309,7 +305,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void Draw(Rect boundingBox)
 		{
 			Text.Font = GameFont.Small;
-			if (String.IsNullOrEmpty(_caption) == false)
+			if (string.IsNullOrEmpty(_caption) == false)
 			{
 				float height = Text.LineHeight;
 				Text.Anchor = TextAnchor.UpperCenter;
@@ -325,7 +321,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				boundingBox = boundingBox.ContractedBy(2);
 			}
 
-			bool selectionChanged = false;
+			bool selectionHasChanged = false;
 
 			if (_drawSearchBox)
 			{
@@ -336,7 +332,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					_searchText = "";
 
 
-				if (_searchText == String.Empty)
+				if (_searchText == string.Empty)
 					Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + CELL_SPACING, searchBox.y, SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), SEARCH_PLACEHOLDER);
 
 				_rows.Filter = _searchText;
@@ -349,7 +345,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			float tableWidth = boundingBox.width - GenUI.ScrollBarWidth - CELL_SPACING;
 			float leftoverWidth = tableWidth - _fixedColumnWidth - (CELL_SPACING * _columns.Count);
 
-			TableColumn<T> column;
 			if (_drawHeaders)
 			{
 				Rect columnHeader = new Rect(boundingBox);
@@ -357,7 +352,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 				for (int i = 0; i < _columns.Count; i++)
 				{
-					column = _columns[i];
+					TableColumn<T> column = _columns[i];
 					if (column.IsFixedWidth)
 					{
 						columnHeader.width = column.Width;
@@ -410,7 +405,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					for (int i = 0; i < _columns.Count; i++)
 					{
 						Text.Font = _lineFont;
-						column = _columns[i];
+						TableColumn<T> column = _columns[i];
 						if (column.IsFixedWidth)
 						{
 							rowRect.width = column.Width;
@@ -443,7 +438,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 							_selectedRows.Clear();
 
 						_selectedRows.Add(currentRow);
-						selectionChanged = true;
+						selectionHasChanged = true;
 					}
 
 					rowRect.y += rowRect.height;
@@ -460,7 +455,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			}
 
 			// Handle any potential event handlers when selection is modified.
-			if (selectionChanged && SelectionChanged != null)
+			if (selectionHasChanged && SelectionChanged != null)
 				SelectionChanged.Invoke(this, _selectedRows);
 		}
 

@@ -26,11 +26,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					if (thing != null)
 					{
 						string tipDescription = row.TipDescription;
-						if (String.IsNullOrWhiteSpace(tipDescription) == false)
+						if (string.IsNullOrWhiteSpace(tipDescription) == false)
 						{
-							string text = row.LabelCap;
-							text = text + ": " + tipDescription + TransferableUIUtility.ContentSourceDescription(thing);
-							return text;
+							return $"{row.LabelCap}: {tipDescription}{TransferableUIUtility.ContentSourceDescription(thing)}";
 						}
 					}
 					return "";

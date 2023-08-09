@@ -138,9 +138,7 @@ namespace DynamicTradeInterface.Collections
 					_sortingQueueBuffer.Enqueue(entry);
 				}
 
-				Queue<SortingEntry> oldStack = _sortingQueue;
-				_sortingQueue = _sortingQueueBuffer;
-				_sortingQueueBuffer = oldStack;
+				(_sortingQueue, _sortingQueueBuffer) = (_sortingQueueBuffer, _sortingQueue);
 			}
 
 			if (exists == false)
@@ -158,28 +156,24 @@ namespace DynamicTradeInterface.Collections
 			if (sortingCount > 0)
 			{
 				_bufferList.Clear();
-				IOrderedEnumerable<T>? orderedEnumeration = null;
+				var first = _sortingQueue.First();
+				IOrderedEnumerable<T> orderedEnumeration = first.Ascending ?
+					_totalCollection.OrderBy(first.SortFunction) : _totalCollection.OrderByDescending(first.SortFunction);
+				bool ignoreFirst = true;
 				foreach (SortingEntry item in _sortingQueue)
 				{
-					if (orderedEnumeration == null)
+					if (ignoreFirst)
 					{
-						if (item.Ascending)
-							orderedEnumeration = _totalCollection.OrderBy(item.SortFunction);
-						else
-							orderedEnumeration = _totalCollection.OrderByDescending(item.SortFunction);
+						ignoreFirst = false;
+						continue;
 					}
+					if (item.Ascending)
+						orderedEnumeration = orderedEnumeration.ThenBy(item.SortFunction);
 					else
-					{
-						if (item.Ascending)
-							orderedEnumeration = orderedEnumeration.ThenBy(item.SortFunction);
-						else
-							orderedEnumeration = orderedEnumeration.ThenByDescending(item.SortFunction);
-					}
+						orderedEnumeration = orderedEnumeration.ThenByDescending(item.SortFunction);
 				}
 				_bufferList.AddRange(orderedEnumeration);
-				List<T> old = _totalCollection;
-				_totalCollection = _bufferList;
-				_bufferList = old;
+				(_totalCollection, _bufferList) = (_bufferList, _totalCollection);
 			}
 
 			if (string.IsNullOrEmpty(_filterString))

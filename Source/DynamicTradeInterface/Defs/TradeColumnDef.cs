@@ -31,6 +31,7 @@ namespace DynamicTradeInterface.Defs
 		internal TradeColumnCallback? _callback;
 		internal TradeColumnOrderValueCallback? _orderValueCallback;
 
+		// TODO consider if this override is required.
 		public override void ResolveReferences()
 		{
 			base.ResolveReferences();
@@ -43,7 +44,7 @@ namespace DynamicTradeInterface.Defs
 				yield return error;
 			}
 
-			if (String.IsNullOrEmpty(callbackHandler))
+			if (string.IsNullOrEmpty(callbackHandler))
 				yield return "TradeColumnDef must have a callbackHandler defined.";
 		}
 
