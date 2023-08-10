@@ -26,7 +26,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private float _dynamicColumnWidth;
 		private GameFont _lineFont;
 		private bool _multiSelect;
-		private string _caption;
+		private string? _caption;
 		private bool _drawHeaders;
 		private bool _drawSearchBox;
 		private bool _drawScrollbar;
@@ -58,7 +58,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <summary>
 		/// Gets or sets the text filter on the underlying rows collection.
 		/// </summary>
-		public string Filter
+		public string? Filter
 		{
 			get => _rows.Filter;
 			set => _rows.Filter = value;
@@ -149,7 +149,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <summary>
 		/// Gets or Sets the caption drawn above the table.
 		/// </summary>
-		public string Caption
+		public string? Caption
 		{
 			get => _caption;
 			set => _caption = value;
@@ -184,7 +184,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="header">Title of the column.</param>
 		/// <param name="width">Column width.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
-		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, bool, TableColumn> orderByCallback = null)
+		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, bool, TableColumn>? orderByCallback = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, orderByCallback);
 			_columns.Add(column);
@@ -199,7 +199,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="callback">Render callback when cell in column is drawn.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
 		/// <returns></returns>
-		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, bool, TableColumn> orderByCallback = null)
+		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, bool, TableColumn>? orderByCallback = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, callback, orderByCallback);
 			_columns.Add(column);

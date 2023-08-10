@@ -28,7 +28,7 @@ namespace DynamicTradeInterface.Collections
 		List<T> _totalCollection;
 		List<T> _bufferList;
 		Func<T, string, bool> _filterCallback;
-		string _filterString;
+		string? _filterString;
 		Queue<SortingEntry> _sortingQueue;
 		Queue<SortingEntry> _sortingQueueBuffer;
 
@@ -53,7 +53,7 @@ namespace DynamicTradeInterface.Collections
 		/// <summary>
 		/// Gets or sets the filter string parsed to the filter callback when filtering collection.
 		/// </summary>
-		public string Filter
+		public string? Filter
 		{
 			get => _filterString;
 			set
@@ -61,7 +61,7 @@ namespace DynamicTradeInterface.Collections
 				if (_filterString == value || _filterString != null && _filterString.Equals(value))
 					return;
 
-				_filterString = value.ToLower();
+				_filterString = value?.ToLower();
 				Invalidate();
 			}
 		}
@@ -78,6 +78,7 @@ namespace DynamicTradeInterface.Collections
 			_filterCallback = filterCallback;
 			_sortingQueue = new Queue<SortingEntry>();
 			_sortingQueueBuffer = new Queue<SortingEntry>();
+			_filteredCollection = _totalCollection.AsReadOnly();
 			Invalidate();
 		}
 
@@ -92,6 +93,7 @@ namespace DynamicTradeInterface.Collections
 			_filterCallback = filterCallback;
 			_sortingQueue = new Queue<SortingEntry>();
 			_sortingQueueBuffer = new Queue<SortingEntry>();
+			_filteredCollection = _totalCollection.AsReadOnly();
 		}
 
 		/// <summary>
@@ -183,7 +185,7 @@ namespace DynamicTradeInterface.Collections
 			}
 
 			_bufferList.Clear();
-			_bufferList.AddRange(_totalCollection.Where(x => _filterCallback(x, _filterString)));
+			_bufferList.AddRange(_totalCollection.Where(x => _filterCallback(x, _filterString ?? string.Empty)));
 			_filteredCollection = _bufferList.AsReadOnly();
 		}
 	}

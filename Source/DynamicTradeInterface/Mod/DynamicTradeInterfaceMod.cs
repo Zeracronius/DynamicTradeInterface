@@ -10,7 +10,10 @@ namespace DynamicTradeInterface.Mod
 	public class DynamicTradeInterfaceMod : Verse.Mod
 	{
 		internal static Harmony Harmony = new Harmony("DynamicTradeInterfaceMod");
+
+#pragma warning disable CS8618 // Will always be initialized by constructor by rimworld.
 		internal static DynamicTradeInterfaceSettings Settings;
+#pragma warning restore CS8618
 
 		public DynamicTradeInterfaceMod(ModContentPack content) : base(content)
 		{

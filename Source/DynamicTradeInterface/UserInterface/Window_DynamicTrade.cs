@@ -25,7 +25,7 @@ namespace DynamicTradeInterface.UserInterface
 		Mod.DynamicTradeInterfaceSettings _settings;
 		Tradeable? _currency;
 		List<Tradeable>? _tradeables;
-		CaravanWidget _caravanWidget;
+		CaravanWidget? _caravanWidget;
 		bool _refresh;
 
 		GameFont _rowFont;
@@ -68,13 +68,23 @@ namespace DynamicTradeInterface.UserInterface
 			};
 			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
+			_stopWatch = new Stopwatch();
+			_refresh = false;
+			_colonyHeader = string.Empty;
+			_colonyHeaderDescription = string.Empty;
+			_traderHeader = string.Empty;
+			_traderHeaderDescription = string.Empty;
+			_cancelButtonText = string.Empty;
+			_resetButtonText = string.Empty;
+			_acceptButtonText = string.Empty;
+			_confirmShortFundsText = string.Empty;
+			_offerGiftsText = string.Empty;
+			_cannotAffordText = string.Empty;
+			
 			resizeable = true;
 			draggable = true;
-			_refresh = false;
 			forcePause = true;
 			absorbInputAroundWindow = true;
-
-			_stopWatch = new Stopwatch();
 		}
 
 
@@ -112,6 +122,7 @@ namespace DynamicTradeInterface.UserInterface
 			_cannotAffordText = "MessageColonyCannotAfford".Translate();
 
 			_caravanWidget = new CaravanWidget(tradeables, _currency);
+			_caravanWidget.Initialize();
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.75f, UI.screenHeight * 0.8f);
@@ -185,7 +196,7 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
-			if (_caravanWidget.InCaravan)
+			if (_caravanWidget?.InCaravan == true)
 			{
 				_caravanWidget.Draw(new Rect(12f, 0f, inRect.width - 24f, 40f));
 				inRect.yMin += 52f;
@@ -280,7 +291,7 @@ namespace DynamicTradeInterface.UserInterface
 				_refresh = false;
 				_colonyTable.Refresh();
 				_traderTable.Refresh();
-				_caravanWidget.SetDirty();
+				_caravanWidget?.SetDirty();
 				TradeSession.deal.UpdateCurrencyCount();
 
 

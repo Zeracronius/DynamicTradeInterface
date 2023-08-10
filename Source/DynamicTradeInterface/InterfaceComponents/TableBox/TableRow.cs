@@ -11,7 +11,10 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	{
 		private Dictionary<TableColumn, string> _rowData;
 		public T RowObject { get; private set; }
-		public object Tag;
+
+#pragma warning disable CS0649 // Field 'TableRow<T>.Tag' is never assigned to, and will always have its default value null
+		public object? Tag;
+#pragma warning restore CS0649 // Field 'TableRow<T>.Tag' is never assigned to, and will always have its default value null
 
 		public string SearchString;
 
@@ -27,7 +30,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			}
 		}
 
-		public TableRow(T rowObject, string searchString = null)
+		public TableRow(T rowObject, string? searchString = null)
 		{
 			_rowData = new Dictionary<TableColumn, string>();
 			SearchString = searchString?.ToLower() ?? string.Empty;

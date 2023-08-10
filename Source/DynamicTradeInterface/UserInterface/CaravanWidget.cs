@@ -157,17 +157,24 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			_tradeables = tradeables.ToList();
 			_tradeables.Add(currency);
+
+			_visibilityExplanation = string.Empty;
+			_foragedFoodPerDayExplanation = string.Empty;
+			_massCapacityExplanation = string.Empty;
+			_tilesPerDayExplanation = string.Empty;
+			_allPawnsAndItems = new List<Thing>();
+			_playerTile = TradeSession.playerNegotiator.Tile;
+			_playerBiome = Find.WorldGrid[_playerTile].biome;
 		}
 
 
 		public void Initialize()
 		{
-
+			_allPawnsAndItems.Clear();
 			Caravan caravan = TradeSession.playerNegotiator.GetCaravan();
 			if (caravan != null)
 			{
 				_inCaravan = true;
-				_allPawnsAndItems = new List<Thing>();
 				List<Pawn> pawnsListForReading = caravan.PawnsListForReading;
 				for (int i = 0; i < pawnsListForReading.Count; i++)
 				{
@@ -175,8 +182,6 @@ namespace DynamicTradeInterface.UserInterface
 				}
 				_allPawnsAndItems.AddRange(CaravanInventoryUtility.AllInventoryItems(caravan));
 
-				_playerTile = TradeSession.playerNegotiator.Tile;
-				_playerBiome = Find.WorldGrid[_playerTile].biome;
 				caravan.Notify_StartedTrading();
 			}
 			else
