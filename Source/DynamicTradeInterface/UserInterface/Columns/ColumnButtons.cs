@@ -48,11 +48,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
 						{
-							row.AdjustTo(maxQuantity);
+							BuyMore(row);
 						}
 						else
 						{
-							row.AdjustTo(minQuantity);
+							SellMore(row);
 						}
 						refresh = true;
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
@@ -108,17 +108,109 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
 						{
-							row.AdjustTo(minQuantity);
+							SellMore(row);
 						}
 						else
 						{
-							row.AdjustTo(maxQuantity);
+							BuyMore(row);
 						}
 						refresh = true;
 						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// max sellable ← can sell ← 0 ← can buy ← max buyable
+		/// </summary>
+		/// <param name="row">The item in question.</param>
+		private static void SellMore(Tradeable row)
+		{
+			if (TradeSession.giftMode || Event.current.shift)
+			{
+				row.AdjustTo(row.GetMinimumToTransfer());
+				return;
+			}
+
+			int currentAmount = row.CountToTransfer;
+			if (currentAmount > 0)
+			{
+				BuyLess(row, currentAmount);
+				return;
+			}
+
+			int traderCanBuy = MaxAmount(row, TradeAction.PlayerSells);
+			if (currentAmount > traderCanBuy)
+				row.AdjustTo(traderCanBuy);
+			else
+				row.AdjustTo(row.GetMinimumToTransfer());
+		}
+
+		/// <summary>
+		/// max sellable → can sell → 0
+		/// </summary>
+		/// <param name="row">The item in question.</param>
+		private static void SellLess(Tradeable row, int currentAmount)
+		{
+			int traderCanBuy = MaxAmount(row, TradeAction.PlayerSells);
+			if (currentAmount < traderCanBuy)
+				row.AdjustTo(traderCanBuy);
+			else
+				row.AdjustTo(0);
+		}
+
+		/// <summary>
+		/// max sellable → can sell → 0 → can buy → max buyable
+		/// </summary>
+		/// <param name="row">The item in question.</param>
+		private static void BuyMore(Tradeable row)
+		{
+			if (TradeSession.giftMode || Event.current.shift)
+			{
+				row.AdjustTo(row.GetMaximumToTransfer());
+				return;
+			}
+
+			int currentAmount = row.CountToTransfer;
+			if (currentAmount < 0)
+			{
+				SellLess(row, currentAmount);
+				return;
+			}
+
+			int colonyCanBuy = MaxAmount(row, TradeAction.PlayerBuys);
+
+			// If current value is below what the colony can buy, stop at that first.
+			if (currentAmount < colonyCanBuy)
+				row.AdjustTo(colonyCanBuy);
+			else
+				row.AdjustTo(row.GetMaximumToTransfer());
+		}
+
+		/// <summary>
+		/// 0 ← can buy ← max buyable
+		/// </summary>
+		/// <param name="row">The item in question.</param>
+		private static void BuyLess(Tradeable row, int currentAmount)
+		{
+			int traderCanBuy = MaxAmount(row, TradeAction.PlayerBuys);
+			if (currentAmount > traderCanBuy)
+				row.AdjustTo(traderCanBuy);
+			else
+				row.AdjustTo(0);
+		}
+
+
+		private static int MaxAmount(Tradeable row, TradeAction action)
+		{
+			Transactor transactor = Transactor.Colony;
+			if (action == TradeAction.PlayerSells)
+				transactor = Transactor.Trader;
+
+			float price = row.GetPriceFor(action);
+			int currency = TradeSession.deal.CurrencyTradeable.CountHeldBy(transactor);
+			return (int)(currency / price);
 		}
 	}
 }
