@@ -14,12 +14,16 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using static HarmonyLib.Code;
 
 namespace DynamicTradeInterface.UserInterface
 {
 	[HotSwappable]
 	internal class Window_DynamicTrade : Window
 	{
+		static Vector2 _mainButtonSize = new Vector2(160f, 40f);
+		static Vector2 _showSellableItemsIconSize = new Vector2(32f, 32f);
+
 		Table<TableRow<Tradeable>> _colonyTable;
 		Table<TableRow<Tradeable>> _traderTable;
 		Mod.DynamicTradeInterfaceSettings _settings;
@@ -27,13 +31,9 @@ namespace DynamicTradeInterface.UserInterface
 		List<Tradeable>? _tradeables;
 		CaravanWidget? _caravanWidget;
 		bool _refresh;
+		bool _giftOnly;
 
 		GameFont _rowFont;
-
-
-		static Vector2 _mainButtonSize = new Vector2(160f, 40f);
-		static Vector2 _showSellableItemsIconSize = new Vector2(32f, 32f);
-
 
 		float _headerHeight;
 		string _colonyHeader;
@@ -46,14 +46,30 @@ namespace DynamicTradeInterface.UserInterface
 		string _acceptButtonText;
 		string _confirmShortFundsText;
 		string _offerGiftsText;
+		string _acceptText;
 		string _cannotAffordText;
+
+		string _showSellableItemsDesc;
+		string _tradeModeTip;
+		string _giftModeTip;
+
+		Texture2D _tradeModeIcon;
+		Texture2D _showSellableItemsIcon;
+		Texture2D _giftModeIcon;
+		Texture2D _arrowIcon;
+
+
+		Faction? _traderFaction;
+
+
 
 		// Profiling
 		Stopwatch _stopWatch;
 
-		public Window_DynamicTrade()
+		public Window_DynamicTrade(bool giftOnly = false)
 		{
 			_rowFont = GameFont.Small;
+			_giftOnly = giftOnly;
 
 			_colonyTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
 			{
@@ -80,7 +96,16 @@ namespace DynamicTradeInterface.UserInterface
 			_confirmShortFundsText = string.Empty;
 			_offerGiftsText = string.Empty;
 			_cannotAffordText = string.Empty;
-			
+			_showSellableItemsDesc = string.Empty;
+			_tradeModeTip = string.Empty;
+			_giftModeTip = string.Empty;
+			_acceptText = string.Empty;
+
+			_tradeModeIcon = Textures.TradeModeIcon;
+			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
+			_giftModeIcon = Textures.GiftModeIcon;
+			_arrowIcon = Textures.TradeArrow;
+
 			resizeable = true;
 			draggable = true;
 			forcePause = true;
@@ -88,10 +113,11 @@ namespace DynamicTradeInterface.UserInterface
 		}
 
 
-		public void Initialize(List<Tradeable> tradeables)
+		public void Initialize()
 		{
 			_currency = TradeSession.deal.CurrencyTradeable;
-			_tradeables = tradeables;
+			_tradeables = LoadWares();
+			_traderFaction = TradeSession.trader.Faction;
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);
 
@@ -102,26 +128,33 @@ namespace DynamicTradeInterface.UserInterface
 
 			_headerHeight = Text.LineHeightOf(GameFont.Medium) + Text.LineHeightOf(GameFont.Small);
 
-			_traderHeader = TradeSession.trader.TraderName;
+			_traderHeader = TradeSession.trader.Faction.Name;
 			_traderHeaderDescription = TradeSession.trader.TraderKind.LabelCap;
 
-			if (TradeSession.giftMode)
-			{
-				_offerGiftsText = "OfferGifts".Translate();
+				
+			_offerGiftsText = "OfferGifts".Translate();
+			_acceptText = "AcceptButton".Translate();
 
-				string goodwillChange = FactionGiftUtility.GetGoodwillChange(TradeSession.deal.AllTradeables, TradeSession.trader.Faction).ToStringWithSign();
-				_acceptButtonText = $"{_offerGiftsText} ({goodwillChange})";
-			}
+			if (TradeSession.giftMode)
+				_acceptButtonText = $"{_offerGiftsText} (0)";
 			else
-				_acceptButtonText = "AcceptButton".Translate();
+				_acceptButtonText = _acceptText;
 
 
 			_resetButtonText = "ResetButton".Translate();
 			_cancelButtonText = "CancelButton".Translate();
 			_confirmShortFundsText = "ConfirmTraderShortFunds".Translate();
 			_cannotAffordText = "MessageColonyCannotAfford".Translate();
+			_showSellableItemsDesc = "CommandShowSellableItemsDesc".Translate();
+			_tradeModeTip = "TradeModeTip".Translate();
+			_giftModeTip = "GiftModeTip".Translate(_traderFaction);
 
-			_caravanWidget = new CaravanWidget(tradeables, _currency);
+
+
+
+
+
+			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
 		}
 
@@ -196,6 +229,8 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			bool giftMode = TradeSession.giftMode;
+
 			if (_caravanWidget?.InCaravan == true)
 			{
 				_caravanWidget.Draw(new Rect(12f, 0f, inRect.width - 24f, 40f));
@@ -215,9 +250,27 @@ namespace DynamicTradeInterface.UserInterface
 			inRect.SplitHorizontallyWithMargin(out Rect body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: currencyLineHeight + _mainButtonSize.y + GenUI.GapSmall);
 
 			Rect left, right;
-			body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
-
 			Rect top, bottom;
+			if (giftMode == false)
+			{
+				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
+				// Trader
+
+				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
+
+				Text.Anchor = TextAnchor.UpperCenter;
+				Text.Font = GameFont.Medium;
+				Widgets.Label(top, _traderHeader);
+
+				Text.Anchor = TextAnchor.LowerCenter;
+				Text.Font = GameFont.Small;
+				Widgets.Label(top, _traderHeaderDescription);
+
+				_traderTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
+			}
+			else
+				left = body;
+
 			// Colony
 			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
 
@@ -231,20 +284,6 @@ namespace DynamicTradeInterface.UserInterface
 
 
 			_colonyTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
-
-
-			// Trader
-			right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
-
-			Text.Anchor = TextAnchor.UpperCenter;
-			Text.Font = GameFont.Medium;
-			Widgets.Label(top, _traderHeader);
-
-			Text.Anchor = TextAnchor.LowerCenter;
-			Text.Font = GameFont.Small;
-			Widgets.Label(top, _traderHeaderDescription);
-
-			_traderTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
 
 			if (_currency != null)
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
@@ -279,10 +318,42 @@ namespace DynamicTradeInterface.UserInterface
 
 
 			float y = _mainButtonSize.y;
-			Rect rect6 = new Rect(footer.width - y, mainButtonRect.y, y, y);
-			if (Widgets.ButtonImageWithBG(rect6, Textures.ShowSellableItemsIcon, _showSellableItemsIconSize))
+			Rect showSellableRect = new Rect(footer.width - y, mainButtonRect.y, y, y);
+			if (Widgets.ButtonImageWithBG(showSellableRect, _showSellableItemsIcon, _showSellableItemsIconSize))
 			{
 				Find.WindowStack.Add(new Dialog_SellableItems(TradeSession.trader));
+			}
+			TooltipHandler.TipRegionByKey(showSellableRect, _showSellableItemsDesc);
+
+
+
+			if (_traderFaction != null && _giftOnly == false && _traderFaction.def.permanentEnemy == false)
+			{
+				Rect rect7 = new Rect(showSellableRect.x - y - 4f, showSellableRect.y, y, y);
+				if (TradeSession.giftMode)
+				{
+					if (Widgets.ButtonImageWithBG(rect7, _tradeModeIcon, new Vector2(32f, 32f)))
+					{
+						TradeSession.giftMode = false;
+						TradeSession.deal.Reset();
+						_refresh = true;
+						_tradeables = LoadWares();
+						SoundDefOf.Tick_High.PlayOneShotOnCamera();
+					}
+					TooltipHandler.TipRegion(rect7, _tradeModeTip);
+				}
+				else
+				{
+					if (Widgets.ButtonImageWithBG(rect7, _giftModeIcon, new Vector2(32f, 32f)))
+					{
+						TradeSession.giftMode = true;
+						TradeSession.deal.Reset();
+						_refresh = true;
+						_tradeables = LoadWares();
+						SoundDefOf.Tick_High.PlayOneShotOnCamera();
+					}
+					TooltipHandler.TipRegion(rect7, _giftModeTip);
+				}
 			}
 
 
@@ -297,9 +368,11 @@ namespace DynamicTradeInterface.UserInterface
 
 				if (TradeSession.giftMode)
 				{
-					string goodwillChange = FactionGiftUtility.GetGoodwillChange(TradeSession.deal.AllTradeables, TradeSession.trader.Faction).ToStringWithSign();
+					string goodwillChange = FactionGiftUtility.GetGoodwillChange(TradeSession.deal.AllTradeables, _traderFaction).ToStringWithSign();
 					_acceptButtonText = $"{_offerGiftsText} ({goodwillChange})";
 				}
+				else
+					_acceptButtonText = _acceptText;
 			}
 		}
 
@@ -307,6 +380,18 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);
+		}
+
+		private List<Tradeable> LoadWares()
+		{
+			List<Tradeable> allWares = TradeSession.deal.AllTradeables;
+			return allWares.Where(x => x.IsCurrency == false && (x.TraderWillTrade || !TradeSession.trader.TraderKind.hideThingsNotWillingToTrade))
+				.OrderByDescending(x => x.TraderWillTrade)
+				.ThenBy((Tradeable tr) => TransferableUIUtility.DefaultListOrderPriority(tr))
+				.ThenBy((Tradeable tr) => tr.ThingDef.label)
+				.ThenBy((Tradeable tr) => tr.AnyThing.TryGetQuality(out var qc) ? ((int)qc) : (-1))
+				.ThenBy((Tradeable tr) => tr.AnyThing.HitPoints)
+				.ToList();
 		}
 
 		private void DrawCurrencyRow(Rect currencyRowRect, Tradeable currency)
@@ -371,15 +456,14 @@ namespace DynamicTradeInterface.UserInterface
 			// Arrow
 			if (countToTransfer != 0)
 			{
-				Texture2D tradeArrow = Mod.Textures.TradeArrow;
-				Rect position = new Rect(currencyLabelRect.x + currencyLabelRect.width / 2f - (float)(tradeArrow.width / 2), currencyLabelRect.y + currencyLabelRect.height / 2f - (float)(tradeArrow.height / 2), tradeArrow.width, tradeArrow.height);
+				Rect position = new Rect(currencyLabelRect.x + currencyLabelRect.width / 2f - (float)(_arrowIcon.width / 2), currencyLabelRect.y + currencyLabelRect.height / 2f - (float)(_arrowIcon.height / 2), _arrowIcon.width, _arrowIcon.height);
 				TransferablePositiveCountDirection positiveDirection = currency.PositiveCountDirection;
 				if ((positiveDirection == TransferablePositiveCountDirection.Source && countToTransfer > 0) || (positiveDirection == TransferablePositiveCountDirection.Destination && countToTransfer < 0))
 				{
 					position.x += position.width;
 					position.width *= -1f;
 				}
-				GUI.DrawTexture(position, tradeArrow);
+				GUI.DrawTexture(position, _arrowIcon);
 			}
 
 

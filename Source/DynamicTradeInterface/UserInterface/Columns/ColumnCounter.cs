@@ -13,6 +13,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnCounter
 	{
+		static Texture2D ArrowIcon = Mod.Textures.TradeArrow;
+
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			if (!row.TraderWillTrade)
@@ -57,6 +59,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					string buffer = val.ToStringCached();
 					Widgets.TextFieldNumeric(rect3, ref val, ref buffer, minTransfer, maxTransfer);
 
+					if (Mouse.IsOver(rect3))
+						TooltipHandler.TipRegion(rect3, "PositiveBuysNegativeSells".Translate());
+					
 					if (val != countToTransfer)
 					{
 						row.AdjustTo(val);
@@ -68,15 +73,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				if (countToTransfer != 0)
 				{
-					Texture2D tradeArrow = Mod.Textures.TradeArrow;
-					Rect position = new Rect(rect2.x + rect2.width / 2f - (float)(tradeArrow.width / 2), rect2.y + rect2.height / 2f - (float)(tradeArrow.height / 2), tradeArrow.width, tradeArrow.height);
+					Rect position = new Rect(rect2.x + rect2.width / 2f - (float)(ArrowIcon.width / 2), rect2.y + rect2.height / 2f - (float)(ArrowIcon.height / 2), ArrowIcon.width, ArrowIcon.height);
 					
 					if ((positiveDirection == TransferablePositiveCountDirection.Source && countToTransfer > 0) || (positiveDirection == TransferablePositiveCountDirection.Destination && countToTransfer < 0))
 					{
 						position.x += position.width;
 						position.width *= -1f;
 					}
-					GUI.DrawTexture(position, tradeArrow);
+					GUI.DrawTexture(position, ArrowIcon);
 				}
 			}
 		}
