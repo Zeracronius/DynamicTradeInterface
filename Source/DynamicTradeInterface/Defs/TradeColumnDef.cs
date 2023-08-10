@@ -21,11 +21,23 @@ namespace DynamicTradeInterface.Defs
 		public string? callbackHandler = null;
 		public string? orderValueCallbackHandler = null;
 		public float defaultWidth = 100;
+
+		/// <summary>
+		/// Whether or not the column should be automatically added to visible columns.
+		/// </summary>
 		public bool defaultVisible = true;
+
+		/// <summary>
+		/// Whether the label should be shown in the column header.
+		/// </summary>
 		public bool showCaption = true;
 
+		/// <summary>
+		/// Whether clicking the column header should order by ascending or descending first. Ascending is default.
+		/// </summary>
+		public bool invertSort = false;
 
-		//TODO way to define sorting logic.
+
 		//TODO way to add additional data to search string.
 
 		internal TradeColumnCallback? _callback;

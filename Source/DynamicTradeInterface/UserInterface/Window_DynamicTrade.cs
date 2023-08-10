@@ -166,9 +166,9 @@ namespace DynamicTradeInterface.UserInterface
 			table.Clear();
 
 			ColumnCallback callback = ColumnCallbackSimple;
-
 			if (_settings.ProfilingEnabled)
 				callback = ColumnCallbackProfiled;
+
 			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth,
@@ -187,11 +187,13 @@ namespace DynamicTradeInterface.UserInterface
 			table.Refresh();
 		}
 
+		// Used to render columns directly.
 		private void ColumnCallbackSimple(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor)
 		{
 			columnDef._callback!(ref rect, row.RowObject, transactor, ref _refresh);
 		}
 
+		// Used to measure the time columns take to render.
 		private void ColumnCallbackProfiled(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor)
 		{
 			_stopWatch.Restart();
@@ -214,6 +216,11 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			if (columnDef._orderValueCallback == null)
 				return;
+
+			// Descending should be default.
+			if (columnDef.invertSort == false)
+				ascending = !ascending;
+
 			Func<Tradeable, IComparable> keySelector = columnDef._orderValueCallback(transactor);
 
 			if (keySelector != null)
@@ -237,6 +244,7 @@ namespace DynamicTradeInterface.UserInterface
 				inRect.yMin += 52f;
 			}
 
+			// Trade interface configuration button.
 			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), TexButton.OpenDebugActionsMenu))
 			{
 				var settingsMenu = new Dialog_TradeConfiguration();
@@ -253,8 +261,8 @@ namespace DynamicTradeInterface.UserInterface
 			Rect top, bottom;
 			if (giftMode == false)
 			{
-				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
 				// Trader
+				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
 
 				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
 
@@ -316,7 +324,7 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 
-
+			// Show sellable items
 			float y = _mainButtonSize.y;
 			Rect showSellableRect = new Rect(footer.width - y, mainButtonRect.y, y, y);
 			if (Widgets.ButtonImageWithBG(showSellableRect, _showSellableItemsIcon, _showSellableItemsIconSize))
@@ -326,7 +334,7 @@ namespace DynamicTradeInterface.UserInterface
 			TooltipHandler.TipRegionByKey(showSellableRect, _showSellableItemsDesc);
 
 
-
+			// Gift/Trade mode toggle
 			if (_traderFaction != null && _giftOnly == false && _traderFaction.def.permanentEnemy == false)
 			{
 				Rect rect7 = new Rect(showSellableRect.x - y - 4f, showSellableRect.y, y, y);

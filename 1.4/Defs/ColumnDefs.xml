@@ -20,6 +20,7 @@
 		<label>caption</label>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:OrderbyValue</orderValueCallbackHandler>
+		<invertSort>true</invertSort>
 		<defaultWidth>1</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
@@ -53,7 +54,7 @@
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:OrderbyValue</orderValueCallbackHandler>
-		<defaultWidth>100</defaultWidth>
+		<defaultWidth>80</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
@@ -61,6 +62,6 @@
 		<label>trade buttons</label>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
-		<defaultWidth>100</defaultWidth>
+		<defaultWidth>90</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>
