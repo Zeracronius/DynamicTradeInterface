@@ -10,7 +10,7 @@ using Verse;
 
 namespace DynamicTradeInterface.Defs
 {
-	internal class TradeColumnDef : Def
+	public class TradeColumnDef : Def
 	{
 		internal delegate void TradeColumnCallback(ref Rect boundingBox, Tradeable item, Transactor transactor, ref bool refresh);
 		internal delegate Func<Tradeable, IComparable> TradeColumnOrderValueCallback(Transactor transactor);

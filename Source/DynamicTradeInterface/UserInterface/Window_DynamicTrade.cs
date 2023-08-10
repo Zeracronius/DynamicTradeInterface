@@ -113,8 +113,10 @@ namespace DynamicTradeInterface.UserInterface
 		}
 
 
-		public void Initialize()
+		public override void PostOpen()
 		{
+			base.PostOpen();
+
 			_currency = TradeSession.deal.CurrencyTradeable;
 			_tradeables = LoadWares();
 			_traderFaction = TradeSession.trader.Faction;
@@ -149,16 +151,20 @@ namespace DynamicTradeInterface.UserInterface
 			_tradeModeTip = "TradeModeTip".Translate();
 			_giftModeTip = "GiftModeTip".Translate(_traderFaction);
 
-
-
-
-
-
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
 		}
 
-		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.75f, UI.screenHeight * 0.8f);
+		public override Vector2 InitialSize => new Vector2(UI.screenWidth * _settings.TradeWidthPercentage, UI.screenHeight * _settings.TradeHeightPercentage);
+
+		public override void PreClose()
+		{
+			base.PreClose();
+			_settings.TradeWidthPercentage = windowRect.width / UI.screenWidth;
+			_settings.TradeHeightPercentage = windowRect.height / UI.screenHeight;
+			_settings.Write();
+		}
+
 
 		private delegate void ColumnCallback(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor);
 		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)

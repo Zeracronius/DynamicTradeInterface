@@ -1,4 +1,5 @@
-﻿using DynamicTradeInterface.Defs;
+﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.Defs;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using HarmonyLib;
 using RimWorld;
@@ -13,8 +14,12 @@ using static DynamicTradeInterface.Defs.TradeColumnDef;
 
 namespace DynamicTradeInterface.Mod
 {
+	[HotSwappable]
 	internal class DynamicTradeInterfaceSettings : ModSettings
 	{
+		const float DEFAULT_TRADE_WIDTH = 0.75f;
+		const float DEFAULT_TRADE_HEIGHT = 0.8f;
+
 		private HashSet<TradeColumnDef> _validColumnDefs;
 		private List<TradeColumnDef> _visibleColumns;
 
@@ -22,6 +27,8 @@ namespace DynamicTradeInterface.Mod
 
 		bool _profilingEnabled;
 		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;
+		float _tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
+		float _tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
 
 		public DynamicTradeInterfaceSettings()
 		{
@@ -42,16 +49,39 @@ namespace DynamicTradeInterface.Mod
 		internal Dictionary<TradeColumnDef, Queue<long>> TradeColumnProfilings => _tradeColumnProfilings;
 
 
+		public float TradeWidthPercentage 
+		{ 
+			get => _tradeWidthPercentage; 
+			set => _tradeWidthPercentage = value; 
+		}
+
+		public float TradeHeightPercentage 
+		{ 
+			get => _tradeHeightPercentage; 
+			set => _tradeHeightPercentage = value; 
+		}
+
 
 		public override void ExposeData()
 		{
 			base.ExposeData();
+			Scribe_Values.Look(ref _tradeWidthPercentage, nameof(TradeWidthPercentage), DEFAULT_TRADE_WIDTH);
+			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
 
+			if (_tradeWidthPercentage < 0.01)
+				_tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
 
-			List<TradeColumnDef> visibleColumns = _visibleColumns;
-			Scribe_Collections.Look(ref visibleColumns, nameof(visibleColumns));
+			if (_tradeHeightPercentage < 0.01)
+				_tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
+
+			List<TradeColumnDef> visibleColumns = _visibleColumns.ToList();
+			Scribe_Collections.Look(ref visibleColumns, nameof(visibleColumns), LookMode.Def);
 			if (visibleColumns != null && visibleColumns.Count > 0)
-				_visibleColumns = visibleColumns;
+			{
+				_visibleColumns.Clear();
+				_visibleColumns.AddRange(visibleColumns.Where(x => x != null));
+
+			}
 		}
 
 

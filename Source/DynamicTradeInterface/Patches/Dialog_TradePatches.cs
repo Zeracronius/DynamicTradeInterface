@@ -18,7 +18,6 @@ namespace DynamicTradeInterface.Patches
 			if (Event.current.control == false)
 			{
 				var dynamicTradeWindow = new UserInterface.Window_DynamicTrade(___giftsOnly);
-				dynamicTradeWindow.Initialize();
 
 				WindowStack stack = Find.WindowStack;
 				if (stack.TryRemove(__instance, false))
