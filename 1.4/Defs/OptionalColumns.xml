@@ -1,0 +1,21 @@
+<Defs>
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colDurabilityDef</defName>
+		<label>durability</label>
+		<showCaption>false</showCaption>
+		<defaultWidth>40</defaultWidth>
+		<defaultVisible>false</defaultVisible>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:OrderbyValue</orderValueCallbackHandler>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colPricePerWeightDef</defName>
+		<label>price / weight</label>
+		<showCaption>false</showCaption>
+		<defaultWidth>50</defaultWidth>
+		<defaultVisible>false</defaultVisible>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:OrderbyValue</orderValueCallbackHandler>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
+</Defs>

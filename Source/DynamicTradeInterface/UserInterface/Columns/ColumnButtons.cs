@@ -24,11 +24,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			int baseCount = positiveDirection == TransferablePositiveCountDirection.Source ? 1 : -1;
 
 			// Source is left.
-			int minQuantity, maxQuantity;
-			minQuantity = row.GetMinimumToTransfer();
-			maxQuantity = row.GetMaximumToTransfer();
-
-
 			int adjustMultiplier = GenUI.CurrentAdjustmentMultiplier();
 			int adjustAmount = baseCount * adjustMultiplier;
 			bool largeRange = row.GetRange() > 1;
@@ -78,11 +73,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			}
 
 			// Draw reset
-			if (Widgets.ButtonText(baseButtonRect, "0"))
+			if (row.CountToTransfer != 0)
 			{
-				row.AdjustTo(0);
-				refresh = true;
-				SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+				if (Widgets.ButtonText(baseButtonRect, "0"))
+				{
+					row.AdjustTo(0);
+					refresh = true;
+					SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+				}
 			}
 			baseButtonRect.x += baseButtonRect.width + gap;
 

@@ -93,6 +93,10 @@ namespace DynamicTradeInterface.Mod
 					}
 				}
 			}
+
+			// Default visible columns
+			if (_visibleColumns.Count == 0)
+				_visibleColumns.AddRange(_validColumnDefs.Where(x => x.defaultVisible == false));
 		}
 
 		internal IEnumerable<TradeColumnDef> GetVisibleTradeColumns()

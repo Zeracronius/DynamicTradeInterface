@@ -37,7 +37,6 @@ namespace DynamicTradeInterface.Defs
 		/// </summary>
 		public bool invertSort = false;
 
-
 		//TODO way to add additional data to search string.
 
 		internal TradeColumnCallback? _callback;
