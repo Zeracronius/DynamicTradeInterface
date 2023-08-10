@@ -13,11 +13,11 @@ namespace DynamicTradeInterface.Mod
 
 #pragma warning disable CS8618 // Will always be initialized by constructor by rimworld.
 		internal static DynamicTradeInterfaceSettings Settings;
+		internal static DynamicTradeInterfaceMod Current;
 #pragma warning restore CS8618
 
-		public DynamicTradeInterfaceMod(ModContentPack content) : base(content)
+        public DynamicTradeInterfaceMod(ModContentPack content) : base(content)
 		{
-			Settings = GetSettings<DynamicTradeInterfaceSettings>();
 		}
 
 

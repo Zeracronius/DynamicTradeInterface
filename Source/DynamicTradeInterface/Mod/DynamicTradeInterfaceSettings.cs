@@ -21,7 +21,6 @@ namespace DynamicTradeInterface.Mod
 
 		private HashSet<TradeColumnDef> _validColumnDefs;
 		private List<TradeColumnDef> _visibleColumns;
-		private List<string>? _loadedVisibleColumns;
 
 
 		bool _profilingEnabled;
@@ -60,10 +59,10 @@ namespace DynamicTradeInterface.Mod
 			set => _tradeHeightPercentage = value; 
 		}
 
-
 		public override void ExposeData()
 		{
 			base.ExposeData();
+
 
 			Scribe_Values.Look(ref _tradeWidthPercentage, nameof(TradeWidthPercentage), DEFAULT_TRADE_WIDTH);
 			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
@@ -74,11 +73,9 @@ namespace DynamicTradeInterface.Mod
 			if (_tradeHeightPercentage < 0.01)
 				_tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
 
-			// TradeColumnDefs are only loaded after mod settings are loaded, so needs to be stored as strings and parsed later.
-			if (Scribe.mode == LoadSaveMode.Saving)
-				_loadedVisibleColumns = _visibleColumns.Select(x => x.defName).ToList();
-
-			Scribe_Collections.Look(ref _loadedVisibleColumns, "visibleColumns");
+			Scribe_Collections.Look(ref _visibleColumns, "visibleColumns");
+			if (_visibleColumns != null)
+				_visibleColumns = _visibleColumns.Where(x => x != null).ToList();
 		}
 
 
@@ -117,19 +114,6 @@ namespace DynamicTradeInterface.Mod
 						Logging.Error($"Unable to locate order value callback '{columnDef.orderValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
 						Logging.Error(e);
 					}
-				}
-			}
-
-
-
-			if (_loadedVisibleColumns != null && _loadedVisibleColumns.Count > 0)
-			{
-				_visibleColumns.Clear();
-				foreach (string defName in _loadedVisibleColumns)
-				{
-					TradeColumnDef tradeColDef = DefDatabase<TradeColumnDef>.GetNamedSilentFail(defName);
-					if (tradeColDef != null)
-						_visibleColumns.Add(tradeColDef);
 				}
 			}
 

@@ -13,10 +13,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnCounter
 	{
-		static Texture2D ArrowIcon = Mod.Textures.TradeArrow;
-
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
+			Texture2D _arrowIcon = Mod.Textures.TradeArrow;
+
 			if (!row.TraderWillTrade)
 			{
 				DrawWillNotTradeText(rect, "TraderWillNotTrade".Translate());
@@ -73,14 +73,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				if (countToTransfer != 0)
 				{
-					Rect position = new Rect(rect2.x + rect2.width / 2f - (float)(ArrowIcon.width / 2), rect2.y + rect2.height / 2f - (float)(ArrowIcon.height / 2), ArrowIcon.width, ArrowIcon.height);
+					Rect position = new Rect(rect2.x + rect2.width / 2f - (float)(_arrowIcon.width / 2), rect2.y + rect2.height / 2f - (float)(_arrowIcon.height / 2), _arrowIcon.width, _arrowIcon.height);
 					
 					if ((positiveDirection == TransferablePositiveCountDirection.Source && countToTransfer > 0) || (positiveDirection == TransferablePositiveCountDirection.Destination && countToTransfer < 0))
 					{
 						position.x += position.width;
 						position.width *= -1f;
 					}
-					GUI.DrawTexture(position, ArrowIcon);
+					GUI.DrawTexture(position, _arrowIcon);
 				}
 			}
 		}

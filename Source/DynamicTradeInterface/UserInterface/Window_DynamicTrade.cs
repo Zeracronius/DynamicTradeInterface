@@ -130,7 +130,7 @@ namespace DynamicTradeInterface.UserInterface
 
 			_headerHeight = Text.LineHeightOf(GameFont.Medium) + Text.LineHeightOf(GameFont.Small);
 
-			_traderHeader = TradeSession.trader.Faction.Name;
+			_traderHeader = _traderFaction?.Name ?? TradeSession.trader.TraderName;
 			_traderHeaderDescription = TradeSession.trader.TraderKind.LabelCap;
 
 				
