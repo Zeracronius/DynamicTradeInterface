@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static DynamicTradeInterface.Defs.TradeColumnDef;
 
 namespace DynamicTradeInterface.Mod
 {
@@ -22,7 +21,7 @@ namespace DynamicTradeInterface.Mod
 
 		private HashSet<TradeColumnDef> _validColumnDefs;
 		private List<TradeColumnDef> _visibleColumns;
-
+		private List<string>? _loadedVisibleColumns;
 
 
 		bool _profilingEnabled;
@@ -65,6 +64,7 @@ namespace DynamicTradeInterface.Mod
 		public override void ExposeData()
 		{
 			base.ExposeData();
+
 			Scribe_Values.Look(ref _tradeWidthPercentage, nameof(TradeWidthPercentage), DEFAULT_TRADE_WIDTH);
 			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
 
@@ -74,14 +74,11 @@ namespace DynamicTradeInterface.Mod
 			if (_tradeHeightPercentage < 0.01)
 				_tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
 
-			List<TradeColumnDef> visibleColumns = _visibleColumns.ToList();
-			Scribe_Collections.Look(ref visibleColumns, nameof(visibleColumns), LookMode.Def);
-			if (visibleColumns != null && visibleColumns.Count > 0)
-			{
-				_visibleColumns.Clear();
-				_visibleColumns.AddRange(visibleColumns.Where(x => x != null));
+			// TradeColumnDefs are only loaded after mod settings are loaded, so needs to be stored as strings and parsed later.
+			if (Scribe.mode == LoadSaveMode.Saving)
+				_loadedVisibleColumns = _visibleColumns.Select(x => x.defName).ToList();
 
-			}
+			Scribe_Collections.Look(ref _loadedVisibleColumns, "visibleColumns");
 		}
 
 
@@ -96,11 +93,10 @@ namespace DynamicTradeInterface.Mod
 				{
 					try
 					{
-						columnDef._callback = AccessTools.MethodDelegate<TradeColumnCallback>(columnDef.callbackHandler);
+						columnDef._callback = AccessTools.MethodDelegate<TradeColumnDef.TradeColumnCallback>(columnDef.callbackHandler);
 						if (columnDef._callback != null)
 						{
 							_validColumnDefs.Add(columnDef);
-							_visibleColumns.Add(columnDef);
 						}
 					}
 					catch (Exception e)
@@ -114,7 +110,7 @@ namespace DynamicTradeInterface.Mod
 				{
 					try
 					{
-						columnDef._orderValueCallback = AccessTools.MethodDelegate<TradeColumnOrderValueCallback>(columnDef.orderValueCallbackHandler);
+						columnDef._orderValueCallback = AccessTools.MethodDelegate<TradeColumnDef.TradeColumnOrderValueCallback>(columnDef.orderValueCallbackHandler);
 					}
 					catch (Exception e)
 					{
@@ -124,9 +120,22 @@ namespace DynamicTradeInterface.Mod
 				}
 			}
 
+
+
+			if (_loadedVisibleColumns != null && _loadedVisibleColumns.Count > 0)
+			{
+				_visibleColumns.Clear();
+				foreach (string defName in _loadedVisibleColumns)
+				{
+					TradeColumnDef tradeColDef = DefDatabase<TradeColumnDef>.GetNamedSilentFail(defName);
+					if (tradeColDef != null)
+						_visibleColumns.Add(tradeColDef);
+				}
+			}
+
 			// Default visible columns
 			if (_visibleColumns.Count == 0)
-				_visibleColumns.AddRange(_validColumnDefs.Where(x => x.defaultVisible == false));
+				_visibleColumns.AddRange(_validColumnDefs.Where(x => x.defaultVisible));
 		}
 
 		internal IEnumerable<TradeColumnDef> GetVisibleTradeColumns()
