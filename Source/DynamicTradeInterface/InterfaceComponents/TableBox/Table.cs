@@ -186,9 +186,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="header">Title of the column.</param>
 		/// <param name="width">Column width.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
-		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null)
+		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null, string? tooltip = null)
 		{
-			TableColumn<T> column = new TableColumn<T>(header, width, orderByCallback);
+			TableColumn<T> column = new TableColumn<T>(header, width, orderByCallback, tooltip);
 			_columns.Add(column);
 			return column;
 		}
@@ -201,9 +201,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="callback">Render callback when cell in column is drawn.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
 		/// <returns></returns>
-		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null)
+		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null, string? tooltip = null)
 		{
-			TableColumn<T> column = new TableColumn<T>(header, width, callback, orderByCallback);
+			TableColumn<T> column = new TableColumn<T>(header, width, callback, orderByCallback, tooltip);
 			_columns.Add(column);
 			return column;
 		}
@@ -408,7 +408,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 							Widgets.Label(columnHeader, column.Caption);
 
 						if (Mouse.IsOver(columnHeader))
-							TooltipHandler.TipRegion(columnHeader, column.Caption);
+							TooltipHandler.TipRegion(columnHeader, column.Tooltip);
 					}
 
 					if (_columnSortCache.Count > 0)

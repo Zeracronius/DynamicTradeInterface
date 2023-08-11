@@ -177,9 +177,9 @@ namespace DynamicTradeInterface.UserInterface
 
 			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
 			{
-				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth,
-						(ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
-						(rows, ascending, column) => OrderByColumn(rows, ascending, column, columnDef, transactor));
+				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, tooltip: columnDef.tooltip,
+						callback: (ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
+						orderByCallback: (rows, ascending, column) => OrderByColumn(rows, ascending, column, columnDef, transactor));
 
 				column.InitialSortDirection = columnDef.initialSort;
 				if (column.Width <= 1f)

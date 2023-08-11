@@ -33,6 +33,11 @@ namespace DynamicTradeInterface.Defs
 		public bool showCaption = true;
 
 		/// <summary>
+		/// If set then this is shown as a tooltip on column header, otherwise label is used.
+		/// </summary>
+		public string? tooltip;
+
+		/// <summary>
 		/// The direction the column will sort by on first click. Descending is default.
 		/// </summary>
 		public SortDirection initialSort = SortDirection.Descending;
