@@ -24,6 +24,11 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public bool ShowHeader { get; set; }
 
 		/// <summary>
+		/// Gets or sets the initial sort direction on first click.
+		/// </summary>
+		public SortDirection InitialSortDirection { get; set; }
+
+		/// <summary>
 		/// Gets or sets whether this column has a fixed width.
 		/// Set width as a value between 0 and 1 as a percentage of how much of the remaining width after all fixed columns are added this column should use.
 		/// </summary>
@@ -46,7 +51,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	internal class TableColumn<T> : TableColumn
 	{
 		public RowCallback<Rect, T>? Callback { get; }
-		public Action<ListFilter<T>, bool, TableColumn>? OrderByCallback { get; }
+		public Action<ListFilter<T>, SortDirection, TableColumn>? OrderByCallback { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TableColumn{T}"/> class.
@@ -54,7 +59,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="caption">The column's title.</param>
 		/// <param name="width">The width of the column. Use 0.xf for percentage/fractional widths.</param>
 		/// <param name="orderByCallback">Callback for ordering by this column. Arguments are the collection to apply ordering to and if current ordering is ascending. Null if not sortable.</param>
-		public TableColumn(string caption, float width, Action<ListFilter<T>, bool, TableColumn>? orderByCallback = null)
+		public TableColumn(string caption, float width, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null)
 		   : base(caption, width)
 		{
 			Callback = null;
@@ -68,7 +73,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="width">The width of the column. Use 0.xf for percentage/fractional widths.</param>
 		/// <param name="callback">The rendering callback when a cell of this column should be rendered.</param>
 		/// <param name="orderByCallback">Callback for ordering by this column. Arguments are the collection to apply ordering to and if current ordering is ascending. Null if not sortable.</param>
-		public TableColumn(string caption, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, bool, TableColumn>? orderByCallback)
+		public TableColumn(string caption, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback)
 		   : base(caption, width)
 		{
 			Callback = callback;

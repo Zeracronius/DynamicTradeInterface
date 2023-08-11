@@ -33,9 +33,9 @@ namespace DynamicTradeInterface.Defs
 		public bool showCaption = true;
 
 		/// <summary>
-		/// Whether clicking the column header should order by ascending or descending first. Ascending is default.
+		/// The direction the column will sort by on first click. Descending is default.
 		/// </summary>
-		public bool invertSort = false;
+		public SortDirection initialSort = SortDirection.Descending;
 
 		//TODO way to add additional data to search string.
 

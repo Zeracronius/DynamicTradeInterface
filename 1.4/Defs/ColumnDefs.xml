@@ -20,7 +20,7 @@
 		<label>caption</label>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:OrderbyValue</orderValueCallbackHandler>
-		<invertSort>true</invertSort>
+		<initialSort>Ascending</initialSort>
 		<defaultWidth>1</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 

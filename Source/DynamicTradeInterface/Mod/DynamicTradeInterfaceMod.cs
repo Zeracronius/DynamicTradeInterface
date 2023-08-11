@@ -16,7 +16,7 @@ namespace DynamicTradeInterface.Mod
 		internal static DynamicTradeInterfaceMod Current;
 #pragma warning restore CS8618
 
-        public DynamicTradeInterfaceMod(ModContentPack content) : base(content)
+		public DynamicTradeInterfaceMod(ModContentPack content) : base(content)
 		{
 		}
 

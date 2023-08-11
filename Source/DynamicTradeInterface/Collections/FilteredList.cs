@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DynamicTradeInterface.InterfaceComponents.TableBox;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -118,6 +119,40 @@ namespace DynamicTradeInterface.Collections
 			AddOrdering(keySelector, false, reset, key);
 		}
 
+
+		public SortDirection GetSortingDirection(object key)
+		{
+			foreach (SortingEntry sortEntry in _sortingQueue)
+			{
+				if (sortEntry.Key == key)
+					return sortEntry.Ascending ? SortDirection.Ascending : SortDirection.Descending;
+			}
+			return SortDirection.None;
+		}
+
+		public void ClearSorting(object? key)
+		{
+			if (key != null)
+			{
+				// Remove specific key from sort queue.
+				_sortingQueueBuffer.Clear();
+				while (_sortingQueue.TryDequeue(out SortingEntry entry))
+				{
+					if (entry.Key == key)
+						continue;
+
+					_sortingQueueBuffer.Enqueue(entry);
+				}
+				(_sortingQueue, _sortingQueueBuffer) = (_sortingQueueBuffer, _sortingQueue);
+			}
+			else
+			{
+				// Clear entire sort queue.
+				_sortingQueue.Clear();
+			}
+			Invalidate();
+		}
+
 		private void AddOrdering(Func<T, IComparable> keySelector, bool ascending, bool reset, object? key = null)
 		{
 			if (reset)
@@ -155,12 +190,12 @@ namespace DynamicTradeInterface.Collections
 		public void Invalidate()
 		{
 			int sortingCount = _sortingQueue.Count;
+			IEnumerable<T> rowSource = _totalCollection;
 			if (sortingCount > 0)
 			{
-				_bufferList.Clear();
 				var first = _sortingQueue.First();
 				IOrderedEnumerable<T> orderedEnumeration = first.Ascending ?
-					_totalCollection.OrderBy(first.SortFunction) : _totalCollection.OrderByDescending(first.SortFunction);
+					rowSource.OrderBy(first.SortFunction) : rowSource.OrderByDescending(first.SortFunction);
 				bool ignoreFirst = true;
 				foreach (SortingEntry item in _sortingQueue)
 				{
@@ -174,18 +209,16 @@ namespace DynamicTradeInterface.Collections
 					else
 						orderedEnumeration = orderedEnumeration.ThenByDescending(item.SortFunction);
 				}
-				_bufferList.AddRange(orderedEnumeration);
-				(_totalCollection, _bufferList) = (_bufferList, _totalCollection);
+				rowSource = orderedEnumeration;
 			}
 
-			if (string.IsNullOrEmpty(_filterString))
+			if (string.IsNullOrEmpty(_filterString) == false)
 			{
-				_filteredCollection = _totalCollection.AsReadOnly();
-				return;
+				rowSource = rowSource.Where(x => _filterCallback(x, _filterString ?? string.Empty));
 			}
-
+			
 			_bufferList.Clear();
-			_bufferList.AddRange(_totalCollection.Where(x => _filterCallback(x, _filterString ?? string.Empty)));
+			_bufferList.AddRange(rowSource);
 			_filteredCollection = _bufferList.AsReadOnly();
 		}
 	}

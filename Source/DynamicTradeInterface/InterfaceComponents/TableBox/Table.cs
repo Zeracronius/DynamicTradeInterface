@@ -1,12 +1,15 @@
-﻿using DynamicTradeInterface.Collections;
+﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.Collections;
 using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 using Verse;
 
 namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
+	[HotSwappable]
 	internal class Table<T> where T : ITableRow
 	{
 		private readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
@@ -19,8 +22,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private ListFilter<T> _rows;
 		private string _searchText;
 		private Vector2 _scrollPosition;
-		private bool _ascendingOrder;
-		private TableColumn<T>? _currentOrderColumn;
 		private List<T> _selectedRows;
 		private float _fixedColumnWidth;
 		private float _dynamicColumnWidth;
@@ -171,7 +172,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			_searchText = string.Empty;
 			_selectedRows = new List<T>(20);
 			_columns = new List<TableColumn<T>>();
-			_ascendingOrder = false;
 			_drawHeaders = true;
 			_drawSearchBox = true;
 			_drawScrollbar = false;
@@ -184,7 +184,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="header">Title of the column.</param>
 		/// <param name="width">Column width.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
-		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, bool, TableColumn>? orderByCallback = null)
+		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, orderByCallback);
 			_columns.Add(column);
@@ -199,7 +199,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="callback">Render callback when cell in column is drawn.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
 		/// <returns></returns>
-		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, bool, TableColumn>? orderByCallback = null)
+		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, callback, orderByCallback);
 			_columns.Add(column);
@@ -276,25 +276,52 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			if (column.Callback != null && column.OrderByCallback == null)
 				return;
 
+
+			SortDirection currentDirection = _rows.GetSortingDirection(column);
+
 			bool reset = Event.current.modifiers != EventModifiers.Shift;
 
-			// If current sorting is ascending or new column is clicked.
-			if (_ascendingOrder == false || _currentOrderColumn != column)
+			SortDirection targetDirection;
+			switch (currentDirection)
 			{
-				_ascendingOrder = true;
-				if (column.OrderByCallback == null)
-					_rows.OrderBy(x => x[column], reset);
-				else
-					column.OrderByCallback(_rows, _ascendingOrder, column);
-				_currentOrderColumn = column;
+				case SortDirection.Ascending:
+					targetDirection = SortDirection.Descending;
+					break;
+
+				case SortDirection.Descending:
+					targetDirection = SortDirection.Ascending;
+					break;
+
+				case SortDirection.None:
+				default:
+					targetDirection = column.InitialSortDirection;
+					break;
 			}
-			else
+
+			// If column is already sorted and new sort would set it back to initial, then clear sort instead.
+			if (currentDirection != SortDirection.None && targetDirection == column.InitialSortDirection)
+				targetDirection = SortDirection.None;
+
+			// Apply sorting
+			switch (targetDirection)
 			{
-				_ascendingOrder = false;
-				if (column.OrderByCallback == null)
-					_rows.OrderByDescending(x => x[column], reset);
-				else
-					column.OrderByCallback(_rows, _ascendingOrder, column);
+				case SortDirection.None:
+					_rows.ClearSorting(column);
+					break;
+
+				case SortDirection.Ascending:
+					if (column.OrderByCallback == null)
+						_rows.OrderBy(x => x[column], reset);
+					else
+						column.OrderByCallback(_rows, SortDirection.Ascending, column);
+					break;
+
+				case SortDirection.Descending:
+					if (column.OrderByCallback == null)
+						_rows.OrderByDescending(x => x[column], reset);
+					else
+						column.OrderByCallback(_rows, SortDirection.Descending, column);
+					break;
 			}
 		}
 

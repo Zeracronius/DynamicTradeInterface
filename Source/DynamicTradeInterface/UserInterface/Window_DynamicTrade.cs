@@ -179,7 +179,9 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth,
 						(ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
-						(rows, ascending, column) => OrderByColumn(rows, ascending, columnDef, transactor));
+						(rows, ascending, column) => OrderByColumn(rows, ascending, column, columnDef, transactor));
+
+				column.InitialSortDirection = columnDef.initialSort;
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
 
@@ -218,14 +220,10 @@ namespace DynamicTradeInterface.UserInterface
 			_settings.TradeColumnProfilings[columnDef] = profilings;
 		}
 
-		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, bool ascending, Defs.TradeColumnDef columnDef, Transactor transactor)
+		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, SortDirection ascending, TableColumn column, Defs.TradeColumnDef columnDef, Transactor transactor)
 		{
 			if (columnDef._orderValueCallback == null)
 				return;
-
-			// Descending should be default.
-			if (columnDef.invertSort == false)
-				ascending = !ascending;
 
 			Func<Tradeable, IComparable> keySelector = columnDef._orderValueCallback(transactor);
 
@@ -233,10 +231,10 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				bool reset = Event.current.modifiers != EventModifiers.Shift;
 
-				if (ascending)
-					rows.OrderBy((row) => keySelector(row.RowObject), reset, columnDef);
+				if (ascending == SortDirection.Ascending)
+					rows.OrderBy((row) => keySelector(row.RowObject), reset, column);
 				else
-					rows.OrderByDescending((row) => keySelector(row.RowObject), reset, columnDef);
+					rows.OrderByDescending((row) => keySelector(row.RowObject), reset, column);
 			}
 		}
 
@@ -401,6 +399,8 @@ namespace DynamicTradeInterface.UserInterface
 			List<Tradeable> allWares = TradeSession.deal.AllTradeables;
 			return allWares.Where(x => x.IsCurrency == false && (x.TraderWillTrade || !TradeSession.trader.TraderKind.hideThingsNotWillingToTrade))
 				.OrderByDescending(x => x.TraderWillTrade)
+				.ThenBy((Tradeable tr) => tr, TransferableSorterDefOf.Category.Comparer)
+				.ThenBy((Tradeable tr) => tr, TransferableSorterDefOf.MarketValue.Comparer)
 				.ThenBy((Tradeable tr) => TransferableUIUtility.DefaultListOrderPriority(tr))
 				.ThenBy((Tradeable tr) => tr.ThingDef.label)
 				.ThenBy((Tradeable tr) => tr.AnyThing.TryGetQuality(out var qc) ? ((int)qc) : (-1))
