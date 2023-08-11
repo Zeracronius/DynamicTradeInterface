@@ -33,6 +33,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private bool _drawScrollbar;
 		private bool _drawBorder;
 		private bool _allowSorting;
+		private Dictionary<TableColumn<T>, SortDirection> _columnSortCache;
 
 		public IList<T> RowItems => _rows.Items;
 
@@ -168,6 +169,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			SEARCH_PLACEHOLDER_SIZE = Text.CalcSize(SEARCH_PLACEHOLDER).x;
 
 			_rows = new ListFilter<T>(filterCallback);
+			_columnSortCache = new Dictionary<TableColumn<T>, SortDirection>();
 
 			_searchText = string.Empty;
 			_selectedRows = new List<T>(20);
@@ -323,6 +325,15 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 						column.OrderByCallback(_rows, SortDirection.Descending, column);
 					break;
 			}
+
+			_columnSortCache.Clear();
+			for (int i = _columns.Count - 1; i >= 0; i--)
+			{
+				TableColumn<T> columnEntry = _columns[i];
+				SortDirection direction = _rows.GetSortingDirection(columnEntry);
+				if (direction != SortDirection.None)
+					_columnSortCache[columnEntry] = direction;
+			}
 		}
 
 		/// <summary>
@@ -398,6 +409,20 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 						if (Mouse.IsOver(columnHeader))
 							TooltipHandler.TipRegion(columnHeader, column.Caption);
+					}
+
+					if (_columnSortCache.Count > 0)
+					{
+						if (_columnSortCache.TryGetValue(column, out SortDirection sortDirection))
+						{
+							string sortIndicator = "↑";
+							if (sortDirection == SortDirection.Descending)
+								sortIndicator = "↓";
+
+							Text.Anchor = TextAnchor.UpperRight;
+							Widgets.Label(columnHeader.ContractedBy(GenUI.GapTiny, 0), sortIndicator);
+							Text.Anchor = TextAnchor.UpperLeft;
+						}
 					}
 
 					if (canOrder && Widgets.ButtonInvisible(columnHeader, true))
