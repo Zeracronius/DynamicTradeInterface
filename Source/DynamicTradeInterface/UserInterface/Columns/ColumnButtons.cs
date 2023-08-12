@@ -210,7 +210,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				transactor = Transactor.Trader;
 
 			float price = row.GetPriceFor(action);
-			int currency = TradeSession.deal.CurrencyTradeable.CountHeldBy(transactor);
+			int currency = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
 			return (int)(currency / price);
 		}
 	}
