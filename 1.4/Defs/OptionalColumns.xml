@@ -3,6 +3,7 @@
 		<defName>colDurabilityDef</defName>
 		<label>d</label>
 		<tooltip>Durability</tooltip>
+		<description>Shows the remaining hitpoints (if any) as a percentage.</description>
 		<defaultWidth>40</defaultWidth>
 		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:Draw</callbackHandler>
@@ -13,6 +14,7 @@
 		<defName>colPricePerWeightDef</defName>
 		<label>/kg</label>
 		<tooltip>price / kg</tooltip>
+		<description>Shows the price divided by mass.</description>
 		<defaultWidth>50</defaultWidth>
 		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:Draw</callbackHandler>

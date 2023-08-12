@@ -482,6 +482,13 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 						Widgets.DrawHighlightSelected(rowRect);
 
 					// Hightlight row if moused over.
+					if (Mouse.IsOver(rowRect))
+					{
+						Widgets.DrawHighlight(rowRect);
+						string? tooltip = currentRow.Tooltip;
+						if (string.IsNullOrEmpty(tooltip) == false)
+							TooltipHandler.TipRegion(rowRect, tooltip);
+					}
 					Widgets.DrawHighlightIfMouseover(rowRect);
 
 					if (Widgets.ButtonInvisible(rowRect, false))

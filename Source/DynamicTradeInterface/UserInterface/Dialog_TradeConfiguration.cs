@@ -105,6 +105,8 @@ namespace DynamicTradeInterface.UserInterface
 				var row = new TableRow<TradeColumnDef>(item, item.defName + " " + item.label);
 				row[colDef] = item.defName;
 				row[colLabel] = item.LabelCap;
+
+				row.Tooltip = item.description;
 				result.AddRow(row);
 			}
 			return result;

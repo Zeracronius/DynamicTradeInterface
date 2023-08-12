@@ -18,6 +18,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 		public string SearchString;
 
+		/// <inheritdoc />
+		public string? Tooltip { get; set; }
+
 		public string this[TableColumn key]
 		{
 			get

@@ -2,6 +2,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeIconDef</defName>
 		<label>icon</label>
+		<description>A small image of what you are trading.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnIcon:Draw</callbackHandler>
 		<defaultWidth>40</defaultWidth>
@@ -10,6 +11,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeInfoDef</defName>
 		<label>info button</label>
+		<description>Button to open the info window.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnInfo:Draw</callbackHandler>
 		<defaultWidth>20</defaultWidth>
@@ -18,6 +20,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCaptionDef</defName>
 		<label>caption</label>
+		<description>Shows the name.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:OrderbyValue</orderValueCallbackHandler>
 		<initialSort>Ascending</initialSort>
@@ -27,6 +30,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeExtraIconsDef</defName>
 		<label>extra icons</label>
+		<description>Additional icons shown in different situations.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIcons:Draw</callbackHandler>
 		<defaultWidth>50</defaultWidth>
@@ -35,6 +39,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeQuantityDef</defName>
 		<label>available</label>
+		<description>Quantity available for buying or selling.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>75</defaultWidth>
@@ -43,6 +48,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradePriceDef</defName>
 		<label>price</label>
+		<description>Shows the price.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>75</defaultWidth>
@@ -51,6 +57,7 @@
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCounterDef</defName>
 		<label>counter box</label>
+		<description>Numeric box where the current quantity bought or sold is shown and can be entered manually.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:OrderbyValue</orderValueCallbackHandler>
@@ -61,6 +68,7 @@
 		<defName>colTradeButtonsDef</defName>
 		<label>trade buttons</label>
 		<showCaption>false</showCaption>
+		<description>Buttons used to increment or decrement the amount bought or sold.\nClicking the double arrow buttons will increase to most affordable by either party on first click and then to max quantity if clicked again. Hold shift to skip.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
 		<defaultWidth>90</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
