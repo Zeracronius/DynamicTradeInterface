@@ -15,6 +15,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
+			if (!row.TraderWillTrade)
+				return;
+
 			if (row.IsThing == false)
 				return;
 

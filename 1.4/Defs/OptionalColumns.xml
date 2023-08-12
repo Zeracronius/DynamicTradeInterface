@@ -1,8 +1,8 @@
 <Defs>
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colDurabilityDef</defName>
-		<label>durability</label>
-		<showCaption>false</showCaption>
+		<label>d</label>
+		<tooltip>Durability</tooltip>
 		<defaultWidth>40</defaultWidth>
 		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:Draw</callbackHandler>
@@ -11,8 +11,8 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colPricePerWeightDef</defName>
-		<label>price / weight</label>
-		<showCaption>false</showCaption>
+		<label>/kg</label>
+		<tooltip>price / kg</tooltip>
 		<defaultWidth>50</defaultWidth>
 		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:Draw</callbackHandler>

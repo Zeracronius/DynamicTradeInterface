@@ -15,10 +15,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			if (row.IsCurrency || !row.TraderWillTrade)
-			{
+			if (!row.TraderWillTrade)
 				return;
-			}
 
 			rect = rect.Rounded();
 			if (Mouse.IsOver(rect))

@@ -10,4 +10,6 @@
 	<ConfigurationWindowColumnAvgMs>Avg ms</ConfigurationWindowColumnAvgMs>
 	<ConfigurationWindowColumnMaxMs>Max ms</ConfigurationWindowColumnMaxMs>
 
+	<DynamicTradeWindowUnwilling>Unwilling</DynamicTradeWindowUnwilling>
+
 </LanguageData>

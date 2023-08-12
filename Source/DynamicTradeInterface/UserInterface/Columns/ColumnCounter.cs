@@ -15,15 +15,21 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			Texture2D _arrowIcon = Mod.Textures.TradeArrow;
-
 			if (!row.TraderWillTrade)
 			{
-				DrawWillNotTradeText(rect, "TraderWillNotTrade".Translate());
+				DrawWillNotTradeText(rect, "DynamicTradeWindowUnwilling".Translate());
+				if (Mouse.IsOver(rect))
+				{
+					TooltipHandler.TipRegionByKey(rect, "TraderWillNotTrade");
+				}
+				return;
 			}
-			else if (ModsConfig.IdeologyActive && TransferableUIUtility.TradeIsPlayerSellingToSlavery(row, TradeSession.trader.Faction) && !new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo())
+			
+			Texture2D _arrowIcon = Mod.Textures.TradeArrow;
+			if (ModsConfig.IdeologyActive && TransferableUIUtility.TradeIsPlayerSellingToSlavery(row, TradeSession.trader.Faction) && !new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo())
 			{
-				DrawWillNotTradeText(rect, "NegotiatorWillNotTradeSlaves".Translate(TradeSession.playerNegotiator));
+				// DrawWillNotTradeText(rect, "NegotiatorWillNotTradeSlaves".Translate(TradeSession.playerNegotiator));
+				DrawWillNotTradeText(rect, "DynamicTradeWindowUnwilling".Translate());
 				if (Mouse.IsOver(rect))
 				{
 					Widgets.DrawHighlight(rect);
