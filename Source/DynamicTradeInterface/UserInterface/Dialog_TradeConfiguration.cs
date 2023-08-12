@@ -71,10 +71,12 @@ namespace DynamicTradeInterface.UserInterface
 				_availableColumnsTable = InitializeTable(_validColumnDefs.Except(_visibleColumns));
 
 				_selectedColumnsTable.Caption = "ConfigurationWindowSelectedColumns".Translate();
+				_selectedColumnsTable.SelectionChanged += Table_SelectionChanged;
 				_selectedColumnsTable.AllowSorting = false;
 				_selectedColumnsTable.DrawSearchBox = false;
 
 				_availableColumnsTable.Caption = "ConfigurationWindowAvailableColumns".Translate();
+				_availableColumnsTable.SelectionChanged += Table_SelectionChanged;
 
 				_selectedColumnsTable.Refresh();
 				_availableColumnsTable.Refresh();
@@ -84,6 +86,14 @@ namespace DynamicTradeInterface.UserInterface
 				Close();
 				throw;
 			}
+		}
+
+		private void Table_SelectionChanged(object sender, IReadOnlyList<TableRow<TradeColumnDef>> e)
+		{
+			if (sender == _selectedColumnsTable)
+				_availableColumnsTable?.ClearSelection();
+			else
+				_selectedColumnsTable?.ClearSelection();
 		}
 
 		private Table<TableRow<TradeColumnDef>> InitializeTable(IEnumerable<TradeColumnDef> rows)
@@ -198,8 +208,6 @@ namespace DynamicTradeInterface.UserInterface
 						}
 					}
 					_selectedColumnsTable.SelectRows(selectedRows);
-					_availableColumnsTable.ClearSelection();
-
 					_selectedColumnsTable.Refresh();
 					_availableColumnsTable.Refresh();
 
@@ -227,8 +235,6 @@ namespace DynamicTradeInterface.UserInterface
 						}
 					}
 					_availableColumnsTable.SelectRows(selectedRows);
-					_selectedColumnsTable.ClearSelection();
-
 					_selectedColumnsTable.Refresh();
 					_availableColumnsTable.Refresh();
 				}
