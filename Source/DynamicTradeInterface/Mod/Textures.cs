@@ -15,5 +15,6 @@ namespace DynamicTradeInterface.Mod
 		public static readonly Texture2D ShowSellableItemsIcon = ContentFinder<Texture2D>.Get("UI/Commands/SellableItems");
 		public static readonly Texture2D TradeModeIcon = ContentFinder<Texture2D>.Get("UI/Buttons/TradeMode");
 		public static readonly Texture2D GiftModeIcon = ContentFinder<Texture2D>.Get("UI/Buttons/GiftMode");
+		public static readonly Texture2D SettingsIcon = ContentFinder<Texture2D>.Get("Icons/Settings");
 	}
 }

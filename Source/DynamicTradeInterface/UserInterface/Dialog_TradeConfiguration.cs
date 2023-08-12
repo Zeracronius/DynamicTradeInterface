@@ -179,10 +179,11 @@ namespace DynamicTradeInterface.UserInterface
 
 			if (Widgets.ButtonImage(buttonRect, TexButton.Plus))
 			{
+				// Available to Selected
 				IReadOnlyList<TableRow<TradeColumnDef>> selectedRows = _availableColumnsTable.SelectedRows;
 				if (selectedRows.Count > 0)
 				{
-					for (int i = 0; i < selectedRows.Count; i++)
+					for (int i = selectedRows.Count - 1; i >= 0; i--)
 					{
 						TableRow<TradeColumnDef> row = selectedRows[i];
 						_availableColumnsTable.DeleteRow(row);
@@ -196,20 +197,23 @@ namespace DynamicTradeInterface.UserInterface
 							row[targetColumn] = row[sourceColumn];
 						}
 					}
+					_selectedColumnsTable.SelectRows(selectedRows);
 					_availableColumnsTable.ClearSelection();
 
 					_selectedColumnsTable.Refresh();
 					_availableColumnsTable.Refresh();
+
 				}
 			}
 			buttonRect.y += COLUMN_BUTTON_SIZE + GenUI.GapTiny;
 
 			if (Widgets.ButtonImage(buttonRect, TexButton.Minus))
 			{
+				// Selected to Available
 				IReadOnlyList<TableRow<TradeColumnDef>> selectedRows = _selectedColumnsTable.SelectedRows;
 				if (selectedRows.Count > 0)
 				{
-					for (int i = 0; i < selectedRows.Count; i++)
+					for (int i = selectedRows.Count - 1; i >= 0; i--)
 					{
 						TableRow<TradeColumnDef> row = selectedRows[i];
 						_selectedColumnsTable.DeleteRow(row);
@@ -222,6 +226,7 @@ namespace DynamicTradeInterface.UserInterface
 							row[targetColumn] = row[sourceColumn];
 						}
 					}
+					_availableColumnsTable.SelectRows(selectedRows);
 					_selectedColumnsTable.ClearSelection();
 
 					_selectedColumnsTable.Refresh();

@@ -75,12 +75,14 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				DrawScrollbarAlways = true,
 				LineFont = _rowFont,
+				CanSelectRows = false,
 			};
 			_colonyTable.LineFont = GameFont.Small;
 			_traderTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
 			{
 				DrawScrollbarAlways = true,
 				LineFont = _rowFont,
+				CanSelectRows = false,
 			};
 			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
@@ -249,7 +251,7 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 			// Trade interface configuration button.
-			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), TexButton.OpenDebugActionsMenu))
+			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), Textures.SettingsIcon))
 			{
 				var settingsMenu = new Dialog_TradeConfiguration();
 				settingsMenu.OnClosed += SettingsMenu_OnClosed;

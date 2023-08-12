@@ -33,6 +33,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private bool _drawScrollbar;
 		private bool _drawBorder;
 		private bool _allowSorting;
+		private bool _canSelectRows;
 		private Dictionary<TableColumn<T>, SortDirection> _columnSortCache;
 
 		public IList<T> RowItems => _rows.Items;
@@ -157,6 +158,14 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			set => _caption = value;
 		}
 
+		/// <summary>
+		/// Gets or Sets the caption drawn above the table.
+		/// </summary>
+		public bool CanSelectRows
+		{
+			get => _canSelectRows;
+			set => _canSelectRows = value;
+		}
 
 
 		/// <summary>
@@ -179,6 +188,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			_drawScrollbar = false;
 			_drawBorder = false;
 			_allowSorting = true;
+			_canSelectRows = true;
 		}
 
 
@@ -271,6 +281,20 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void ClearSelection()
 		{
 			_selectedRows.Clear();
+		}
+
+		/// <summary>
+		/// Marks provided rows as selected.
+		/// </summary>
+		/// <param name="rows">The rows to be selected.</param>
+		public void SelectRows(IEnumerable<T> rows)
+		{
+			_selectedRows.Clear();
+			foreach (T row in rows)
+				_selectedRows.Add(row);
+
+			if (SelectionChanged != null)
+				SelectionChanged.Invoke(this, _selectedRows);
 		}
 
 		private void Sort(TableColumn<T> column)
@@ -478,7 +502,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					rowRect.width = tableWidth;
 
 					// Hightlight entire row if selected.
-					if (_selectedRows.Contains(currentRow))
+					if (_canSelectRows && _selectedRows.Contains(currentRow))
 						Widgets.DrawHighlightSelected(rowRect);
 
 					// Hightlight row if moused over.
@@ -491,13 +515,16 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					}
 					Widgets.DrawHighlightIfMouseover(rowRect);
 
-					if (Widgets.ButtonInvisible(rowRect, false))
+					if (_canSelectRows)
 					{
-						if (_multiSelect == false || Event.current.control == false)
-							_selectedRows.Clear();
+						if (Widgets.ButtonInvisible(rowRect, false))
+						{
+							if (_multiSelect == false || Event.current.control == false)
+								_selectedRows.Clear();
 
-						_selectedRows.Add(currentRow);
-						selectionHasChanged = true;
+							_selectedRows.Add(currentRow);
+							selectionHasChanged = true;
+						}
 					}
 
 					rowRect.y += rowRect.height;
