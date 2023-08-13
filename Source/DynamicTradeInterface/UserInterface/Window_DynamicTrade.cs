@@ -116,9 +116,9 @@ namespace DynamicTradeInterface.UserInterface
 		}
 
 
-		public override void PostOpen()
+		public override void PreOpen()
 		{
-			base.PostOpen();
+			base.PreOpen();
 
 			_currency = TradeSession.deal.CurrencyTradeable;
 			_tradeables = LoadWares();

@@ -65,6 +65,8 @@
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:OrderbyValue</orderValueCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>80</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
@@ -74,6 +76,8 @@
 		<showCaption>false</showCaption>
 		<description>Buttons used to increment or decrement the amount bought or sold.\nClicking the double arrow buttons will increase to most affordable by either party on first click and then to max quantity if clicked again. Hold shift to skip.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>90</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>

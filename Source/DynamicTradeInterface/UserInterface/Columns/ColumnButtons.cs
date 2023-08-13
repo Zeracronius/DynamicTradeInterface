@@ -14,12 +14,26 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnButtons
 	{
+		private static Dictionary<Tradeable, (bool, bool)> _editableCache = new Dictionary<Tradeable, (bool, bool)>();
+
+		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			foreach (var row in rows)
+				_editableCache[row] = (row.TraderWillTrade == true && row.Interactive == true, row.GetRange() > 1);
+		}
+
+
+		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			_editableCache.Clear();
+		}
+
+
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			if (row.TraderWillTrade == false)
-				return;
-
-			if (row.Interactive == false)
+			// Can edit?
+			(bool, bool) cached = _editableCache[row];
+			if (cached.Item1 == false)
 				return;
 
 			TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
@@ -29,7 +43,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			// Source is left.
 			int adjustMultiplier = GenUI.CurrentAdjustmentMultiplier();
 			int adjustAmount = baseCount * adjustMultiplier;
-			bool largeRange = row.GetRange() > 1;
+			bool largeRange = cached.Item2;
 
 			float gap = 2;
 			// << < 0 > >>

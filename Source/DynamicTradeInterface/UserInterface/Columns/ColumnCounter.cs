@@ -13,11 +13,46 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnCounter
 	{
+
+		private static string? _dynamicTradeUnwilling;
+		private static string? _positiveBuysNegativeSells;
+		private static string? _negotiatorWillNotTradeSlavesTip;
+
+		private static Dictionary<Tradeable, (bool, bool)> _editableCache = new Dictionary<Tradeable, (bool, bool)>();
+
+		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			foreach (var row in rows)
+				_editableCache[row] = (row.TraderWillTrade, row.Interactive);
+
+
+			if (transactor == Transactor.Colony)
+			{
+				_dynamicTradeUnwilling = "DynamicTradeWindowUnwilling".Translate();
+				_positiveBuysNegativeSells = "PositiveBuysNegativeSells".Translate();
+				_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name);
+			}
+		}
+
+
+		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			if (transactor == Transactor.Colony)
+			{
+				_editableCache.Clear();
+				_dynamicTradeUnwilling = null;
+				_positiveBuysNegativeSells = null;
+				_negotiatorWillNotTradeSlavesTip = null;
+			}
+		}
+
+
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			if (!row.TraderWillTrade)
+			(bool, bool) cached = _editableCache[row];
+			if (cached.Item1 == false)
 			{
-				DrawWillNotTradeText(rect, "DynamicTradeWindowUnwilling".Translate());
+				DrawWillNotTradeText(rect, _dynamicTradeUnwilling);
 				if (Mouse.IsOver(rect))
 				{
 					TooltipHandler.TipRegionByKey(rect, "TraderWillNotTrade");
@@ -29,11 +64,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (ModsConfig.IdeologyActive && TransferableUIUtility.TradeIsPlayerSellingToSlavery(row, TradeSession.trader.Faction) && !new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo())
 			{
 				// DrawWillNotTradeText(rect, "NegotiatorWillNotTradeSlaves".Translate(TradeSession.playerNegotiator));
-				DrawWillNotTradeText(rect, "DynamicTradeWindowUnwilling".Translate());
+				DrawWillNotTradeText(rect, _dynamicTradeUnwilling);
 				if (Mouse.IsOver(rect))
 				{
 					Widgets.DrawHighlight(rect);
-					TooltipHandler.TipRegion(rect, "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name));
+					TooltipHandler.TipRegion(rect, _negotiatorWillNotTradeSlavesTip);
 				}
 			}
 			else
@@ -44,7 +79,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
 
-				if (!row.Interactive)
+				if (!cached.Item2)
 				{
 					GUI.color = countToTransfer == 0 ? TransferableUIUtility.ZeroCountColor : Color.white;
 					Text.Anchor = TextAnchor.MiddleCenter;
@@ -66,7 +101,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					Widgets.TextFieldNumeric(rect3, ref val, ref buffer, minTransfer, maxTransfer);
 
 					if (Mouse.IsOver(rect3))
-						TooltipHandler.TipRegion(rect3, "PositiveBuysNegativeSells".Translate());
+						TooltipHandler.TipRegion(rect3, _positiveBuysNegativeSells);
 					
 					if (val != countToTransfer)
 					{
@@ -91,7 +126,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			}
 		}
 
-		private static void DrawWillNotTradeText(Rect rect, string text)
+		private static void DrawWillNotTradeText(Rect rect, string? text)
 		{
 			rect.height += 4f;
 			rect = rect.Rounded();
