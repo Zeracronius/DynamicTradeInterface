@@ -13,13 +13,29 @@ namespace DynamicTradeInterface.Defs
 	public class TradeColumnDef : Def
 	{
 		internal delegate void TradeColumnCallback(ref Rect boundingBox, Tradeable item, Transactor transactor, ref bool refresh);
+		internal delegate void TradeColumnEventCallback(IEnumerable<Tradeable> rows, Transactor transactor);
 		internal delegate Func<Tradeable, IComparable> TradeColumnOrderValueCallback(Transactor transactor);
 
 		/// <summary>
-		/// Colon-based method identifier string for column draw callback.
+		/// Colon-based method identifier string for method called when column is drawn.
 		/// </summary> 
 		public string? callbackHandler = null;
+
+		/// <summary>
+		/// Colon-based method identifier string for method to allow rows to be sorted by this column.
+		/// </summary> 
 		public string? orderValueCallbackHandler = null;
+
+		/// <summary>
+		/// Colon-based method identifier string for method called right after the trade window has been opened. Can be used to cache data.
+		/// </summary> 
+		public string? postOpenCallbackHandler = null;
+
+		/// <summary>
+		/// Colon-based method identifier string for method called right after the trade window has been closed. Can be used to clean up cached data.
+		/// </summary> 
+		public string? postClosedCallbackHandler = null;
+
 		public float defaultWidth = 100;
 
 		/// <summary>
@@ -46,6 +62,8 @@ namespace DynamicTradeInterface.Defs
 
 		internal TradeColumnCallback? _callback;
 		internal TradeColumnOrderValueCallback? _orderValueCallback;
+		internal TradeColumnEventCallback? _postOpenCallback;
+		internal TradeColumnEventCallback? _postClosedCallback;
 
 		// TODO consider if this override is required.
 		public override void ResolveReferences()

@@ -91,35 +91,49 @@ namespace DynamicTradeInterface.Mod
 					try
 					{
 						columnDef._callback = AccessTools.MethodDelegate<TradeColumnDef.TradeColumnCallback>(columnDef.callbackHandler);
-						if (columnDef._callback != null)
-						{
-							_validColumnDefs.Add(columnDef);
-						}
+						if (columnDef._callback == null)
+							continue;
+						_validColumnDefs.Add(columnDef);
 					}
 					catch (Exception e)
 					{
 						Logging.Error($"Unable to locate draw callback '{columnDef.callbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has following arguments: 'ref Rect, Tradeable, TradeAction'");
 						Logging.Error(e);
+						continue;
 					}
 				}
 
-				if (string.IsNullOrWhiteSpace(columnDef.orderValueCallbackHandler) == false)
-				{
-					try
-					{
-						columnDef._orderValueCallback = AccessTools.MethodDelegate<TradeColumnDef.TradeColumnOrderValueCallback>(columnDef.orderValueCallbackHandler);
-					}
-					catch (Exception e)
-					{
-						Logging.Error($"Unable to locate order value callback '{columnDef.orderValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
-						Logging.Error(e);
-					}
-				}
+				columnDef._orderValueCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnOrderValueCallback>(columnDef.orderValueCallbackHandler,
+					$"Unable to locate order value callback '{columnDef.orderValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
+
+				columnDef._postOpenCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnEventCallback>(columnDef.postOpenCallbackHandler,
+					$"Unable to locate order value callback '{columnDef.postOpenCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
+
+				columnDef._postClosedCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnEventCallback>(columnDef.postClosedCallbackHandler,
+					$"Unable to locate order value callback '{columnDef.postClosedCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
 			}
 
 			// Default visible columns
 			if (_visibleColumns.Count == 0)
 				_visibleColumns.AddRange(_validColumnDefs.Where(x => x.defaultVisible));
+		}
+
+		private T? ParseCallbackHandler<T>(string? handler, string error) where T : Delegate
+		{
+			T? result = null;
+			if (string.IsNullOrWhiteSpace(handler) == false)
+			{
+				try
+				{
+					result = AccessTools.MethodDelegate<T>(handler);
+				}
+				catch (Exception e)
+				{
+					Logging.Error(error);
+					Logging.Error(e);
+				}
+			}
+			return result;
 		}
 
 		internal IEnumerable<TradeColumnDef> GetVisibleTradeColumns()

@@ -61,7 +61,7 @@ namespace DynamicTradeInterface.UserInterface
 
 		Faction? _traderFaction;
 
-
+		IEnumerable<TradeColumnDef> _columns;
 
 		// Profiling
 		Stopwatch _stopWatch;
@@ -87,6 +87,7 @@ namespace DynamicTradeInterface.UserInterface
 			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 			_stopWatch = new Stopwatch();
+			_columns = _settings.GetVisibleTradeColumns();
 			_refresh = false;
 			_colonyHeader = string.Empty;
 			_colonyHeaderDescription = string.Empty;
@@ -155,6 +156,13 @@ namespace DynamicTradeInterface.UserInterface
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
+
+			// Trigger PostOpen for each column in both tables.
+			foreach (TradeColumnDef column in _columns)
+			{
+				column._postOpenCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
+				column._postOpenCallback?.Invoke(_traderTable.RowItems.Select(x => x.RowObject), Transactor.Trader);
+			}
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * _settings.TradeWidthPercentage, UI.screenHeight * _settings.TradeHeightPercentage);
@@ -167,6 +175,18 @@ namespace DynamicTradeInterface.UserInterface
 			_settings.Write();
 		}
 
+		public override void PostClose()
+		{
+			// Trigger PostOpen for each column in both tables.
+			foreach (TradeColumnDef column in _columns)
+			{
+				column._postClosedCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
+				column._postClosedCallback?.Invoke(_traderTable.RowItems.Select(x => x.RowObject), Transactor.Trader);
+			}
+
+			base.PostClose();
+		}
+
 
 		private delegate void ColumnCallback(ref Rect rect, TableRow<Tradeable> row, TradeColumnDef columnDef, Transactor transactor);
 		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)
@@ -177,7 +197,7 @@ namespace DynamicTradeInterface.UserInterface
 			if (_settings.ProfilingEnabled)
 				callback = ColumnCallbackProfiled;
 
-			foreach (Defs.TradeColumnDef columnDef in _settings.GetVisibleTradeColumns())
+			foreach (Defs.TradeColumnDef columnDef in _columns)
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, tooltip: columnDef.tooltip,
 						callback: (ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
