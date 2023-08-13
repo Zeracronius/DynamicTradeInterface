@@ -11,12 +11,29 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCaption
 	{
+		private static Dictionary<Tradeable, (string, Color)> _labelCache = new Dictionary<Tradeable, (string, Color)>();
+
+		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			foreach (var row in rows)
+				_labelCache[row] = (row.LabelCap, row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor);
+		}
+
+
+		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			_labelCache.Clear();
+		}
+
+
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			Text.Anchor = TextAnchor.MiddleLeft;
-			GUI.color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor;
-			Widgets.Label(rect, row.LabelCap);
+			(string, Color) cached = _labelCache[row];
+			GUI.color = cached.Item2;
+			Widgets.Label(rect, cached.Item1);
 			GUI.color = Color.white;
+			Text.Anchor = TextAnchor.UpperLeft;
 
 			if (Mouse.IsOver(rect))
 			{
@@ -34,14 +51,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					return "";
 				}, row.GetHashCode());
 			}
-
-			Text.Anchor = TextAnchor.UpperLeft;
 		}
 
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
 		{
-			return (Tradeable row) => row.LabelCap;
+			return (Tradeable row) => _labelCache[row];
 		}
 	}
 }

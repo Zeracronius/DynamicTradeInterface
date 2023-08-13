@@ -23,6 +23,8 @@
 		<description>Shows the name.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:OrderbyValue</orderValueCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:PostClosed</postClosedCallbackHandler>
 		<initialSort>Ascending</initialSort>
 		<defaultWidth>1</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
@@ -51,6 +53,8 @@
 		<description>Shows the price.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:OrderbyValue</orderValueCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPrice:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>75</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
