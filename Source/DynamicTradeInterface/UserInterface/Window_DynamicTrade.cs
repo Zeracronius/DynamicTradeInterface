@@ -58,6 +58,8 @@ namespace DynamicTradeInterface.UserInterface
 		Texture2D _giftModeIcon;
 		Texture2D _arrowIcon;
 
+		Dictionary<TradeColumnDef, long>? _frameCache;
+
 
 		Faction? _traderFaction;
 
@@ -195,7 +197,14 @@ namespace DynamicTradeInterface.UserInterface
 
 			ColumnCallback callback = ColumnCallbackSimple;
 			if (_settings.ProfilingEnabled)
+			{
 				callback = ColumnCallbackProfiled;
+
+				if (_frameCache == null)
+					_frameCache = new Dictionary<TradeColumnDef, long>();
+			}
+			else
+				_frameCache = null;
 
 			foreach (Defs.TradeColumnDef columnDef in _columns)
 			{
@@ -230,16 +239,9 @@ namespace DynamicTradeInterface.UserInterface
 			columnDef._callback!(ref rect, row.RowObject, transactor, ref _refresh);
 			_stopWatch.Stop();
 
-			if (_settings.TradeColumnProfilings.TryGetValue(columnDef, out Queue<long> profilings) == false)
-			{
-				profilings = new Queue<long>();
-			}
 
-			profilings.Enqueue(_stopWatch.ElapsedTicks);
-			if (profilings.Count > 200)
-				profilings.Dequeue();
-
-			_settings.TradeColumnProfilings[columnDef] = profilings;
+			_frameCache!.TryGetValue(columnDef, out long frametime);
+			_frameCache![columnDef] = frametime + _stopWatch.ElapsedTicks;
 		}
 
 		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, SortDirection ascending, TableColumn column, Defs.TradeColumnDef columnDef, Transactor transactor)
@@ -262,6 +264,9 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			if (_frameCache != null)
+				_frameCache.Clear();
+
 			bool giftMode = TradeSession.giftMode;
 
 			if (_caravanWidget?.InCaravan == true)
@@ -387,6 +392,24 @@ namespace DynamicTradeInterface.UserInterface
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
 					}
 					TooltipHandler.TipRegion(rect7, _giftModeTip);
+				}
+			}
+
+
+			if (_frameCache != null)
+			{
+				foreach (KeyValuePair<TradeColumnDef, long> item in _frameCache)
+				{
+					if (_settings.TradeColumnProfilings.TryGetValue(item.Key, out Queue<long> profilings) == false)
+					{
+						profilings = new Queue<long>();
+					}
+
+					profilings.Enqueue(item.Value);
+					if (profilings.Count > 200)
+						profilings.Dequeue();
+
+					_settings.TradeColumnProfilings[item.Key] = profilings;
 				}
 			}
 
