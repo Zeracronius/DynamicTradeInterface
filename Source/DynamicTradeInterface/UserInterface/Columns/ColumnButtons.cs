@@ -14,12 +14,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	[HotSwappable]
 	internal static class ColumnButtons
 	{
-		private static Dictionary<Tradeable, (bool, bool)> _editableCache = new Dictionary<Tradeable, (bool, bool)>();
+		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			foreach (var row in rows)
-				_editableCache[row] = (row.TraderWillTrade == true && row.Interactive == true, row.GetRange() > 1);
+				_editableCache[row] = (row.TraderWillTrade == true && row.Interactive == true, row.GetRange() > 1, row.GetMinimumToTransfer(), row.GetMaximumToTransfer());
 		}
 
 
@@ -32,7 +32,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			// Can edit?
-			(bool, bool) cached = _editableCache[row];
+			(bool, bool, int, int) cached = _editableCache[row];
 			if (cached.Item1 == false)
 				return;
 
@@ -58,7 +58,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			// Draw left arrows
 			Rect button = new Rect(baseButtonRect);
-			if (row.CanAdjustBy(adjustAmount).Accepted)
+			if (CanAdjustBy(adjustAmount, currentAmountToTransfer, cached.Item3, cached.Item4))
 			{
 				if (largeRange)
 				{
@@ -108,7 +108,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			baseButtonRect.x += baseButtonRect.width + gap;
 
 			// Draw right arrows
-			if (row.CanAdjustBy(-adjustAmount).Accepted)
+			if (CanAdjustBy(-adjustAmount, currentAmountToTransfer, cached.Item3, cached.Item4))
 			{
 				if (largeRange == false)
 					baseButtonRect.width = baseButtonRect.width * 2 + gap;
@@ -140,6 +140,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					}
 				}
 			}
+		}
+
+		private static bool CanAdjustBy(int target, int current, int minimum, int maximum)
+		{
+			int total = current + target;
+			if (total < minimum || total > maximum)
+				return false;
+
+			return true;
 		}
 
 		/// <summary>
