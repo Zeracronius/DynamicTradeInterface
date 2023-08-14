@@ -33,8 +33,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 						}
 					}
 				}
-
-				//TODO Add icon for marking genepack as known or not.
 			}
 		}
 	}
