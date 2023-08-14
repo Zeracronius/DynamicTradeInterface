@@ -49,7 +49,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			(bool, bool, int, int) cached = _editableCache[row];
+			if (_editableCache.TryGetValue(row, out (bool, bool, int, int) cached) == false)
+				return;
+
 			if (cached.Item1 == false)
 			{
 				DrawWillNotTradeText(rect, _dynamicTradeUnwilling);
