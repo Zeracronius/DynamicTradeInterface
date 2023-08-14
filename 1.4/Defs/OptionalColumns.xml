@@ -19,5 +19,7 @@
 		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:OrderbyValue</orderValueCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:PostClosed</postClosedCallbackHandler>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>

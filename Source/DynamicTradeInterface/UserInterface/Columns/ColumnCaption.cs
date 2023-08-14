@@ -28,8 +28,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
+			if (_labelCache.TryGetValue(row, out (string, Color) cached) == false)
+				return;
+
 			Text.Anchor = TextAnchor.MiddleLeft;
-			(string, Color) cached = _labelCache[row];
 			GUI.color = cached.Item2;
 			Widgets.Label(rect, cached.Item1);
 			GUI.color = Color.white;

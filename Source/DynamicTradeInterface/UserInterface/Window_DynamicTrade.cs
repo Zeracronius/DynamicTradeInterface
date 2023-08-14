@@ -52,6 +52,7 @@ namespace DynamicTradeInterface.UserInterface
 		string _showSellableItemsDesc;
 		string _tradeModeTip;
 		string _giftModeTip;
+		string _searchText;
 
 		Texture2D _tradeModeIcon;
 		Texture2D _showSellableItemsIcon;
@@ -78,6 +79,8 @@ namespace DynamicTradeInterface.UserInterface
 				DrawScrollbarAlways = true,
 				LineFont = _rowFont,
 				CanSelectRows = false,
+				DrawSearchBox = false,
+				DrawBorder = true,
 			};
 			_colonyTable.LineFont = GameFont.Small;
 			_traderTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
@@ -85,6 +88,8 @@ namespace DynamicTradeInterface.UserInterface
 				DrawScrollbarAlways = true,
 				LineFont = _rowFont,
 				CanSelectRows = false,
+				DrawSearchBox = false,
+				DrawBorder = true,
 			};
 			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
@@ -295,7 +300,7 @@ namespace DynamicTradeInterface.UserInterface
 				// Trader
 				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
 
-				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
+				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
 
 				Text.Anchor = TextAnchor.UpperCenter;
 				Text.Font = GameFont.Medium;
@@ -305,13 +310,13 @@ namespace DynamicTradeInterface.UserInterface
 				Text.Font = GameFont.Small;
 				Widgets.Label(top, _traderHeaderDescription);
 
-				_traderTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
+				_traderTable.Draw(bottom);
 			}
 			else
 				left = body;
 
 			// Colony
-			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapTiny, _headerHeight);
+			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
 
 			Text.Anchor = TextAnchor.UpperCenter;
 			Text.Font = GameFont.Medium;
@@ -321,8 +326,9 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Font = GameFont.Small;
 			Widgets.Label(top, _colonyHeaderDescription);
 
+			_colonyTable.Draw(bottom);
 
-			_colonyTable.Draw(bottom.ContractedBy(GenUI.GapTiny));
+			DrawSearchBox(top.x, top.yMax + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
 
 			if (_currency != null)
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
@@ -431,6 +437,22 @@ namespace DynamicTradeInterface.UserInterface
 				else
 					_acceptButtonText = _acceptText;
 			}
+		}
+
+		private void DrawSearchBox(float x, float y, float width, float height)
+		{
+			float clearButtonSize = Text.LineHeight;
+			Rect searchBox = new Rect(x, y, width - clearButtonSize - Table<ITableRow>.CELL_SPACING, clearButtonSize);
+			_searchText = Widgets.TextField(searchBox, _searchText);
+			if (Widgets.ButtonText(new Rect(searchBox.xMax + Table<ITableRow>.CELL_SPACING, y, clearButtonSize, clearButtonSize), "X"))
+				_searchText = "";
+
+
+			if (_searchText == string.Empty)
+				Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + 5, searchBox.y, _colonyTable.SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), _colonyTable.SEARCH_PLACEHOLDER);
+
+			_colonyTable.Filter = _searchText;
+			_traderTable.Filter = _searchText;
 		}
 
 		private void SettingsMenu_OnClosed(object sender, bool e)

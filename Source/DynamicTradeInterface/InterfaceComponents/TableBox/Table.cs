@@ -12,11 +12,11 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	[HotSwappable]
 	internal class Table<T> where T : ITableRow
 	{
-		private readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
-		private readonly float SEARCH_PLACEHOLDER_SIZE;
+		internal readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
+		internal readonly float SEARCH_PLACEHOLDER_SIZE;
 
-		private const float CELL_SPACING = 5;
-		private const float ROW_SPACING = 3;
+		internal const float CELL_SPACING = 5;
+		internal const float ROW_SPACING = 3;
 
 		private List<TableColumn<T>> _columns;
 		private ListFilter<T> _rows;

@@ -18,12 +18,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		private static string? _positiveBuysNegativeSells;
 		private static string? _negotiatorWillNotTradeSlavesTip;
 
-		private static Dictionary<Tradeable, (bool, bool)> _editableCache = new Dictionary<Tradeable, (bool, bool)>();
+		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			foreach (var row in rows)
-				_editableCache[row] = (row.TraderWillTrade, row.Interactive);
+				_editableCache[row] = (row.TraderWillTrade, row.Interactive, row.GetMinimumToTransfer(), row.GetMaximumToTransfer());
 
 
 			if (transactor == Transactor.Colony)
@@ -49,7 +49,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			(bool, bool) cached = _editableCache[row];
+			(bool, bool, int, int) cached = _editableCache[row];
 			if (cached.Item1 == false)
 			{
 				DrawWillNotTradeText(rect, _dynamicTradeUnwilling);
@@ -63,7 +63,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Texture2D _arrowIcon = Mod.Textures.TradeArrow;
 			if (ModsConfig.IdeologyActive && TransferableUIUtility.TradeIsPlayerSellingToSlavery(row, TradeSession.trader.Faction) && !new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo())
 			{
-				// DrawWillNotTradeText(rect, "NegotiatorWillNotTradeSlaves".Translate(TradeSession.playerNegotiator));
 				DrawWillNotTradeText(rect, _dynamicTradeUnwilling);
 				if (Mouse.IsOver(rect))
 				{
@@ -94,8 +93,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 					int minTransfer, maxTransfer;
 
-					minTransfer = row.GetMinimumToTransfer();
-					maxTransfer = row.GetMaximumToTransfer();
+					minTransfer = cached.Item3;
+					maxTransfer = cached.Item4;
 
 					string buffer = val.ToStringCached();
 					Widgets.TextFieldNumeric(rect3, ref val, ref buffer, minTransfer, maxTransfer);

@@ -36,6 +36,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (cached.Item1 == false)
 				return;
 
+
+			int currentAmountToTransfer = row.CountToTransfer;
+
+			//if (currentAmountToTransfer == 0 && Mouse.IsOver(rect) == false)
+			//	return;
+
 			TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
 
 			int baseCount = positiveDirection == TransferablePositiveCountDirection.Source ? 1 : -1;
@@ -90,7 +96,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			}
 
 			// Draw reset
-			if (row.CountToTransfer != 0)
+			if (currentAmountToTransfer != 0)
 			{
 				if (Widgets.ButtonText(baseButtonRect, "0"))
 				{
