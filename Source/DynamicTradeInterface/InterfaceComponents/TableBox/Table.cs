@@ -9,7 +9,6 @@ using Verse;
 
 namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
-	[HotSwappable]
 	internal class Table<T> where T : ITableRow
 	{
 		internal readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();

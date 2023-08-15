@@ -18,7 +18,6 @@ using static HarmonyLib.Code;
 
 namespace DynamicTradeInterface.UserInterface
 {
-	[HotSwappable]
 	internal class Window_DynamicTrade : Window
 	{
 		static Vector2 _mainButtonSize = new Vector2(160f, 40f);

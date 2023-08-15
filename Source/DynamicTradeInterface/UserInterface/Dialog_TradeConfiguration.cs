@@ -13,7 +13,6 @@ using Verse.Sound;
 
 namespace DynamicTradeInterface.UserInterface
 {
-	[HotSwappable]
 	internal class Dialog_TradeConfiguration : Window
 	{
 		public event EventHandler<bool>? OnClosed;

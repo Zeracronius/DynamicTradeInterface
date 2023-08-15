@@ -10,7 +10,6 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
-	[HotSwappable]
 	internal class ColumnDurability
 	{
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)

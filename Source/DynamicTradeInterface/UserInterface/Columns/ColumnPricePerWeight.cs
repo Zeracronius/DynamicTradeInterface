@@ -10,7 +10,6 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
-	[HotSwappable]
 	internal class ColumnPricePerWeight
 	{
 		private static Dictionary<Tradeable, string> _colonyCache = new Dictionary<Tradeable, string>();

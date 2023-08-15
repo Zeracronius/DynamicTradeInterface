@@ -10,7 +10,6 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
-	[HotSwappable]
 	internal static class ColumnPrice
 	{
 

@@ -11,7 +11,6 @@ using Verse.Sound;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
-	[HotSwappable]
 	internal static class ColumnButtons
 	{
 		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();

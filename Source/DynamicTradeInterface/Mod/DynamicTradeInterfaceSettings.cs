@@ -13,7 +13,6 @@ using Verse;
 
 namespace DynamicTradeInterface.Mod
 {
-	[HotSwappable]
 	internal class DynamicTradeInterfaceSettings : ModSettings
 	{
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
