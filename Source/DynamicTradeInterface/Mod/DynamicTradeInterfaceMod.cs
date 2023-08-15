@@ -1,4 +1,5 @@
 ﻿using DynamicTradeInterface.Defs;
+using DynamicTradeInterface.UserInterface;
 using HarmonyLib;
 using RimWorld;
 using System.Reflection;
@@ -26,10 +27,25 @@ namespace DynamicTradeInterface.Mod
 			return "Dynamic trade interface";
 		}
 
+		Dialog_TradeConfiguration? _configWindow;
 		public override void DoSettingsWindowContents(Rect inRect)
 		{
-			//TODO column selection
+			if (_configWindow == null)
+			{
+				_configWindow = new Dialog_TradeConfiguration();
+				_configWindow.OnClosed += ConfigWindow_OnClosed;
+				_configWindow.PreOpen();
+				_configWindow.PostOpen();
+			}
+
+			_configWindow.DoWindowContents(inRect);
 		}
 
+		private void ConfigWindow_OnClosed(object sender, bool e)
+		{
+			_configWindow?.PreClose();
+			_configWindow?.PostClose();
+			_configWindow = null;
+		}
 	}
 }

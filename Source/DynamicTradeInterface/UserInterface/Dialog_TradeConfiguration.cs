@@ -148,7 +148,7 @@ namespace DynamicTradeInterface.UserInterface
 			inRect.SplitHorizontallyWithMargin(out Rect header, out Rect body, out _, GenUI.GapTiny, topHeight: _headerHeight);
 			bool profiling = _settings.ProfilingEnabled;
 			Text.Anchor = TextAnchor.UpperLeft;
-			Rect checkbox = new Rect(header.x, header.y, 300, header.height);
+			Rect checkbox = new Rect(header.x, header.y, 200, header.height);
 			Widgets.CheckboxLabeled(checkbox, _enableProfilingText, ref profiling);
 			_settings.ProfilingEnabled = profiling;
 
