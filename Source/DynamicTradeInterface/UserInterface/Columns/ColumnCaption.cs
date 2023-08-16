@@ -31,11 +31,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (_labelCache.TryGetValue(row, out (string, Color) cached) == false)
 				return;
 
+			Text.WordWrap = false;
 			Text.Anchor = TextAnchor.MiddleLeft;
 			GUI.color = cached.Item2;
 			Widgets.Label(rect, cached.Item1);
 			GUI.color = Color.white;
 			Text.Anchor = TextAnchor.UpperLeft;
+			Text.WordWrap = true;
 
 			if (Mouse.IsOver(rect))
 			{
