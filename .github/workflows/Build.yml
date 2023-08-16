@@ -10,9 +10,8 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: "Source/Pawnmorphs/Pawnmorph.sln"
-      Name: Pawnmorpher
-      #Test_Project_Path: your-test-project-path                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Solution_Name: "Source\DynamicTradeInterface/DynamicTradeInterface.sln"
+      Name: DynamicTradeInterface
 
     steps:
     - name: Checkout
