@@ -1,8 +1,6 @@
 name: 'Compile'
 run-name: ${{ github.ref_name }}
-on: 
-  workflow_dispatch:
-    inputs:
+on: workflow_dispatch
 
 jobs:
   build:
@@ -10,7 +8,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: "Source\DynamicTradeInterface/DynamicTradeInterface.sln"
+      Solution_Name: "Source/DynamicTradeInterface/DynamicTradeInterface.sln"
       Name: DynamicTradeInterface
 
     steps:
