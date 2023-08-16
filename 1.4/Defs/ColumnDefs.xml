@@ -35,6 +35,8 @@
 		<description>Additional icons shown in different situations.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIcons:Draw</callbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIcons:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIcons:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>50</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
