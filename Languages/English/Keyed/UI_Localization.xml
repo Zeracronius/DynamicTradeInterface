@@ -7,6 +7,13 @@
 	<ConfigurationWindowSelectedColumns>Selected columns</ConfigurationWindowSelectedColumns>
 	<ConfigurationWindowAvailableColumns>Available columns</ConfigurationWindowAvailableColumns>
 	<ConfigurationWindowEnableProfiling>Enable profiling</ConfigurationWindowEnableProfiling>
+	<ConfigurationWindowEnableGhostButtons>Ghost buttons</ConfigurationWindowEnableGhostButtons>
+	<ConfigurationWindowEnableGhostButtonsTooltip>Improve performance by only showing trade buttons near the cursor.</ConfigurationWindowEnableGhostButtonsTooltip>
+
+
+
+
+
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
 	<ConfigurationWindowColumnAvgMs>Avg ms</ConfigurationWindowColumnAvgMs>

@@ -32,6 +32,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _enableProfilingText;
 		string _enableHideUnwilling;
 		string _enableHideUnwillingTooltip;
+		string _enableGhostButtons;
+		string _enableGhostButtonsTooltip;
 
 		float _headerHeight;
 
@@ -54,6 +56,8 @@ namespace DynamicTradeInterface.UserInterface
 			_enableProfilingText = string.Empty;
 			_enableHideUnwilling = string.Empty;
 			_enableHideUnwillingTooltip = string.Empty;
+			_enableGhostButtons = string.Empty;
+			_enableGhostButtonsTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -70,6 +74,8 @@ namespace DynamicTradeInterface.UserInterface
 				_enableProfilingText = "ConfigurationWindowEnableProfiling".Translate();
 				_enableHideUnwilling = "ConfigurationWindowHideUnwilling".Translate();
 				_enableHideUnwillingTooltip = "ConfigurationWindowHideUnwillingTooltip".Translate();
+				_enableGhostButtons = "ConfigurationWindowEnableGhostButtons".Translate();
+				_enableGhostButtonsTooltip = "ConfigurationWindowEnableGhostButtonsTooltip".Translate();
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
 
 
@@ -182,6 +188,14 @@ namespace DynamicTradeInterface.UserInterface
 				TooltipHandler.TipRegion(checkbox, _enableHideUnwillingTooltip);
 			_settings.ExcludeUnwillingItems = value;
 
+
+			checkbox.y = checkbox.yMax;
+
+			value = _settings.GhostButtons;
+			Widgets.CheckboxLabeled(checkbox, _enableGhostButtons, ref value);
+			if (Mouse.IsOver(checkbox))
+				TooltipHandler.TipRegion(checkbox, _enableGhostButtonsTooltip);
+			_settings.GhostButtons = value;
 
 
 			float margin = COLUMN_BUTTON_SIZE + GenUI.GapSmall;

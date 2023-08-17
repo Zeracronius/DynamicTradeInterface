@@ -1,5 +1,6 @@
 ﻿using DynamicTradeInterface.Attributes;
 using RimWorld;
+using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +12,25 @@ using Verse.Sound;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
+	[HotSwappable]
 	internal static class ColumnButtons
 	{
 		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();
+		private static Mod.DynamicTradeInterfaceSettings? _settings;
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			foreach (var row in rows)
 				_editableCache[row] = (row.TraderWillTrade == true && row.Interactive == true, row.GetRange() > 1, row.GetMinimumToTransfer(), row.GetMaximumToTransfer());
+
+			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 		}
 
 
 		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			_editableCache.Clear();
+			_settings = null;
 		}
 
 
@@ -39,8 +45,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			int currentAmountToTransfer = row.CountToTransfer;
 
-			//if (currentAmountToTransfer == 0 && Mouse.IsOver(rect) == false)
-			//	return;
+			if (_settings?.GhostButtons == true && currentAmountToTransfer == 0 && Mouse.IsOver(rect.ExpandedBy(rect.width / 2, rect.height * 2)) == false)
+				return;
 
 			TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
 
