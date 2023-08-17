@@ -2,6 +2,8 @@
 	<DynamicTableControlSearchPlaceholder>Search...</DynamicTableControlSearchPlaceholder>
 
 	<ConfigurationWindowTitle>Trade window Configuration</ConfigurationWindowTitle>
+	<ConfigurationWindowHideUnwilling>Exclude unwilling items</ConfigurationWindowHideUnwilling>
+	<ConfigurationWindowHideUnwillingTooltip>Exclude all items trader is unwilling to buy.</ConfigurationWindowHideUnwillingTooltip>
 	<ConfigurationWindowSelectedColumns>Selected columns</ConfigurationWindowSelectedColumns>
 	<ConfigurationWindowAvailableColumns>Available columns</ConfigurationWindowAvailableColumns>
 	<ConfigurationWindowEnableProfiling>Enable profiling</ConfigurationWindowEnableProfiling>
