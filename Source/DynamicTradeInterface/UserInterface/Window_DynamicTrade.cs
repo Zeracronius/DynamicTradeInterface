@@ -109,6 +109,7 @@ namespace DynamicTradeInterface.UserInterface
 			_tradeModeTip = string.Empty;
 			_giftModeTip = string.Empty;
 			_acceptText = string.Empty;
+			_searchText = string.Empty;
 
 			_tradeModeIcon = Textures.TradeModeIcon;
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
