@@ -26,6 +26,8 @@ namespace DynamicTradeInterface.Mod
 		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;
 		float _tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
 		float _tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
+		bool _excludeUnwillingItems;
+		bool _ghostButtons;
 
 		public DynamicTradeInterfaceSettings()
 		{
@@ -58,6 +60,19 @@ namespace DynamicTradeInterface.Mod
 			set => _tradeHeightPercentage = value; 
 		}
 
+		public bool ExcludeUnwillingItems
+		{
+			get => _excludeUnwillingItems;
+			set => _excludeUnwillingItems = value;
+		}
+
+		public bool GhostButtons
+		{
+			get => _ghostButtons;
+			set => _ghostButtons = value;
+		}
+
+
 		public override void ExposeData()
 		{
 			base.ExposeData();
@@ -65,6 +80,9 @@ namespace DynamicTradeInterface.Mod
 
 			Scribe_Values.Look(ref _tradeWidthPercentage, nameof(TradeWidthPercentage), DEFAULT_TRADE_WIDTH);
 			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
+
+			Scribe_Values.Look(ref _excludeUnwillingItems, nameof(ExcludeUnwillingItems), false);
+			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false);
 
 			if (_tradeWidthPercentage < 0.01)
 				_tradeWidthPercentage = DEFAULT_TRADE_WIDTH;

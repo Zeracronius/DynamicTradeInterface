@@ -13,6 +13,7 @@ using Verse.Sound;
 
 namespace DynamicTradeInterface.UserInterface
 {
+	[HotSwappable]
 	internal class Dialog_TradeConfiguration : Window
 	{
 		public event EventHandler<bool>? OnClosed;
@@ -29,6 +30,10 @@ namespace DynamicTradeInterface.UserInterface
 		string _acceptButtonText;
 		string _windowTitle;
 		string _enableProfilingText;
+		string _enableHideUnwilling;
+		string _enableHideUnwillingTooltip;
+		string _enableGhostButtons;
+		string _enableGhostButtonsTooltip;
 
 		float _headerHeight;
 
@@ -49,6 +54,10 @@ namespace DynamicTradeInterface.UserInterface
 			_cancelButtonText = string.Empty;
 			_windowTitle = string.Empty;
 			_enableProfilingText = string.Empty;
+			_enableHideUnwilling = string.Empty;
+			_enableHideUnwillingTooltip = string.Empty;
+			_enableGhostButtons = string.Empty;
+			_enableGhostButtonsTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -63,6 +72,10 @@ namespace DynamicTradeInterface.UserInterface
 				_cancelButtonText = "CancelButton".Translate();
 				_windowTitle = "ConfigurationWindowTitle".Translate();
 				_enableProfilingText = "ConfigurationWindowEnableProfiling".Translate();
+				_enableHideUnwilling = "ConfigurationWindowHideUnwilling".Translate();
+				_enableHideUnwillingTooltip = "ConfigurationWindowHideUnwillingTooltip".Translate();
+				_enableGhostButtons = "ConfigurationWindowEnableGhostButtons".Translate();
+				_enableGhostButtonsTooltip = "ConfigurationWindowEnableGhostButtonsTooltip".Translate();
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
 
 
@@ -146,14 +159,6 @@ namespace DynamicTradeInterface.UserInterface
 		public override void DoWindowContents(Rect inRect)
 		{
 			inRect.SplitHorizontallyWithMargin(out Rect header, out Rect body, out _, GenUI.GapTiny, topHeight: _headerHeight);
-			bool profiling = _settings.ProfilingEnabled;
-			Text.Anchor = TextAnchor.UpperLeft;
-			Rect checkbox = new Rect(header.x, header.y, 200, header.height);
-			Widgets.CheckboxLabeled(checkbox, _enableProfilingText, ref profiling);
-			_settings.ProfilingEnabled = profiling;
-
-
-
 
 			Text.Anchor = TextAnchor.UpperCenter;
 			Text.Font = GameFont.Medium;
@@ -163,8 +168,38 @@ namespace DynamicTradeInterface.UserInterface
 
 			body.SplitHorizontallyWithMargin(out body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: MAIN_BUTTON_SIZE.y + GenUI.GapTiny);
 
+			body.SplitVerticallyWithMargin(out body, out Rect configurations, out _, GenUI.GapTiny, rightWidth: 200);
+
+			Text.Anchor = TextAnchor.UpperLeft;
+			float optionEntry = Text.LineHeightOf(GameFont.Small) + GenUI.GapTiny;
+
+			Rect checkbox = new Rect(configurations).ContractedBy(GenUI.GapTiny, 0);
+			checkbox.height = optionEntry;
+
+			bool value = _settings.ProfilingEnabled;
+			Widgets.CheckboxLabeled(checkbox, _enableProfilingText, ref value);
+			_settings.ProfilingEnabled = value;
+
+			checkbox.y = checkbox.yMax;
+
+			value = _settings.ExcludeUnwillingItems;
+			Widgets.CheckboxLabeled(checkbox, _enableHideUnwilling, ref value);
+			if (Mouse.IsOver(checkbox))
+				TooltipHandler.TipRegion(checkbox, _enableHideUnwillingTooltip);
+			_settings.ExcludeUnwillingItems = value;
+
+
+			checkbox.y = checkbox.yMax;
+
+			value = _settings.GhostButtons;
+			Widgets.CheckboxLabeled(checkbox, _enableGhostButtons, ref value);
+			if (Mouse.IsOver(checkbox))
+				TooltipHandler.TipRegion(checkbox, _enableGhostButtonsTooltip);
+			_settings.GhostButtons = value;
+
+
 			float margin = COLUMN_BUTTON_SIZE + GenUI.GapSmall;
-			body.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, margin, leftWidth: inRect.width / 2 - margin / 2);
+			body.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, margin, leftWidth: body.width / 2 - margin / 2);
 
 			_selectedColumnsTable!.Draw(left);
 			_availableColumnsTable!.Draw(right);

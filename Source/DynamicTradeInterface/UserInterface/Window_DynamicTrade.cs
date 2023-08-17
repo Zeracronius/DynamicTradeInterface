@@ -109,6 +109,7 @@ namespace DynamicTradeInterface.UserInterface
 			_tradeModeTip = string.Empty;
 			_giftModeTip = string.Empty;
 			_acceptText = string.Empty;
+			_searchText = string.Empty;
 
 			_tradeModeIcon = Textures.TradeModeIcon;
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
@@ -456,15 +457,18 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void SettingsMenu_OnClosed(object sender, bool e)
 		{
+			_tradeables = LoadWares();
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);
 		}
 
 		private List<Tradeable> LoadWares()
 		{
-			List<Tradeable> allWares = TradeSession.deal.AllTradeables;
-			return allWares.Where(x => x.IsCurrency == false && (x.TraderWillTrade || !TradeSession.trader.TraderKind.hideThingsNotWillingToTrade))
-				.OrderByDescending(x => x.TraderWillTrade)
+			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables.Where(x => x.IsCurrency == false);
+			if (TradeSession.trader.TraderKind.hideThingsNotWillingToTrade || _settings.ExcludeUnwillingItems)
+				filteredWares = filteredWares.Where(x => x.TraderWillTrade);
+
+			return filteredWares.OrderByDescending(x => x.TraderWillTrade)
 				.ThenBy((Tradeable tr) => tr, TransferableSorterDefOf.Category.Comparer)
 				.ThenBy((Tradeable tr) => tr, TransferableSorterDefOf.MarketValue.Comparer)
 				.ThenBy((Tradeable tr) => TransferableUIUtility.DefaultListOrderPriority(tr))
