@@ -16,13 +16,16 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		private struct Cache
 		{
 			public Pawn Pawn;
-			public bool Animal;
+			public Intelligence Intelligence;
 			public bool Rideable;
 			public bool Bonded;
 			public bool Pregnant;
 			public bool Sick;
 			public bool IsColonyMech;
 			public Pawn OverseerPawn;
+			public bool Captive;
+			public bool PlayerFaction;
+			public bool TraderHomeFaction;
 		}
 
 		private static Dictionary<Tradeable, Cache> _rowCache = new Dictionary<Tradeable, Cache>();
@@ -37,16 +40,20 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (_rowCache.ContainsKey(row))
 					continue;
 
+				string joinAsText = (pawn.guest?.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
 				Cache cache = new Cache
 				{
 					Pawn = pawn,
-					Animal = pawn.RaceProps.Animal,
+					Intelligence = pawn.RaceProps.intelligence,
 					Rideable = pawn.IsCaravanRideable(),
 					Bonded = pawn.relations.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null,
 					Pregnant = pawn.health.hediffSet.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true),
 					Sick = pawn.health.hediffSet.AnyHediffMakesSickThought,
 					IsColonyMech = pawn.IsColonyMech,
-					OverseerPawn = pawn.GetOverseer()
+					OverseerPawn = pawn.GetOverseer(),
+					Captive = TransferableUIUtility.TransferableIsCaptive(row),
+					PlayerFaction = pawn.Faction?.IsPlayer ?? false,
+					TraderHomeFaction = pawn.HomeFaction == TradeSession.trader?.Faction,
 				};
 
 				_rowCache[row] = cache;
@@ -67,16 +74,22 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			float curX = rect.xMax;
 
 
-			if (cache.Animal)
+			if (cache.Intelligence == Intelligence.Animal)
 			{
-				DoAnimalIcons(rect, ref curX, cache);
+				DoAnimalIcons(ref rect, ref curX, cache);
 			}
-			else if (ModsConfig.BiotechActive)
+			
+			if (ModsConfig.BiotechActive)
 			{
-				DoBiotechIcons(rect, ref curX, cache);
+				DoBiotechIcons(ref rect, ref curX, cache);
+			}
+
+			if (ModsConfig.IdeologyActive)
+			{
+				DoIdeologyIcons(ref rect, ref curX, cache);
 			}
 		}
-		private static void DoAnimalIcons(Rect rect, ref float curX, Cache cache)
+		private static void DoAnimalIcons(ref Rect rect, ref float curX, Cache cache)
 		{
 			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
 			iconRect.x -= iconRect.width;
@@ -115,7 +128,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			curX = iconRect.x;
 		}
 
-		private static void DoBiotechIcons(Rect rect, ref float curX, Cache cache)
+		private static void DoBiotechIcons(ref Rect rect, ref float curX, Cache cache)
 		{
 			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
 			iconRect.x -= iconRect.width;
@@ -147,5 +160,34 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			curX = iconRect.x;
 		}
 
+		private static void DoIdeologyIcons(ref Rect rect, ref float curX, Cache cache)
+		{
+			if (cache.Pawn.guest == null)
+				return;
+
+			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
+			iconRect.x -= iconRect.width;
+
+			if (cache.Captive)
+			{
+				if (cache.TraderHomeFaction)
+				{
+					GUI.DrawTexture(rect, GuestUtility.RansomIcon);
+					if (Mouse.IsOver(rect))
+					{
+						TooltipHandler.TipRegion(rect, "SellingAsRansom".Translate());
+					}
+				}
+				else
+				{
+					GUI.DrawTexture(rect, GuestUtility.SlaveIcon);
+					if (Mouse.IsOver(rect))
+					{
+						TooltipHandler.TipRegion(rect, "SellingAsSlave".Translate());
+					}
+				}
+				iconRect.x -= iconRect.width;
+			}
+		}
 	}
 }
