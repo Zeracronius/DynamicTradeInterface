@@ -19,6 +19,7 @@ using static HarmonyLib.Code;
 
 namespace DynamicTradeInterface.UserInterface
 {
+	[HotSwappable]
 	internal class Window_DynamicTrade : Window
 	{
 		static Vector2 _mainButtonSize = new Vector2(160f, 40f);
@@ -58,6 +59,7 @@ namespace DynamicTradeInterface.UserInterface
 		Texture2D _showSellableItemsIcon;
 		Texture2D _giftModeIcon;
 		Texture2D _arrowIcon;
+		Texture2D _resetIcon;
 
 		Dictionary<TradeColumnDef, long>? _frameCache;
 
@@ -117,6 +119,7 @@ namespace DynamicTradeInterface.UserInterface
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
 			_giftModeIcon = Textures.GiftModeIcon;
 			_arrowIcon = Textures.TradeArrow;
+			_resetIcon = Textures.ResetIcon;
 
 			resizeable = true;
 			draggable = true;
@@ -333,7 +336,7 @@ namespace DynamicTradeInterface.UserInterface
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
 
 
-			float width = _mainButtonSize.x * 3 + GenUI.GapTiny * 2;
+			float width = _mainButtonSize.x * 2 + _mainButtonSize.y + GenUI.GapTiny * 2;
 			Rect mainButtonRect = new Rect(footer.center.x - width / 2, footer.yMax - GenUI.GapTiny - _mainButtonSize.y, _mainButtonSize.x, _mainButtonSize.y);
 			// Accept
 			if (Widgets.ButtonText(mainButtonRect, _acceptButtonText))
@@ -343,13 +346,18 @@ namespace DynamicTradeInterface.UserInterface
 			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
 
 			// Reset
-			if (Widgets.ButtonText(mainButtonRect, _resetButtonText))
+			Rect resetButtonRect = new Rect(mainButtonRect.x, mainButtonRect.y, mainButtonRect.height, mainButtonRect.height);
+			float textureSize = mainButtonRect.height - GenUI.GapSmall - GenUI.GapTiny;
+			if (Widgets.ButtonImageWithBG(resetButtonRect, _resetIcon, new Vector2(textureSize, textureSize)))
 			{
 				SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 				ResetTrade();
 				_refresh = true;
 			}
-			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
+			if (Mouse.IsOver(resetButtonRect))
+				TooltipHandler.TipRegion(resetButtonRect, _resetButtonText);
+
+			mainButtonRect.x += resetButtonRect.width + GenUI.GapTiny;
 
 			// Cancel
 			if (Widgets.ButtonText(mainButtonRect, _cancelButtonText))
