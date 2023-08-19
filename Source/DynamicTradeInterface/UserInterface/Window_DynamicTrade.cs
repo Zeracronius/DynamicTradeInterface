@@ -1,6 +1,7 @@
 ﻿using DynamicTradeInterface.Attributes;
 using DynamicTradeInterface.Collections;
 using DynamicTradeInterface.Defs;
+using DynamicTradeInterface.InterfaceComponents;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using DynamicTradeInterface.Mod;
 using RimWorld;
@@ -127,6 +128,7 @@ namespace DynamicTradeInterface.UserInterface
 		public override void PreOpen()
 		{
 			base.PreOpen();
+			DragSelect.Initialize();
 
 			_currency = TradeSession.deal.CurrencyTradeable;
 			_traderFaction = TradeSession.trader.Faction;
@@ -274,6 +276,8 @@ namespace DynamicTradeInterface.UserInterface
 				_caravanWidget.Draw(new Rect(12f, 0f, inRect.width - 24f, 40f));
 				inRect.yMin += 52f;
 			}
+
+			DragSelect.Reset();
 
 			// Trade interface configuration button.
 			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), Textures.SettingsIcon))

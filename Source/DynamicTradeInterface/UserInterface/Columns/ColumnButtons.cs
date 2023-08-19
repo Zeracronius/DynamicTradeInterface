@@ -1,4 +1,5 @@
 ﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.InterfaceComponents;
 using RimWorld;
 using RimWorld.QuestGen;
 using System;
@@ -16,16 +17,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 	{
 		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();
 		private static Mod.DynamicTradeInterfaceSettings? _settings;
-		private static bool s_painting = false;
-		private static PaintingDirection s_paintingDirection = PaintingDirection.None;
-
-		private enum PaintingDirection
-		{
-			None,
-			Left,
-			Middle,
-			Right,
-		}
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
@@ -57,11 +48,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (_settings?.GhostButtons == true && currentAmountToTransfer == 0 && Mouse.IsOver(rect.ExpandedBy(rect.width / 2, rect.height * 2)) == false)
 				return;
 
-			if (Event.current.rawType == EventType.MouseUp || Input.GetMouseButtonUp(0)) {
-				s_painting = false;
-				s_paintingDirection = PaintingDirection.None;
-			}
-
 			TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
 
 			int baseCount = positiveDirection == TransferablePositiveCountDirection.Source ? 1 : -1;
@@ -82,7 +68,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				if (largeRange)
 				{
-					if (Widgets.ButtonText(button, "<<") || IsPainting(button, PaintingDirection.Left))
+					if (Widgets.ButtonText(button, "<<") || DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left))
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
 						{
@@ -102,7 +88,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					button.width += gap + baseButtonRect.width;
 				}
 
-				if (Widgets.ButtonText(button, "<") || (!largeRange && IsPainting(button, PaintingDirection.Left)))
+				if (Widgets.ButtonText(button, "<") || (!largeRange && DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left)))
 				{
 					row.AdjustBy(adjustAmount);
 					refresh = true;
@@ -118,7 +104,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			// Draw reset
 			if (currentAmountToTransfer != 0)
 			{
-				if (Widgets.ButtonText(baseButtonRect, "0") || IsPainting(baseButtonRect, PaintingDirection.Middle))
+				if (Widgets.ButtonText(baseButtonRect, "0") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Middle))
 				{
 					row.AdjustTo(0);
 					refresh = true;
@@ -134,7 +120,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					baseButtonRect.width = baseButtonRect.width * 2 + gap;
 
 
-				if (Widgets.ButtonText(baseButtonRect, ">") || (!largeRange && IsPainting(baseButtonRect, PaintingDirection.Right)))
+				if (Widgets.ButtonText(baseButtonRect, ">") || (!largeRange && DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right)))
 				{
 					row.AdjustBy(-adjustAmount);
 					refresh = true;
@@ -145,7 +131,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				if (largeRange)
 				{
-					if (Widgets.ButtonText(baseButtonRect, ">>") || IsPainting(baseButtonRect, PaintingDirection.Right))
+					if (Widgets.ButtonText(baseButtonRect, ">>") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right))
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
 						{
@@ -160,16 +146,6 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					}
 				}
 			}
-		}
-
-		private static bool IsPainting(Rect rect, PaintingDirection direction)
-		{
-			if (!s_painting && Widgets.ButtonInvisibleDraggable(rect) == Widgets.DraggableResult.Dragged) {
-				s_painting = true;
-				s_paintingDirection = direction;
-			}
-
-			return s_painting && s_paintingDirection == direction && Mouse.IsOver(rect);
 		}
 
 		private static bool CanAdjustBy(int target, int current, int minimum, int maximum)
