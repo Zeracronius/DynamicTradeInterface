@@ -27,7 +27,7 @@ namespace DynamicTradeInterface.UserInterface
 		Table<TableRow<Tradeable>> _traderTable;
 		Mod.DynamicTradeInterfaceSettings _settings;
 		Tradeable? _currency;
-		List<Tradeable>? _tradeables;
+		List<Tradeable> _tradeables;
 		CaravanWidget? _caravanWidget;
 		bool _refresh;
 		bool _giftOnly;
@@ -92,6 +92,7 @@ namespace DynamicTradeInterface.UserInterface
 			};
 			_traderTable.LineFont = GameFont.Small;
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
+			_tradeables = new List<Tradeable>();
 			_stopWatch = new Stopwatch();
 			_columns = _settings.GetVisibleTradeColumns();
 			_refresh = false;
@@ -128,10 +129,10 @@ namespace DynamicTradeInterface.UserInterface
 			base.PreOpen();
 
 			_currency = TradeSession.deal.CurrencyTradeable;
-			_tradeables = LoadWares();
 			_traderFaction = TradeSession.trader.Faction;
-			PopulateTable(_colonyTable, Transactor.Colony);
-			PopulateTable(_traderTable, Transactor.Trader);
+
+
+			RefreshData();
 
 			_colonyHeader = Faction.OfPlayer.Name;
 			string negotiatorName = TradeSession.playerNegotiator.Name.ToStringFull;
@@ -164,12 +165,6 @@ namespace DynamicTradeInterface.UserInterface
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
 
-			// Trigger PostOpen for each column in both tables.
-			foreach (TradeColumnDef column in _columns)
-			{
-				column._postOpenCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
-				column._postOpenCallback?.Invoke(_traderTable.RowItems.Select(x => x.RowObject), Transactor.Trader);
-			}
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * _settings.TradeWidthPercentage, UI.screenHeight * _settings.TradeHeightPercentage);
@@ -382,7 +377,7 @@ namespace DynamicTradeInterface.UserInterface
 						TradeSession.giftMode = false;
 						TradeSession.deal.Reset();
 						_refresh = true;
-						_tradeables = LoadWares();
+						RefreshData();
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
 					}
 					TooltipHandler.TipRegion(rect7, _tradeModeTip);
@@ -394,7 +389,7 @@ namespace DynamicTradeInterface.UserInterface
 						TradeSession.giftMode = true;
 						TradeSession.deal.Reset();
 						_refresh = true;
-						_tradeables = LoadWares();
+						RefreshData();
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
 					}
 					TooltipHandler.TipRegion(rect7, _giftModeTip);
@@ -457,25 +452,37 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void SettingsMenu_OnClosed(object sender, bool e)
 		{
-			_tradeables = LoadWares();
-			PopulateTable(_colonyTable, Transactor.Colony);
-			PopulateTable(_traderTable, Transactor.Trader);
+			RefreshData();
 		}
 
-		private List<Tradeable> LoadWares()
+		private void RefreshData()
+		{
+			LoadWares();
+			PopulateTable(_colonyTable, Transactor.Colony);
+			PopulateTable(_traderTable, Transactor.Trader);
+
+			// Trigger PostOpen for each column in both tables.
+			foreach (TradeColumnDef column in _columns)
+			{
+				column._postOpenCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
+				column._postOpenCallback?.Invoke(_traderTable.RowItems.Select(x => x.RowObject), Transactor.Trader);
+			}
+		}
+
+		private void LoadWares()
 		{
 			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables.Where(x => x.IsCurrency == false);
 			if (TradeSession.trader.TraderKind.hideThingsNotWillingToTrade || _settings.ExcludeUnwillingItems)
 				filteredWares = filteredWares.Where(x => x.TraderWillTrade);
 
-			return filteredWares.OrderByDescending(x => x.TraderWillTrade)
+			_tradeables.Clear();
+			_tradeables.AddRange(filteredWares.OrderByDescending(x => x.TraderWillTrade)
 				.ThenBy((Tradeable tr) => tr, TransferableSorterDefOf.Category.Comparer)
 				.ThenBy((Tradeable tr) => tr, TransferableSorterDefOf.MarketValue.Comparer)
 				.ThenBy((Tradeable tr) => TransferableUIUtility.DefaultListOrderPriority(tr))
 				.ThenBy((Tradeable tr) => tr.ThingDef.label)
 				.ThenBy((Tradeable tr) => tr.AnyThing.TryGetQuality(out var qc) ? ((int)qc) : (-1))
-				.ThenBy((Tradeable tr) => tr.AnyThing.HitPoints)
-				.ToList();
+				.ThenBy((Tradeable tr) => tr.AnyThing.HitPoints));
 		}
 
 		private void DrawCurrencyRow(Rect currencyRowRect, Tradeable currency)

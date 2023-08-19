@@ -74,8 +74,8 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeButtonsDef</defName>
-		<label>trade buttons</label>
-		<showCaption>false</showCaption>
+		<label>buttons</label>
+		<showCaption>true</showCaption>
 		<description>Buttons used to increment or decrement the amount bought or sold.\nClicking the double arrow buttons will increase to most affordable by either party on first click and then to max quantity if clicked again. Hold shift to skip.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:Draw</callbackHandler>
 		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnButtons:PostOpen</postOpenCallbackHandler>

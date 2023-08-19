@@ -11,12 +11,49 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCaption
 	{
-		private static Dictionary<Tradeable, (string, Color)> _labelCache = new Dictionary<Tradeable, (string, Color)>();
+		private struct Cache
+		{
+			public string Label;
+			public float LabelWidth;
+			public Color Color;
+			public string? JoinAs;
+			public string? JoinAsDesc;
+			public float JoinAsWidth;
+		}
+
+		private static Dictionary<Tradeable, Cache> _labelCache = new Dictionary<Tradeable, Cache>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			foreach (var row in rows)
-				_labelCache[row] = (row.LabelCap, row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor);
+			{
+				string label = row.LabelCap;
+				string? joinAsLabel = null;
+				string? joinAsDesc = null;
+				float joinAsWidth = 0;
+				if (ModsConfig.IdeologyActive && row.AnyThing is Pawn pawn)
+				{
+					if (pawn.RaceProps.Humanlike && pawn.guest != null && pawn.Faction.IsPlayer == false)
+					{
+						joinAsLabel = (pawn.guest.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
+						joinAsDesc = (pawn.guest.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonistDesc" : "JoinsAsSlaveDesc").Translate();
+						joinAsWidth = Text.CalcSize(joinAsLabel).x;
+					}
+
+				}
+
+				Cache cache = new Cache()
+				{
+					Label = label,
+					LabelWidth = Text.CalcSize(label).x,
+					Color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor,
+					JoinAs = joinAsLabel,
+					JoinAsDesc = joinAsDesc,
+					JoinAsWidth = joinAsWidth,
+				};
+
+				_labelCache[row] = cache;
+			}
 		}
 
 
@@ -28,20 +65,30 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			if (_labelCache.TryGetValue(row, out (string, Color) cached) == false)
+			if (_labelCache.TryGetValue(row, out Cache cached) == false)
 				return;
 
 			Text.WordWrap = false;
 			Text.Anchor = TextAnchor.MiddleLeft;
-			GUI.color = cached.Item2;
-			Widgets.Label(rect, cached.Item1);
+			GUI.color = cached.Color;
+
+			Rect labelRect = new Rect(rect.x, rect.y, cached.LabelWidth, rect.height);
+			Widgets.Label(labelRect, cached.Label);
+
+			Rect joinAsRect = new Rect(labelRect.xMax + GenUI.GapTiny, rect.y, cached.JoinAsWidth, rect.height);
+			if (cached.JoinAs != null)
+			{
+				GUI.color = TradeUI.NoTradeColor;
+				Widgets.Label(joinAsRect, cached.JoinAs);
+			}
+			
 			GUI.color = Color.white;
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.WordWrap = true;
 
-			if (Mouse.IsOver(rect))
+			if (Mouse.IsOver(labelRect))
 			{
-				TooltipHandler.TipRegion(rect, () =>
+				TooltipHandler.TipRegion(labelRect, () =>
 				{
 					Thing thing = row.AnyThing;
 					if (thing != null)
@@ -55,12 +102,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					return "";
 				}, row.GetHashCode());
 			}
+
+			if (cached.JoinAs != null && Mouse.IsOver(joinAsRect))
+				TooltipHandler.TipRegion(joinAsRect, cached.JoinAsDesc);
 		}
 
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
 		{
-			return (Tradeable row) => _labelCache[row];
+			return (Tradeable row) => _labelCache[row].Label;
 		}
 	}
 }
