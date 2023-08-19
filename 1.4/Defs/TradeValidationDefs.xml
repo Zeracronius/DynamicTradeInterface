@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Schemas/TradeValidationDef.xsd">
+	<DynamicTradeInterface.Defs.TradeValidationDef>
+		<defName>DF_InsufficientSilver</defName>
+		<validationCallbackHandler>DynamicTradeInterface.UserInterface.TradeValidation.InsufficientSilver:Validate</validationCallbackHandler>
+		<textKey>ConfirmTraderShortFunds</textKey>
+	</DynamicTradeInterface.Defs.TradeValidationDef>
+</Defs>

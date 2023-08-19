@@ -43,7 +43,6 @@ namespace DynamicTradeInterface.UserInterface
 		string _cancelButtonText;
 		string _resetButtonText;
 		string _acceptButtonText;
-		string _confirmShortFundsText;
 		string _offerGiftsText;
 		string _acceptText;
 		string _cannotAffordText;
@@ -67,6 +66,8 @@ namespace DynamicTradeInterface.UserInterface
 
 		// Profiling
 		Stopwatch _stopWatch;
+
+		private Queue<string> _confirmations;
 
 		public Window_DynamicTrade(bool giftOnly = false)
 		{
@@ -103,7 +104,6 @@ namespace DynamicTradeInterface.UserInterface
 			_cancelButtonText = string.Empty;
 			_resetButtonText = string.Empty;
 			_acceptButtonText = string.Empty;
-			_confirmShortFundsText = string.Empty;
 			_offerGiftsText = string.Empty;
 			_cannotAffordText = string.Empty;
 			_showSellableItemsDesc = string.Empty;
@@ -121,6 +121,7 @@ namespace DynamicTradeInterface.UserInterface
 			draggable = true;
 			forcePause = true;
 			absorbInputAroundWindow = true;
+			_confirmations = new Queue<string>();
 		}
 
 
@@ -156,7 +157,6 @@ namespace DynamicTradeInterface.UserInterface
 
 			_resetButtonText = "ResetButton".Translate();
 			_cancelButtonText = "CancelButton".Translate();
-			_confirmShortFundsText = "ConfirmTraderShortFunds".Translate();
 			_cannotAffordText = "MessageColonyCannotAfford".Translate();
 			_showSellableItemsDesc = "CommandShowSellableItemsDesc".Translate();
 			_tradeModeTip = "TradeModeTip".Translate();
@@ -566,19 +566,37 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperLeft;
 		}
 
+		private void ConfirmTrade()
+		{
+			_confirmations.Clear();
+			// Execute all validations and queue confirmation dialog texts for those that fail.
+			foreach (var validator in _settings.ValidationDefs)
+			{
+				// _settings.ValidationDefs only contains validators with non-null actions and text. It is safe to not check
+				// for null values in this if block.
+				if (!validator.validationCallback!())
+				{
+					_confirmations.Enqueue(validator.translatedText!);
+				}
+			}
+			ShowNextConfirmation();
+		}
+
+		private void ShowNextConfirmation()
+		{
+			if (_confirmations.TryDequeue(out var validationText))
+			{
+				SoundDefOf.ClickReject.PlayOneShotOnCamera();
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(validationText, ShowNextConfirmation));
+				return;
+			}
+
+			ExecuteTrade();
+		}
 
 		private void OnAccept()
 		{
-			if (TradeSession.deal.DoesTraderHaveEnoughSilver())
-			{
-				ExecuteTrade();
-			}
-			else
-			{
-				FlashSilver();
-				SoundDefOf.ClickReject.PlayOneShotOnCamera();
-				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(_confirmShortFundsText, ExecuteTrade));
-			}
+			ConfirmTrade();
 			Event.current.Use();
 		}
 
@@ -591,7 +609,6 @@ namespace DynamicTradeInterface.UserInterface
 				Messages.Message(_cannotAffordText, MessageTypeDefOf.RejectInput, historical: false);
 				return;
 			}
-
 
 			if (TradeSession.deal.TryExecute(out var actuallyTraded))
 			{
