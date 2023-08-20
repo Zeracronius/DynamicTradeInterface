@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DynamicTradeInterface.Mod;
 using UnityEngine;
 using Verse;
 
@@ -36,8 +37,15 @@ namespace DynamicTradeInterface.UserInterface
 		List<Tradeable> _tradeables;
 
 
-		private int _playerTile;
-		private BiomeDef _playerBiome;
+		/// <summary>
+		/// World tile occupied by the current trade negotiator of the player. This is lazily initialized before draw.
+		/// </summary>
+		private int _playerTile = Tile.Invalid;
+
+		/// <summary>
+		/// Biome in which the transaction is taking place. This is lazily initialized before draw.
+		/// </summary>
+		private BiomeDef? _playerBiome;
 
 		public bool InCaravan => _inCaravan;
 
@@ -151,8 +159,6 @@ namespace DynamicTradeInterface.UserInterface
 			}
 		}
 
-
-
 		public CaravanWidget(List<Tradeable> tradeables, Tradeable currency)
 		{
 			_tradeables = tradeables.ToList();
@@ -160,13 +166,11 @@ namespace DynamicTradeInterface.UserInterface
 
 			_visibilityExplanation = string.Empty;
 			_foragedFoodPerDayExplanation = string.Empty;
+
 			_massCapacityExplanation = string.Empty;
 			_tilesPerDayExplanation = string.Empty;
 			_allPawnsAndItems = new List<Thing>();
-			_playerTile = TradeSession.playerNegotiator.Tile;
-			_playerBiome = Find.WorldGrid[_playerTile].biome;
 		}
-
 
 		public void Initialize()
 		{
@@ -193,7 +197,29 @@ namespace DynamicTradeInterface.UserInterface
 
 		public void Draw(Rect inRect)
 		{
-			CaravanUIUtility.DrawCaravanInfo(new CaravanUIUtility.CaravanInfo(MassUsage, MassCapacity, _massCapacityExplanation, TilesPerDay, _tilesPerDayExplanation, DaysWorthOfFood, ForagedFoodPerDay, _foragedFoodPerDayExplanation, Visibility, _visibilityExplanation), null, _playerTile, null, -9999f, inRect);
+			if (InitializeTradeLocation())
+			{
+				CaravanUIUtility.DrawCaravanInfo(new CaravanUIUtility.CaravanInfo(MassUsage, MassCapacity, _massCapacityExplanation, TilesPerDay, _tilesPerDayExplanation, DaysWorthOfFood, ForagedFoodPerDay, _foragedFoodPerDayExplanation, Visibility, _visibilityExplanation), null, _playerTile, null, -9999f, inRect);
+			}
+			else
+			{
+				Logging.ErrorOnce("Could not find trade location. Caravan info widget cannot be drawn.");
+			}
+		}
+
+		private bool InitializeTradeLocation()
+		{
+			if (_playerTile == Tile.Invalid)
+			{
+				var tile = TradeSession.playerNegotiator.Tile;
+				if (tile != Tile.Invalid)
+				{
+					_playerTile = tile;
+					_playerBiome = Find.WorldGrid[_playerTile].biome;
+				}
+			}
+
+			return _playerBiome != null;
 		}
 	}
 }

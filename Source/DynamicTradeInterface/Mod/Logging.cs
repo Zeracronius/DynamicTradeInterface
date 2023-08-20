@@ -17,6 +17,11 @@ namespace DynamicTradeInterface.Mod
 			Log.Error(PREFIX + message);
 		}
 
+		internal static void ErrorOnce(string message)
+		{
+			Log.ErrorOnce(PREFIX + message, message.GetHashCode());
+		}
+
 		internal static void Error(Exception exception)
 		{
 			Log.Error(PREFIX + exception);
