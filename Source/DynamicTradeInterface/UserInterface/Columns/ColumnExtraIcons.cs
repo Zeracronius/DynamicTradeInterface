@@ -25,7 +25,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					if (row.AnyThing is Pawn pawn)
 						_rowCache[row] = new PawnTradeable(row, pawn);
 					else if (row.AnyThing is Genepack genepack && GeneAssistant.Active)
-						_rowCache[row] = new GenepackTradeable(row, genepack);
+						_rowCache[row] = new GenepackTradeable(genepack);
 				}
 			}
 		}
