@@ -33,7 +33,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				float joinAsWidth = 0;
 				if (ModsConfig.IdeologyActive && row.AnyThing is Pawn pawn)
 				{
-					if (pawn.RaceProps.Humanlike && pawn.guest != null && pawn.Faction.IsPlayer == false)
+					if (pawn.RaceProps.Humanlike && pawn.guest != null && !pawn.IsPrisonerOfColony && !pawn.IsSlaveOfColony)
 					{
 						joinAsLabel = (pawn.guest.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
 						joinAsDesc = (pawn.guest.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonistDesc" : "JoinsAsSlaveDesc").Translate();
