@@ -29,6 +29,9 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 		public static void Reset()
 		{
+			if (_dragSelectMod == false)
+				return;
+
 			if (Event.current.rawType == EventType.MouseUp || Input.GetMouseButtonUp(0))
 			{
 				_painting = false;

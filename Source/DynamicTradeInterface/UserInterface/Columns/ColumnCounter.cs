@@ -97,17 +97,22 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					minTransfer = cached.Item3;
 					maxTransfer = cached.Item4;
 
-					string buffer = val.ToStringCached();
+					string buffer = row.EditBuffer;
+					int checksum = buffer.Length;
 					Widgets.TextFieldNumeric(rect3, ref val, ref buffer, minTransfer, maxTransfer);
 
-					if (Mouse.IsOver(rect3))
-						TooltipHandler.TipRegion(rect3, _positiveBuysNegativeSells);
-					
 					if (val != countToTransfer)
 					{
 						row.AdjustTo(val);
+						countToTransfer = row.CountToTransfer;
 						refresh = true;
 					}
+
+					if (buffer.Length != checksum)
+						row.EditBuffer = buffer;
+
+					if (Mouse.IsOver(rect3))
+						TooltipHandler.TipRegion(rect3, _positiveBuysNegativeSells);
 				}
 				Text.Anchor = TextAnchor.UpperLeft;
 				GUI.color = Color.white;
@@ -115,7 +120,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (countToTransfer != 0)
 				{
 					Rect position = new Rect(rect2.x + rect2.width / 2f - (float)(_arrowIcon.width / 2), rect2.y + rect2.height / 2f - (float)(_arrowIcon.height / 2), _arrowIcon.width, _arrowIcon.height);
-					
+				
 					if ((positiveDirection == TransferablePositiveCountDirection.Source && countToTransfer > 0) || (positiveDirection == TransferablePositiveCountDirection.Destination && countToTransfer < 0))
 					{
 						position.x += position.width;

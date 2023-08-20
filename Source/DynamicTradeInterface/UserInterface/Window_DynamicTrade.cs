@@ -297,25 +297,11 @@ namespace DynamicTradeInterface.UserInterface
 
 			Rect left, right;
 			Rect top, bottom;
+
 			if (giftMode == false)
-			{
-				// Trader
 				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
-
-				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
-
-				Text.Anchor = TextAnchor.UpperCenter;
-				Text.Font = GameFont.Medium;
-				Widgets.Label(top, _traderHeader);
-
-				Text.Anchor = TextAnchor.LowerCenter;
-				Text.Font = GameFont.Small;
-				Widgets.Label(top, _traderHeaderDescription);
-
-				_traderTable.Draw(bottom);
-			}
 			else
-				left = body;
+				left = right = body;
 
 			// Colony
 			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
@@ -328,9 +314,27 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Font = GameFont.Small;
 			Widgets.Label(top, _colonyHeaderDescription);
 
+			Text.Anchor = TextAnchor.UpperLeft;
+			DrawSearchBox(top.x, top.yMax + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+
 			_colonyTable.Draw(bottom);
 
-			DrawSearchBox(top.x, top.yMax + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+			if (giftMode == false)
+			{
+				// Trader
+				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
+
+				Text.Anchor = TextAnchor.UpperCenter;
+				Text.Font = GameFont.Medium;
+				Widgets.Label(top, _traderHeader);
+
+				Text.Anchor = TextAnchor.LowerCenter;
+				Text.Font = GameFont.Small;
+				Widgets.Label(top, _traderHeaderDescription);
+
+				Text.Anchor = TextAnchor.UpperLeft;
+				_traderTable.Draw(bottom);
+			}
 
 			if (_currency != null)
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
