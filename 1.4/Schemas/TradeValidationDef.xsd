@@ -6,12 +6,6 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:simpleType name="SortDirection">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="Ascending" />
-			<xs:enumeration value="Descending" />
-		</xs:restriction>
-	</xs:simpleType>
 	<xs:complexType name="TradeValidationDef">
 		<xs:all>
 			<xs:element name="defName" type="xs:string" minOccurs="0" maxOccurs="1"/>
