@@ -1,6 +1,7 @@
 ﻿using DynamicTradeInterface.Attributes;
 using DynamicTradeInterface.Collections;
 using DynamicTradeInterface.Defs;
+using DynamicTradeInterface.InterfaceComponents;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using DynamicTradeInterface.Mod;
 using RimWorld;
@@ -18,6 +19,7 @@ using static HarmonyLib.Code;
 
 namespace DynamicTradeInterface.UserInterface
 {
+	[HotSwappable]
 	internal class Window_DynamicTrade : Window
 	{
 		static Vector2 _mainButtonSize = new Vector2(160f, 40f);
@@ -43,7 +45,6 @@ namespace DynamicTradeInterface.UserInterface
 		string _cancelButtonText;
 		string _resetButtonText;
 		string _acceptButtonText;
-		string _confirmShortFundsText;
 		string _offerGiftsText;
 		string _acceptText;
 		string _cannotAffordText;
@@ -57,6 +58,7 @@ namespace DynamicTradeInterface.UserInterface
 		Texture2D _showSellableItemsIcon;
 		Texture2D _giftModeIcon;
 		Texture2D _arrowIcon;
+		Texture2D _resetIcon;
 
 		Dictionary<TradeColumnDef, long>? _frameCache;
 
@@ -67,6 +69,8 @@ namespace DynamicTradeInterface.UserInterface
 
 		// Profiling
 		Stopwatch _stopWatch;
+
+		private Queue<string> _confirmations;
 
 		public Window_DynamicTrade(bool giftOnly = false)
 		{
@@ -103,7 +107,6 @@ namespace DynamicTradeInterface.UserInterface
 			_cancelButtonText = string.Empty;
 			_resetButtonText = string.Empty;
 			_acceptButtonText = string.Empty;
-			_confirmShortFundsText = string.Empty;
 			_offerGiftsText = string.Empty;
 			_cannotAffordText = string.Empty;
 			_showSellableItemsDesc = string.Empty;
@@ -116,17 +119,20 @@ namespace DynamicTradeInterface.UserInterface
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
 			_giftModeIcon = Textures.GiftModeIcon;
 			_arrowIcon = Textures.TradeArrow;
+			_resetIcon = Textures.ResetIcon;
 
 			resizeable = true;
 			draggable = true;
 			forcePause = true;
 			absorbInputAroundWindow = true;
+			_confirmations = new Queue<string>();
 		}
 
 
 		public override void PreOpen()
 		{
 			base.PreOpen();
+			DragSelect.Initialize();
 
 			_currency = TradeSession.deal.CurrencyTradeable;
 			_traderFaction = TradeSession.trader.Faction;
@@ -156,7 +162,6 @@ namespace DynamicTradeInterface.UserInterface
 
 			_resetButtonText = "ResetButton".Translate();
 			_cancelButtonText = "CancelButton".Translate();
-			_confirmShortFundsText = "ConfirmTraderShortFunds".Translate();
 			_cannotAffordText = "MessageColonyCannotAfford".Translate();
 			_showSellableItemsDesc = "CommandShowSellableItemsDesc".Translate();
 			_tradeModeTip = "TradeModeTip".Translate();
@@ -275,6 +280,8 @@ namespace DynamicTradeInterface.UserInterface
 				inRect.yMin += 52f;
 			}
 
+			DragSelect.Reset();
+
 			// Trade interface configuration button.
 			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), Textures.SettingsIcon))
 			{
@@ -329,7 +336,7 @@ namespace DynamicTradeInterface.UserInterface
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
 
 
-			float width = _mainButtonSize.x * 3 + GenUI.GapTiny * 2;
+			float width = _mainButtonSize.x * 2 + _mainButtonSize.y + GenUI.GapTiny * 2;
 			Rect mainButtonRect = new Rect(footer.center.x - width / 2, footer.yMax - GenUI.GapTiny - _mainButtonSize.y, _mainButtonSize.x, _mainButtonSize.y);
 			// Accept
 			if (Widgets.ButtonText(mainButtonRect, _acceptButtonText))
@@ -339,13 +346,18 @@ namespace DynamicTradeInterface.UserInterface
 			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
 
 			// Reset
-			if (Widgets.ButtonText(mainButtonRect, _resetButtonText))
+			Rect resetButtonRect = new Rect(mainButtonRect.x, mainButtonRect.y, mainButtonRect.height, mainButtonRect.height);
+			float textureSize = mainButtonRect.height - GenUI.GapSmall - GenUI.GapTiny;
+			if (Widgets.ButtonImageWithBG(resetButtonRect, _resetIcon, new Vector2(textureSize, textureSize)))
 			{
 				SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 				ResetTrade();
 				_refresh = true;
 			}
-			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
+			if (Mouse.IsOver(resetButtonRect))
+				TooltipHandler.TipRegion(resetButtonRect, _resetButtonText);
+
+			mainButtonRect.x += resetButtonRect.width + GenUI.GapTiny;
 
 			// Cancel
 			if (Widgets.ButtonText(mainButtonRect, _cancelButtonText))
@@ -566,19 +578,37 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperLeft;
 		}
 
+		private void ConfirmTrade()
+		{
+			_confirmations.Clear();
+			// Execute all validations and queue confirmation dialog texts for those that fail.
+			foreach (var validator in _settings.ValidationDefs)
+			{
+				// _settings.ValidationDefs only contains validators with non-null actions and text. It is safe to not check
+				// for null values in this if block.
+				if (!validator.validationCallback!())
+				{
+					_confirmations.Enqueue(validator.translatedText!);
+				}
+			}
+			ShowNextConfirmation();
+		}
+
+		private void ShowNextConfirmation()
+		{
+			if (_confirmations.TryDequeue(out var validationText))
+			{
+				SoundDefOf.ClickReject.PlayOneShotOnCamera();
+				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(validationText, ShowNextConfirmation));
+				return;
+			}
+
+			ExecuteTrade();
+		}
 
 		private void OnAccept()
 		{
-			if (TradeSession.deal.DoesTraderHaveEnoughSilver())
-			{
-				ExecuteTrade();
-			}
-			else
-			{
-				FlashSilver();
-				SoundDefOf.ClickReject.PlayOneShotOnCamera();
-				Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(_confirmShortFundsText, ExecuteTrade));
-			}
+			ConfirmTrade();
 			Event.current.Use();
 		}
 
@@ -591,7 +621,6 @@ namespace DynamicTradeInterface.UserInterface
 				Messages.Message(_cannotAffordText, MessageTypeDefOf.RejectInput, historical: false);
 				return;
 			}
-
 
 			if (TradeSession.deal.TryExecute(out var actuallyTraded))
 			{

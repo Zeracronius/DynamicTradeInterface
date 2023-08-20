@@ -1,14 +1,8 @@
-﻿using DynamicTradeInterface.Attributes;
-using DynamicTradeInterface.Defs;
-using DynamicTradeInterface.InterfaceComponents.TableBox;
+﻿using DynamicTradeInterface.Defs;
 using HarmonyLib;
-using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using Verse;
 
 namespace DynamicTradeInterface.Mod
@@ -21,7 +15,6 @@ namespace DynamicTradeInterface.Mod
 		private HashSet<TradeColumnDef> _validColumnDefs;
 		private List<TradeColumnDef> _visibleColumns;
 
-
 		bool _profilingEnabled;
 		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;
 		float _tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
@@ -33,11 +26,13 @@ namespace DynamicTradeInterface.Mod
 		{
 			_validColumnDefs = new HashSet<TradeColumnDef>();
 			_visibleColumns = new List<TradeColumnDef>();
+			ValidationDefs = new HashSet<TradeValidationDef>();
 			_tradeColumnProfilings = new Dictionary<TradeColumnDef, Queue<long>>();
 		}
 
 		internal HashSet<TradeColumnDef> ValidColumns => _validColumnDefs;
 		internal List<TradeColumnDef> VisibleColumns => _visibleColumns;
+		public HashSet<TradeValidationDef> ValidationDefs { get; }
 
 		internal bool ProfilingEnabled
 		{
@@ -95,8 +90,7 @@ namespace DynamicTradeInterface.Mod
 				_visibleColumns = _visibleColumns.Where(x => x != null).ToList();
 		}
 
-
-		internal void Initialize()
+		private void InitializeColumns()
 		{
 			_validColumnDefs.Clear();
 			List<TradeColumnDef> tradeColumns = DefDatabase<TradeColumnDef>.AllDefsListForReading;
@@ -133,6 +127,38 @@ namespace DynamicTradeInterface.Mod
 			// Default visible columns
 			if (_visibleColumns.Count == 0)
 				_visibleColumns.AddRange(_validColumnDefs.Where(x => x.defaultVisible));
+		}
+
+		private void InitializeTradeValidation()
+		{
+			foreach (var validationDef in DefDatabase<TradeValidationDef>.AllDefsListForReading)
+			{
+				if (string.IsNullOrWhiteSpace(validationDef.validationCallbackHandler) || string.IsNullOrWhiteSpace(validationDef.textKey))
+				{
+					continue;
+				}
+
+				try
+				{
+					validationDef.validationCallback = AccessTools.MethodDelegate<TradeValidationDef.TradeValidationAction>(validationDef.validationCallbackHandler);
+					if (validationDef.validationCallback != null && validationDef.textKey.TryTranslate(out var translated))
+					{
+						validationDef.translatedText = translated;
+						ValidationDefs.Add(validationDef);
+					}
+				}
+				catch (Exception e)
+				{
+					Logging.Error($"Unable to locate validation handler '{validationDef.validationCallbackHandler}' for validator {validationDef.defName}.\nEnsure referenced method has no arguments and a return type of bool'");
+					Logging.Error(e);
+				}
+			}
+		}
+
+		internal void Initialize()
+		{
+			InitializeColumns();
+			InitializeTradeValidation();
 		}
 
 		private T? ParseCallbackHandler<T>(string? handler, string error) where T : Delegate

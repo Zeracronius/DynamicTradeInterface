@@ -1,4 +1,5 @@
 ﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.InterfaceComponents;
 using RimWorld;
 using RimWorld.QuestGen;
 using System;
@@ -67,7 +68,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				if (largeRange)
 				{
-					if (Widgets.ButtonText(button, "<<"))
+					if (Widgets.ButtonText(button, "<<") || DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left))
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
 						{
@@ -87,7 +88,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					button.width += gap + baseButtonRect.width;
 				}
 
-				if (Widgets.ButtonText(button, "<"))
+				if (Widgets.ButtonText(button, "<") || (!largeRange && DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left)))
 				{
 					row.AdjustBy(adjustAmount);
 					refresh = true;
@@ -103,7 +104,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			// Draw reset
 			if (currentAmountToTransfer != 0)
 			{
-				if (Widgets.ButtonText(baseButtonRect, "0"))
+				if (Widgets.ButtonText(baseButtonRect, "0") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Middle))
 				{
 					row.AdjustTo(0);
 					refresh = true;
@@ -119,7 +120,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					baseButtonRect.width = baseButtonRect.width * 2 + gap;
 
 
-				if (Widgets.ButtonText(baseButtonRect, ">"))
+				if (Widgets.ButtonText(baseButtonRect, ">") || (!largeRange && DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right)))
 				{
 					row.AdjustBy(-adjustAmount);
 					refresh = true;
@@ -130,7 +131,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				if (largeRange)
 				{
-					if (Widgets.ButtonText(baseButtonRect, ">>"))
+					if (Widgets.ButtonText(baseButtonRect, ">>") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right))
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
 						{
