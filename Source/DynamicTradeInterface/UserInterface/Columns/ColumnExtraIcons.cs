@@ -158,21 +158,20 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					return;
 
 				Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
-				iconRect.x -= iconRect.width;
 
 				if (_captive)
 				{
 					if (_traderHomeFaction)
 					{
-						GUI.DrawTexture(rect, GuestUtility.RansomIcon);
-						if (Mouse.IsOver(rect))
+						GUI.DrawTexture(iconRect, GuestUtility.RansomIcon);
+						if (Mouse.IsOver(iconRect))
 							TooltipHandler.TipRegion(rect, "SellingAsRansom".Translate());
 					}
 					else
 					{
-						GUI.DrawTexture(rect, GuestUtility.SlaveIcon);
-						if (Mouse.IsOver(rect))
-							TooltipHandler.TipRegion(rect, "SellingAsSlave".Translate());
+						GUI.DrawTexture(iconRect, GuestUtility.SlaveIcon);
+						if (Mouse.IsOver(iconRect))
+							TooltipHandler.TipRegion(iconRect, "SellingAsSlave".Translate());
 					}
 					iconRect.x -= iconRect.width;
 				}
