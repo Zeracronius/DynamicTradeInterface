@@ -11,7 +11,7 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class PawnTradeable : ITradeable
+	internal class PawnDrawable : IDrawable
 	{
 		private Pawn _pawn;
 		private Intelligence _intelligence;
@@ -24,7 +24,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		private bool _captive;
 		private bool _traderHomeFaction;
 
-		public PawnTradeable(Tradeable tradeable, Pawn pawn)
+		public PawnDrawable(Tradeable tradeable, Pawn pawn)
 		{
 			string joinAsText = (pawn.guest?.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
 			_pawn = pawn;

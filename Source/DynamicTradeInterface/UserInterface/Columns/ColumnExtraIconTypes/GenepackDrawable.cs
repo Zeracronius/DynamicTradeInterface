@@ -10,7 +10,7 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class GenepackTradeable : ITradeable
+	internal class GenepackDrawable : IDrawable
 	{
 		private static Dictionary<GeneDef, GeneAssistant.GeneType> _bankedGenes = new Dictionary<GeneDef, GeneAssistant.GeneType>();
 
@@ -75,7 +75,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				_bankedGenes.Clear();
 		}
 
-		public GenepackTradeable(Genepack genepack)
+		public GenepackDrawable(Genepack genepack)
 		{
 			List<GeneAssistant.GeneType>? types = genepack.GeneSet
 				?.GenesListForReading
