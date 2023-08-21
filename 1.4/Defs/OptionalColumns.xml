@@ -22,4 +22,16 @@
 		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:PostOpen</postOpenCallbackHandler>
 		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnPricePerWeight:PostClosed</postClosedCallbackHandler>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colTradeCounterLabelDef</defName>
+		<label>counter box</label>
+		<description>A faster read-only version of the counter box where the current quantity bought or sold is shown.</description>
+		<showCaption>false</showCaption>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:OrderbyValue</orderValueCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:PostClosed</postClosedCallbackHandler>
+		<defaultWidth>80</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>
