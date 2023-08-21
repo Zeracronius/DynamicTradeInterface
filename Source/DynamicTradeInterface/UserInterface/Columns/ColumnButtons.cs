@@ -25,6 +25,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			private readonly bool _largeRange;
 			private readonly int _minimum;
 			private readonly int _maximum;
+			private bool _playEltexOneShot;
 
 			public Button(Tradeable row)
 			{
@@ -33,6 +34,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				_largeRange = row.GetRange() > 1;
 				_minimum = row.GetMinimumToTransfer();
 				_maximum = row.GetMaximumToTransfer();
+				_playEltexOneShot =
+					PsycastsExpanded.Active &&
+					TradeSession.trader.Faction != Faction.OfEmpire &&
+					PsycastsExpanded.IsEltexOrHasEltexMaterial(row.ThingDef);
 			}
 
 			public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
@@ -77,7 +82,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					}
 
 					if (Widgets.ButtonText(button, "<") || (!_largeRange && DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left))) {
-						_row.AdjustBy(adjustAmount);
+						AdjustBy(adjustAmount);
 						refresh = true;
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
 					}
@@ -89,7 +94,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				// Draw reset
 				if (currentAmountToTransfer != 0) {
 					if (Widgets.ButtonText(baseButtonRect, "0") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Middle)) {
-						_row.AdjustTo(0);
+						AdjustTo(0);
 						refresh = true;
 						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 					}
@@ -103,7 +108,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 
 					if (Widgets.ButtonText(baseButtonRect, ">") || (!_largeRange && DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right))) {
-						_row.AdjustBy(-adjustAmount);
+						AdjustBy(-adjustAmount);
 						refresh = true;
 						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 
@@ -140,7 +145,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			private void SellMore()
 			{
 				if (TradeSession.giftMode || Event.current.shift) {
-					_row.AdjustTo(_row.GetMinimumToTransfer());
+					AdjustTo(_row.GetMinimumToTransfer());
 					return;
 				}
 
@@ -152,9 +157,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				int traderCanBuy = MaxAmount(TradeAction.PlayerSells);
 				if (currentAmount > traderCanBuy)
-					_row.AdjustTo(traderCanBuy);
+					AdjustTo(traderCanBuy);
 				else
-					_row.AdjustTo(_row.GetMinimumToTransfer());
+					AdjustTo(_row.GetMinimumToTransfer());
 			}
 
 			/// <summary>
@@ -165,9 +170,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				int traderCanBuy = MaxAmount(TradeAction.PlayerSells);
 				if (currentAmount < traderCanBuy)
-					_row.AdjustTo(traderCanBuy);
+					AdjustTo(traderCanBuy);
 				else
-					_row.AdjustTo(0);
+					AdjustTo(0);
 			}
 
 			/// <summary>
@@ -177,7 +182,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			private void BuyMore()
 			{
 				if (TradeSession.giftMode || Event.current.shift) {
-					_row.AdjustTo(_row.GetMaximumToTransfer());
+					AdjustTo(_row.GetMaximumToTransfer());
 					return;
 				}
 
@@ -191,9 +196,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				// If current value is below what the colony can buy, stop at that first.
 				if (currentAmount < colonyCanBuy)
-					_row.AdjustTo(colonyCanBuy);
+					AdjustTo(colonyCanBuy);
 				else
-					_row.AdjustTo(_row.GetMaximumToTransfer());
+					AdjustTo(_row.GetMaximumToTransfer());
 			}
 
 			/// <summary>
@@ -204,9 +209,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				int traderCanBuy = MaxAmount(TradeAction.PlayerBuys);
 				if (currentAmount > traderCanBuy)
-					_row.AdjustTo(traderCanBuy);
+					AdjustTo(traderCanBuy);
 				else
-					_row.AdjustTo(0);
+					AdjustTo(0);
 			}
 
 			private int MaxAmount(TradeAction action)
@@ -218,6 +223,22 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				float price = _row.GetPriceFor(action);
 				int currency = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
 				return (int)(currency / price);
+			}
+
+			private void AdjustBy(int adjustment)
+			{
+				AdjustTo(_row.CountToTransfer + adjustment);
+			}
+
+			private void AdjustTo(int destination)
+			{
+				_row.AdjustTo(destination);
+				if (_playEltexOneShot && _row.CountToTransferToDestination > 0)
+				{
+					string message = TradeSession.giftMode ? "VPE.GiftingEltexWarning" : "VPE.SellingEltexWarning";
+					Messages.Message(message.Translate(), MessageTypeDefOf.CautionInput);
+					_playEltexOneShot = false;
+				}
 			}
 		}
 
