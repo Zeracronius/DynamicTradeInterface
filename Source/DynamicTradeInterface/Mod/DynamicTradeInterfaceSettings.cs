@@ -133,7 +133,7 @@ namespace DynamicTradeInterface.Mod
 		{
 			foreach (var validationDef in DefDatabase<TradeValidationDef>.AllDefsListForReading)
 			{
-				if (string.IsNullOrWhiteSpace(validationDef.validationCallbackHandler) || string.IsNullOrWhiteSpace(validationDef.textKey))
+				if (string.IsNullOrWhiteSpace(validationDef.validationCallbackHandler))
 				{
 					continue;
 				}
@@ -141,9 +141,8 @@ namespace DynamicTradeInterface.Mod
 				try
 				{
 					validationDef.validationCallback = AccessTools.MethodDelegate<TradeValidationDef.TradeValidationAction>(validationDef.validationCallbackHandler);
-					if (validationDef.validationCallback != null && validationDef.textKey.TryTranslate(out var translated))
+					if (validationDef.validationCallback != null)
 					{
-						validationDef.translatedText = translated;
 						ValidationDefs.Add(validationDef);
 					}
 				}
