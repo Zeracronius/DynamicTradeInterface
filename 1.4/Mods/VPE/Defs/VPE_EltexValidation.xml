@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Schemas/TradeValidationDef.xsd">
 	<DynamicTradeInterface.Defs.TradeValidationDef>
-		<defName>DTI_InsufficientSilver</defName>
-		<validationCallbackHandler>DynamicTradeInterface.UserInterface.TradeValidation.InsufficientSilver:Validate</validationCallbackHandler>
-		<textKey>ConfirmTraderShortFunds</textKey>
+		<defName>DTI_SellingEltex</defName>
+		<validationCallbackHandler>DynamicTradeInterface.UserInterface.TradeValidation.SellingEltex:Validate</validationCallbackHandler>
+		<textKey>DTI_TradingEltexWarning</textKey>
 	</DynamicTradeInterface.Defs.TradeValidationDef>
 </Defs>
