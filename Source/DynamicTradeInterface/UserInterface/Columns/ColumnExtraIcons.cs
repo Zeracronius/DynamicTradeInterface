@@ -23,9 +23,26 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (!_rowCache.ContainsKey(row))
 				{
 					if (row.AnyThing is Pawn pawn)
+					{
 						_rowCache[row] = new PawnDrawable(row, pawn);
-					else if (row.AnyThing is Genepack genepack && GeneAssistant.Active)
+						continue;
+					}
+
+					if (GeneAssistant.Active && row.AnyThing is Genepack genepack)
+					{
 						_rowCache[row] = new GenepackDrawable(genepack);
+						continue;
+					}
+
+					if (Techprints.Active)
+					{
+						var techComp = row.AnyThing.TryGetComp<CompTechprint>();
+						if (techComp != null)
+						{
+							_rowCache[row] = new TechprintDrawable(techComp);
+							continue;
+						}
+					}
 				}
 			}
 		}
