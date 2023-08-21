@@ -20,11 +20,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		private class Button
 		{
-			private Tradeable _row;
-			private bool _tradeable;
-			private bool _largeRange;
-			private int _minimum;
-			private int _maximum;
+			private readonly Tradeable _row;
+			private readonly bool _tradeable;
+			private readonly bool _largeRange;
+			private readonly int _minimum;
+			private readonly int _maximum;
 
 			public Button(Tradeable row)
 			{
