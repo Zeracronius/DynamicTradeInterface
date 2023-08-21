@@ -3,6 +3,5 @@
 	<DynamicTradeInterface.Defs.TradeValidationDef>
 		<defName>DTI_SellingEltex</defName>
 		<validationCallbackHandler>DynamicTradeInterface.UserInterface.TradeValidation.SellingEltex:Validate</validationCallbackHandler>
-		<textKey>DTI_TradingEltexWarning</textKey>
 	</DynamicTradeInterface.Defs.TradeValidationDef>
 </Defs>

@@ -1,18 +1,19 @@
 ﻿using RimWorld;
 using UnityEngine;
+using Verse;
 
 namespace DynamicTradeInterface.UserInterface.TradeValidation;
 
 public static class InsufficientSilver
 {
-	public static bool Validate()
+	public static TaggedString? Validate()
 	{
-		var result = TradeSession.deal.DoesTraderHaveEnoughSilver();
-		if (!result)
+		if (TradeSession.deal.DoesTraderHaveEnoughSilver())
 		{
-			Dialog_Trade.lastCurrencyFlashTime = Time.time;
+			return null;
 		}
 
-		return result;
+		Dialog_Trade.lastCurrencyFlashTime = Time.time;
+		return "ConfirmTraderShortFunds".Translate();
 	}
 }

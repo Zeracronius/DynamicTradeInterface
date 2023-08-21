@@ -16,13 +16,6 @@
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="textKey"  type="xs:string" minOccurs="1" maxOccurs="1">
-				<xs:annotation>
-					<xs:documentation>
-						Translatable string ID to show in confirmation dialogs when this validation fails.
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
 		</xs:all>
 	</xs:complexType>
 </xs:schema>

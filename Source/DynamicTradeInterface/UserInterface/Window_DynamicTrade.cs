@@ -590,11 +590,13 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				// _settings.ValidationDefs only contains validators with non-null actions and text. It is safe to not check
 				// for null values in this if block.
-				if (!validator.validationCallback!())
+				var confirmationText = validator.validationCallback!();
+				if (confirmationText.HasValue)
 				{
-					_confirmations.Enqueue(validator.translatedText!);
+					_confirmations.Enqueue(confirmationText);
 				}
 			}
+
 			ShowNextConfirmation();
 		}
 
