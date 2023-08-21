@@ -12,18 +12,30 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCounter
 	{
+		private struct Cache
+		{
+			public bool WillTrade;
+			public bool Interactive;
+			public int MinimumQuantity;
+			public int MaximumQuantity;
+		}
 
 		private static string? _dynamicTradeUnwilling;
 		private static string? _positiveBuysNegativeSells;
 		private static string? _negotiatorWillNotTradeSlavesTip;
 
-		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();
+		private static Dictionary<Tradeable, Cache> _editableCache = new Dictionary<Tradeable, Cache>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			foreach (var row in rows)
-				_editableCache[row] = (row.TraderWillTrade, row.Interactive, row.GetMinimumToTransfer(), row.GetMaximumToTransfer());
-
+				_editableCache[row] = new Cache()
+				{
+					WillTrade = row.TraderWillTrade,
+					Interactive = row.Interactive,
+					MinimumQuantity = row.GetMinimumToTransfer(),
+					MaximumQuantity = row.GetMaximumToTransfer(),
+				};
 
 			if (transactor == Transactor.Colony)
 			{
@@ -48,10 +60,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			if (_editableCache.TryGetValue(row, out (bool, bool, int, int) cached) == false)
+			if (_editableCache.TryGetValue(row, out Cache cached) == false)
 				return;
 
-			if (cached.Item1 == false)
+			if (cached.WillTrade == false)
 			{
 				DrawWillNotTradeText(rect, _dynamicTradeUnwilling);
 				if (Mouse.IsOver(rect))
@@ -79,7 +91,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
 
-				if (!cached.Item2)
+				if (!cached.Interactive)
 				{
 					GUI.color = countToTransfer == 0 ? TransferableUIUtility.ZeroCountColor : Color.white;
 					Text.Anchor = TextAnchor.MiddleCenter;
@@ -94,8 +106,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 					int minTransfer, maxTransfer;
 
-					minTransfer = cached.Item3;
-					maxTransfer = cached.Item4;
+					minTransfer = cached.MinimumQuantity;
+					maxTransfer = cached.MaximumQuantity;
 
 					string buffer = row.EditBuffer;
 					int checksum = buffer.Length;
