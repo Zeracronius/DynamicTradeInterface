@@ -176,7 +176,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				return;
 			}
 
-			int traderCanBuy = MaxAmount(row, TradeAction.PlayerSells);
+			int traderCanBuy = -MaxAmount(row, TradeAction.PlayerSells);
 			if (currentAmount > traderCanBuy)
 				row.AdjustTo(traderCanBuy);
 			else
@@ -189,7 +189,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		/// <param name="row">The item in question.</param>
 		private static void SellLess(Tradeable row, int currentAmount)
 		{
-			int traderCanBuy = MaxAmount(row, TradeAction.PlayerSells);
+			int traderCanBuy = -MaxAmount(row, TradeAction.PlayerSells);
 			if (currentAmount < traderCanBuy)
 				row.AdjustTo(traderCanBuy);
 			else
@@ -245,7 +245,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				transactor = Transactor.Trader;
 
 			float price = row.GetPriceFor(action);
+			int priceOffset = (int)(price * -row.CountToTransfer);
 			int currency = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
+
+			if (priceOffset > 0)
+				currency += priceOffset;
+			else
+				currency -= priceOffset;
+
 			return (int)(currency / price);
 		}
 	}
