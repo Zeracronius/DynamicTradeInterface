@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	public interface ITradeable
+	public interface IDrawable
 	{
 		void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh);
 	}

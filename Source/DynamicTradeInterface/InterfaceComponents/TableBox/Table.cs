@@ -411,7 +411,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				Rect columnHeader = new Rect(boundingBox);
 				columnHeader.height = Text.LineHeight;
 
-				for (int i = 0; i < _columns.Count; i++)
+				int columnCount = _columns.Count;
+				for (int i = 0; i < columnCount; i++)
 				{
 					TableColumn<T> column = _columns[i];
 					if (column.IsFixedWidth)
@@ -473,7 +474,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				T currentRow;
 				// Get index of first row visible in scrollbox
 				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
-				for (; currentIndex < _rows.Filtered.Count; currentIndex++)
+				int rowCount = _rows.Filtered.Count;
+				for (; currentIndex < rowCount; currentIndex++)
 				{
 					currentRow = _rows.Filtered[currentIndex];
 					rowRect.x = 0;
@@ -488,8 +490,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 						else
 							rowRect.width = column.Width / _dynamicColumnWidth * leftoverWidth;
 
-						if (column.Callback != null)
-							column.Callback(ref rowRect, currentRow);
+						RowCallback<Rect, T>? callback = column.Callback;
+						if (callback != null)
+							callback(ref rowRect, currentRow);
 						else
 							Widgets.Label(rowRect, currentRow[column]);
 

@@ -56,8 +56,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 	internal class TableColumn<T> : TableColumn
 	{
-		public RowCallback<Rect, T>? Callback { get; }
-		public Action<ListFilter<T>, SortDirection, TableColumn>? OrderByCallback { get; }
+		public RowCallback<Rect, T>? Callback;
+		public Action<ListFilter<T>, SortDirection, TableColumn>? OrderByCallback;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TableColumn{T}"/> class.

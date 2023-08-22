@@ -10,27 +10,7 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal static class EnumerableExt
-	{
-		public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> source)
-		{
-			foreach (IEnumerable<T> outer in source)
-				foreach (T inner in outer)
-					yield return inner;
-		}
-
-		public static IEnumerable<TResult> SelectNotNull<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult?> selector)
-		{
-			foreach (TSource elem in source)
-			{
-				TResult? result = selector(elem);
-				if (result != null)
-					yield return result;
-			}
-		}
-	}
-
-	internal class GenepackTradeable : ITradeable
+	internal class GenepackDrawable : IDrawable
 	{
 		private static Dictionary<GeneDef, GeneAssistant.GeneType> _bankedGenes = new Dictionary<GeneDef, GeneAssistant.GeneType>();
 
@@ -43,21 +23,48 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			if (transactor != Transactor.Colony)
 				return;
 
-			var genepacks = Find.CurrentMap
-				?.listerBuildings
-				.AllBuildingsColonistOfDef(ThingDefOf.GeneBank)
-				.SelectNotNull((building) => building.TryGetComp<CompGenepackContainer>()?.ContainedGenepacks)
-				.Flatten()
-				.SelectNotNull((genepack) => genepack.GeneSet?.GenesListForReading);
-			if (genepacks != null)
+
+			// Get all player buildings across all colonies.
+			List<Building> allPlayerBuildings = new List<Building>();
+			List<Map> maps = Find.Maps;
+			for (int i = maps.Count - 1; i >= 0; i--)
 			{
-				foreach (var genes in genepacks)
+				Map map = maps[i];
+				if (map.IsPlayerHome)
+					allPlayerBuildings.AddRange(map.listerBuildings.allBuildingsColonist);
+			}
+
+			foreach (Building building in allPlayerBuildings)
+			{
+				// Find all genepack container components across all buildings
+				CompGenepackContainer? genepackContainer = building.TryGetComp<CompGenepackContainer>();
+				if (genepackContainer == null)
+					continue;
+
+				foreach (Genepack? genepack in genepackContainer.ContainedGenepacks)
 				{
+					GeneSet? geneSet = genepack?.GeneSet;
+
+					if (geneSet == null)
+						continue;
+
+					List<GeneDef> genes = geneSet.GenesListForReading;
+
+					// If genepack only contains a single gene, mark it as isolated.
 					if (genes.Count == 1)
+					{
+						// Do overwrite even if gene has already been detected as mixed.
 						_bankedGenes[genes[0]] = GeneAssistant.GeneType.Isolated;
-					else
-						foreach (var gene in genes)
-							_bankedGenes.TryAdd(gene, GeneAssistant.GeneType.Mixed);
+						continue;
+					}
+
+					// Otherwise mark it as mixed.
+					for (int i = genes.Count - 1; i >= 0; i--)
+					{
+						// Don't overwrite if gene has already been logged as isolated.
+						if (_bankedGenes.ContainsKey(genes[i]) == false)
+							_bankedGenes.TryAdd(genes[i], GeneAssistant.GeneType.Mixed);
+					}
 				}
 			}
 		}
@@ -68,7 +75,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				_bankedGenes.Clear();
 		}
 
-		public GenepackTradeable(Genepack genepack)
+		public GenepackDrawable(Genepack genepack)
 		{
 			List<GeneAssistant.GeneType>? types = genepack.GeneSet
 				?.GenesListForReading

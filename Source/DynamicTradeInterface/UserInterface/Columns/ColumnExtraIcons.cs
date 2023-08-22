@@ -11,21 +11,38 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal class ColumnExtraIcons
 	{
-		private static Dictionary<Tradeable, ITradeable> _rowCache = new Dictionary<Tradeable, ITradeable>();
+		private static Dictionary<Tradeable, IDrawable> _rowCache = new Dictionary<Tradeable, IDrawable>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
-				GenepackTradeable.PostOpen(rows, transactor);
+				GenepackDrawable.PostOpen(rows, transactor);
 
 			foreach (var row in rows)
 			{
 				if (!_rowCache.ContainsKey(row))
 				{
 					if (row.AnyThing is Pawn pawn)
-						_rowCache[row] = new PawnTradeable(row, pawn);
-					else if (row.AnyThing is Genepack genepack && GeneAssistant.Active)
-						_rowCache[row] = new GenepackTradeable(genepack);
+					{
+						_rowCache[row] = new PawnDrawable(row, pawn);
+						continue;
+					}
+
+					if (GeneAssistant.Active && row.AnyThing is Genepack genepack)
+					{
+						_rowCache[row] = new GenepackDrawable(genepack);
+						continue;
+					}
+
+					if (Techprints.Active)
+					{
+						var techComp = row.AnyThing.TryGetComp<CompTechprint>();
+						if (techComp != null)
+						{
+							_rowCache[row] = new TechprintDrawable(techComp);
+							continue;
+						}
+					}
 				}
 			}
 		}
@@ -33,7 +50,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
-				GenepackTradeable.PostClosed(rows, transactor);
+				GenepackDrawable.PostClosed(rows, transactor);
 			_rowCache.Clear();
 		}
 
