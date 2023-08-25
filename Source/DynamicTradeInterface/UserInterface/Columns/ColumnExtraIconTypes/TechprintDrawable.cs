@@ -14,7 +14,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		Texture? _icon;
 		string _tooltip;
 
-        public TechprintDrawable(CompTechprint techprintComp)
+		public TechprintDrawable(CompTechprint techprintComp)
 		{
 			ResearchProjectDef project = techprintComp.Props.project;
 			if (project.TechprintRequirementMet)
