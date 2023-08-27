@@ -1,4 +1,5 @@
 ﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.UserInterface.Columns.ColumnCounterTypes;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
 		{
-			return (Tradeable row) => row.CountToTransfer;
+			return (Tradeable row) => new CounterComparable(row.CountToTransfer);
 		}
 	}
 }

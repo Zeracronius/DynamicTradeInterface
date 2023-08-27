@@ -478,6 +478,7 @@ namespace DynamicTradeInterface.UserInterface
 			PopulateTable(_traderTable, Transactor.Trader);
 
 			// Trigger PostOpen for each column in both tables.
+			Text.Font = _rowFont;
 			foreach (TradeColumnDef column in _columns)
 			{
 				column._postOpenCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
