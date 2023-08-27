@@ -10,10 +10,13 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeInfoDef</defName>
-		<label>info button</label>
+		<label></label>
+		<tooltip>info button</tooltip>
 		<description>Button to open the info window.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnInfo:Draw</callbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnInfo:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnInfo:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>20</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
 
