@@ -11,7 +11,6 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns
 {
-	[HotSwappable]
 	internal static class ColumnCounterLabel
 	{
 		private struct Cache
