@@ -8,11 +8,33 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using DynamicTradeInterface.Attributes;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
+	/// <summary>
+	/// Proxy class used to call the protected methods on PawnColumnWorker_LifeStage.
+	/// </summary>
+	/// <seealso cref="RimWorld.PawnColumnWorker_LifeStage" />
+	internal class PawnColumnLifeStageProxy : PawnColumnWorker_LifeStage
+	{
+		public Texture2D GetIcon(Pawn pawn)
+		{
+			return base.GetIconFor(pawn);
+		}
+
+		public string GetTooltip(Pawn pawn)
+		{
+			return base.GetIconTip(pawn);
+		}
+	}
+
+	[HotSwappable]
 	internal class PawnDrawable : IDrawable
 	{
+		static PawnColumnLifeStageProxy _columnWorkerProxy = new PawnColumnLifeStageProxy();
+
+
 		private Pawn _pawn;
 		private Intelligence _intelligence;
 		private bool _rideable;
@@ -23,6 +45,8 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		private Pawn _overseerPawn;
 		private bool _captive;
 		private bool _traderHomeFaction;
+		private Texture2D _ageTexture;
+		private string _ageTooltip;
 
 		public PawnDrawable(Tradeable tradeable, Pawn pawn)
 		{
@@ -37,6 +61,9 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			_overseerPawn = pawn.GetOverseer();
 			_captive = TransferableUIUtility.TransferableIsCaptive(tradeable);
 			_traderHomeFaction = pawn.HomeFaction == TradeSession.trader?.Faction;
+
+			_ageTexture = _columnWorkerProxy.GetIcon(pawn);
+			_ageTooltip = _columnWorkerProxy.GetTooltip(pawn);
 		}
 
 		public void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
@@ -57,6 +84,15 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		{
 			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
 			iconRect.x -= iconRect.width;
+
+			if (_ageTexture != null)
+			{
+				if (Mouse.IsOver(iconRect))
+					TooltipHandler.TipRegion(iconRect, _ageTooltip);
+				GUI.DrawTexture(iconRect, _ageTexture);
+				iconRect.x -= iconRect.width;
+			}
+
 			if (_rideable)
 			{
 				GUI.DrawTexture(iconRect, Textures.RideableIcon);
