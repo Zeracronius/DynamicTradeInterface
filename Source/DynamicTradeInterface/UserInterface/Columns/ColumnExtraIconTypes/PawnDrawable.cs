@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using DynamicTradeInterface.Attributes;
+using HarmonyLib;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
@@ -33,6 +34,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 	internal class PawnDrawable : IDrawable
 	{
 		static PawnColumnLifeStageProxy _columnWorkerProxy = new PawnColumnLifeStageProxy();
+		static Func<Pawn_TrainingTracker, TrainableDef, int> _getStepsDelegate = AccessTools.MethodDelegate<Func<Pawn_TrainingTracker, TrainableDef, int>>("RimWorld.Pawn_TrainingTracker:GetSteps");
 
 
 		private Pawn _pawn;
@@ -47,6 +49,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		private bool _traderHomeFaction;
 		private Texture2D _ageTexture;
 		private string _ageTooltip;
+		private string? _trainingTooltip;
 
 		public PawnDrawable(Tradeable tradeable, Pawn pawn)
 		{
@@ -64,6 +67,40 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 
 			_ageTexture = _columnWorkerProxy.GetIcon(pawn);
 			_ageTooltip = _columnWorkerProxy.GetTooltip(pawn);
+
+			_trainingTooltip = null;
+			if (pawn.training != null)
+			{
+				GetTrainingInfo(pawn.training);
+			}
+		}
+
+		private void GetTrainingInfo(Pawn_TrainingTracker training)
+		{
+			StringBuilder tooltip = new StringBuilder();
+			List<TrainableDef> trainableDefs = TrainableUtility.TrainableDefsInListOrder;
+			for (int i = 0; i < trainableDefs.Count; i++)
+			{
+				var trainableDef = trainableDefs[i];
+				if (training.HasLearned(trainableDef))
+				{
+					int steps = _getStepsDelegate(training, trainableDef);
+					if (trainableDef == TrainableDefOf.Tameness && steps == trainableDef.steps)
+						continue;
+
+					if (tooltip.Length == 0)
+						tooltip.AppendLine("Trained:");
+
+					tooltip.Append(trainableDef.LabelCap);
+					tooltip.Append(": ");
+
+					tooltip.Append(steps);
+					tooltip.Append(" / ");
+					tooltip.AppendLine(trainableDef.steps.ToString());
+				}
+			}
+			if (tooltip.Length > 0)
+				_trainingTooltip = tooltip.ToString();
 		}
 
 		public void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
@@ -122,6 +159,15 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 					TooltipHandler.TipRegion(iconRect, "CaravanAnimalSick".Translate() + ":\n\n" + entries.ToLineList(" - "));
 				}
 				GUI.DrawTexture(iconRect, Textures.SickIcon);
+				iconRect.x -= iconRect.width;
+			}
+
+			if (_trainingTooltip != null)
+			{
+				GUI.DrawTexture(iconRect, Textures.TamenessIcon);
+				if (Mouse.IsOver(iconRect))
+					TooltipHandler.TipRegion(iconRect, _trainingTooltip);
+
 				iconRect.x -= iconRect.width;
 			}
 
