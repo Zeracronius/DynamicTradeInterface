@@ -153,6 +153,20 @@ namespace DynamicTradeInterface.Collections
 			Invalidate();
 		}
 
+		/// <summary>
+		/// Iterates and returns the sorting queue.
+		/// </summary>
+		public IEnumerable<(object, bool)> GetSortings()
+		{
+			foreach (SortingEntry item in _sortingQueue)
+			{
+				if (item.Key == null)
+					continue;
+
+				yield return (item.Key, item.Ascending);
+			}
+		}
+
 		private void AddOrdering(Func<T, IComparable> keySelector, bool ascending, bool reset, object? key = null)
 		{
 			if (reset)

@@ -179,7 +179,44 @@ namespace DynamicTradeInterface.UserInterface
 			base.PreClose();
 			_settings.TradeWidthPercentage = windowRect.width / UI.screenWidth;
 			_settings.TradeHeightPercentage = windowRect.height / UI.screenHeight;
+
+
+			if (_settings.RememberSortings)
+			{
+				SaveSortings(_colonyTable, _settings.StoredColonySorting);
+				SaveSortings(_traderTable, _settings.StoredTraderSorting);
+			}
+
 			_settings.Write();
+		}
+
+		private void SaveSortings(Table<TableRow<Tradeable>> table, List<ColumnSorting> settingsList)
+		{
+			settingsList.Clear();
+			foreach (var item in table.GetSortQueue())
+			{
+				TradeColumnDef? column = (item.Item1 as TableColumn)?.Tag as TradeColumnDef;
+				if (column == null)
+					continue;
+
+				settingsList.Add(new ColumnSorting(column, item.Item2));
+			}
+		}
+
+		private void LoadSortings(Table<TableRow<Tradeable>> table, List<ColumnSorting> settingsList)
+		{
+			foreach (var item in settingsList)
+			{
+				TradeColumnDef columnDef = item.ColumnDef;
+				if (columnDef._orderValueCallback == null)
+					continue;
+
+				TableColumn<TableRow<Tradeable>> column = table.Columns.FirstOrDefault(x => x.Tag == columnDef);
+				if (column == null)
+					continue;
+
+				table.Sort(column, item.Ascending ? SortDirection.Ascending : SortDirection.Descending, false);
+			}
 		}
 
 		public override void PostClose()
@@ -215,13 +252,14 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, tooltip: columnDef.tooltip,
 						callback: (ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
-						orderByCallback: (rows, ascending, column) => OrderByColumn(rows, ascending, column, columnDef, transactor));
+						orderByCallback: (rows, ascending, column, reset) => OrderByColumn(rows, ascending, column, columnDef, transactor, reset));
 
 				column.InitialSortDirection = columnDef.initialSort;
 				if (column.Width <= 1f)
 					column.IsFixedWidth = false;
 
 				column.ShowHeader = columnDef.showCaption;
+				column.Tag = columnDef;
 			}
 
 			foreach (Tradeable item in _tradeables.Where(x => x.CountHeldBy(transactor) > 0))
@@ -249,7 +287,7 @@ namespace DynamicTradeInterface.UserInterface
 			_frameCache![columnDef] = frametime + _stopWatch.ElapsedTicks;
 		}
 
-		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, SortDirection ascending, TableColumn column, Defs.TradeColumnDef columnDef, Transactor transactor)
+		private void OrderByColumn(ListFilter<TableRow<Tradeable>> rows, SortDirection ascending, TableColumn column, Defs.TradeColumnDef columnDef, Transactor transactor, bool reset)
 		{
 			if (columnDef._orderValueCallback == null)
 				return;
@@ -258,8 +296,6 @@ namespace DynamicTradeInterface.UserInterface
 
 			if (keySelector != null)
 			{
-				bool reset = Event.current.modifiers != EventModifiers.Shift;
-
 				if (ascending == SortDirection.Ascending)
 					rows.OrderBy((row) => keySelector(row.RowObject), reset, column);
 				else
@@ -483,6 +519,12 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				column._postOpenCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
 				column._postOpenCallback?.Invoke(_traderTable.RowItems.Select(x => x.RowObject), Transactor.Trader);
+			}
+
+			if (_settings.RememberSortings)
+			{
+				LoadSortings(_colonyTable, _settings.StoredColonySorting);
+				LoadSortings(_traderTable, _settings.StoredTraderSorting);
 			}
 		}
 

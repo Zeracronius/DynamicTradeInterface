@@ -1,4 +1,5 @@
-﻿using DynamicTradeInterface.Defs;
+﻿using DynamicTradeInterface.Collections;
+using DynamicTradeInterface.Defs;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ namespace DynamicTradeInterface.Mod
 		float _tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
 		bool _excludeUnwillingItems;
 		bool _ghostButtons;
+		bool _rememberSorting;
+		List<ColumnSorting> _colonySorting;
+		List<ColumnSorting> _traderSorting;
 
 		public DynamicTradeInterfaceSettings()
 		{
@@ -28,6 +32,8 @@ namespace DynamicTradeInterface.Mod
 			_visibleColumns = new List<TradeColumnDef>();
 			ValidationDefs = new HashSet<TradeValidationDef>();
 			_tradeColumnProfilings = new Dictionary<TradeColumnDef, Queue<long>>();
+			_colonySorting = new List<ColumnSorting>();
+			_traderSorting = new List<ColumnSorting>();
 		}
 
 		internal HashSet<TradeColumnDef> ValidColumns => _validColumnDefs;
@@ -67,6 +73,21 @@ namespace DynamicTradeInterface.Mod
 			set => _ghostButtons = value;
 		}
 
+		public bool RememberSortings
+		{
+			get => _rememberSorting;
+			set => _rememberSorting = value;
+		}
+
+		public List<ColumnSorting> StoredColonySorting
+		{
+			get => _colonySorting;
+		}
+
+		public List<ColumnSorting> StoredTraderSorting
+		{
+			get => _traderSorting;
+		}
 
 		public override void ExposeData()
 		{
@@ -77,7 +98,8 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
 
 			Scribe_Values.Look(ref _excludeUnwillingItems, nameof(ExcludeUnwillingItems), false);
-			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false);
+			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false); 
+			Scribe_Values.Look(ref _rememberSorting, nameof(RememberSortings), false);
 
 			if (_tradeWidthPercentage < 0.01)
 				_tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
@@ -88,6 +110,20 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Collections.Look(ref _visibleColumns, "visibleColumns");
 			if (_visibleColumns != null)
 				_visibleColumns = _visibleColumns.Where(x => x != null).ToList();
+
+
+			Scribe_Collections.Look(ref _traderSorting, "traderSorting", LookMode.Deep);
+			if (_traderSorting != null)
+				_traderSorting = _traderSorting.Where(x => x.ColumnDef != null).ToList();
+			else
+				_traderSorting = new List<ColumnSorting>();
+
+
+			Scribe_Collections.Look(ref _colonySorting, "colonySorting", LookMode.Deep);
+			if (_colonySorting != null)
+				_colonySorting = _colonySorting.Where(x => x.ColumnDef != null).ToList();
+			else
+				_colonySorting = new List<ColumnSorting>();
 		}
 
 		private void InitializeColumns()

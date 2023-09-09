@@ -33,6 +33,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _enableHideUnwillingTooltip;
 		string _enableGhostButtons;
 		string _enableGhostButtonsTooltip;
+		string _rememberSortings;
+		string _rememberSortingsTooltip;
 
 		float _headerHeight;
 
@@ -57,6 +59,8 @@ namespace DynamicTradeInterface.UserInterface
 			_enableHideUnwillingTooltip = string.Empty;
 			_enableGhostButtons = string.Empty;
 			_enableGhostButtonsTooltip = string.Empty;
+			_rememberSortings = string.Empty;
+			_rememberSortingsTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -75,6 +79,10 @@ namespace DynamicTradeInterface.UserInterface
 				_enableHideUnwillingTooltip = "ConfigurationWindowHideUnwillingTooltip".Translate();
 				_enableGhostButtons = "ConfigurationWindowEnableGhostButtons".Translate();
 				_enableGhostButtonsTooltip = "ConfigurationWindowEnableGhostButtonsTooltip".Translate();
+				_rememberSortings = "ConfigurationWindowRememberSortings".Translate();
+				_rememberSortingsTooltip = "ConfigurationWindowRememberSortingsTooltip".Translate();
+
+
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
 
 
@@ -195,6 +203,16 @@ namespace DynamicTradeInterface.UserInterface
 			if (Mouse.IsOver(checkbox))
 				TooltipHandler.TipRegion(checkbox, _enableGhostButtonsTooltip);
 			_settings.GhostButtons = value;
+
+
+			checkbox.y = checkbox.yMax;
+
+			value = _settings.RememberSortings;
+			Widgets.CheckboxLabeled(checkbox, _rememberSortings, ref value);
+			if (Mouse.IsOver(checkbox))
+				TooltipHandler.TipRegion(checkbox, _rememberSortingsTooltip);
+			_settings.RememberSortings = value;
+
 
 
 			float margin = COLUMN_BUTTON_SIZE + GenUI.GapSmall;
