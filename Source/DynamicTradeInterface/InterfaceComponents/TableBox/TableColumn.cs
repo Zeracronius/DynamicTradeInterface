@@ -42,6 +42,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// </value>
 		public bool IsFixedWidth { get; set; }
 
+
+		public object? Tag { get; set; }
+
 		public TableColumn(string caption, float width, string? tooltip)
 		{
 			Width = width;
@@ -57,7 +60,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	internal class TableColumn<T> : TableColumn
 	{
 		public RowCallback<Rect, T>? Callback;
-		public Action<ListFilter<T>, SortDirection, TableColumn>? OrderByCallback;
+		public Action<ListFilter<T>, SortDirection, TableColumn, bool>? OrderByCallback;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TableColumn{T}"/> class.
@@ -65,7 +68,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="caption">The column's title.</param>
 		/// <param name="width">The width of the column. Use 0.xf for percentage/fractional widths.</param>
 		/// <param name="orderByCallback">Callback for ordering by this column. Arguments are the collection to apply ordering to and if current ordering is ascending. Null if not sortable.</param>
-		public TableColumn(string caption, float width, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null, string? tooltip = null)
+		public TableColumn(string caption, float width, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback = null, string? tooltip = null)
 		   : base(caption, width, tooltip)
 		{
 			Callback = null;
@@ -79,7 +82,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="width">The width of the column. Use 0.xf for percentage/fractional widths.</param>
 		/// <param name="callback">The rendering callback when a cell of this column should be rendered.</param>
 		/// <param name="orderByCallback">Callback for ordering by this column. Arguments are the collection to apply ordering to and if current ordering is ascending. Null if not sortable.</param>
-		public TableColumn(string caption, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback, string? tooltip = null)
+		public TableColumn(string caption, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback, string? tooltip = null)
 		   : base(caption, width, tooltip)
 		{
 			Callback = callback;

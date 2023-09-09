@@ -37,6 +37,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 		public IList<T> RowItems => _rows.Items;
 
+		public IEnumerable<(object, bool)> GetSortQueue() => _rows.GetSortings();
+
 		/// <summary>
 		/// Gets or sets the row filter function. Return true to include row and fall to skip.
 		/// </summary>
@@ -195,7 +197,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="header">Title of the column.</param>
 		/// <param name="width">Column width.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
-		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null, string? tooltip = null)
+		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback = null, string? tooltip = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, orderByCallback, tooltip);
 			_columns.Add(column);
@@ -210,7 +212,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="callback">Render callback when cell in column is drawn.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
 		/// <returns></returns>
-		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn>? orderByCallback = null, string? tooltip = null)
+		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback = null, string? tooltip = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, callback, orderByCallback, tooltip);
 			_columns.Add(column);
@@ -296,36 +298,42 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				SelectionChanged.Invoke(this, _selectedRows);
 		}
 
-		private void Sort(TableColumn<T> column)
+		public void Sort(TableColumn<T> column, SortDirection? direction = null, bool? reset = null)
 		{
 			if (column.Callback != null && column.OrderByCallback == null)
 				return;
 
-
-			SortDirection currentDirection = _rows.GetSortingDirection(column);
-
-			bool reset = Event.current.modifiers != EventModifiers.Shift;
-
 			SortDirection targetDirection;
-			switch (currentDirection)
+
+			if (reset == null)
+				reset = Event.current.modifiers != EventModifiers.Shift;
+
+			if (direction == null)
 			{
-				case SortDirection.Ascending:
-					targetDirection = SortDirection.Descending;
-					break;
+				SortDirection currentDirection = _rows.GetSortingDirection(column);
 
-				case SortDirection.Descending:
-					targetDirection = SortDirection.Ascending;
-					break;
+				switch (currentDirection)
+				{
+					case SortDirection.Ascending:
+						targetDirection = SortDirection.Descending;
+						break;
 
-				case SortDirection.None:
-				default:
-					targetDirection = column.InitialSortDirection;
-					break;
+					case SortDirection.Descending:
+						targetDirection = SortDirection.Ascending;
+						break;
+
+					case SortDirection.None:
+					default:
+						targetDirection = column.InitialSortDirection;
+						break;
+				}
+
+				// If column is already sorted and new sort would set it back to initial, then clear sort instead.
+				if (currentDirection != SortDirection.None && targetDirection == column.InitialSortDirection)
+					targetDirection = SortDirection.None;
 			}
-
-			// If column is already sorted and new sort would set it back to initial, then clear sort instead.
-			if (currentDirection != SortDirection.None && targetDirection == column.InitialSortDirection)
-				targetDirection = SortDirection.None;
+			else
+				targetDirection = direction.Value;
 
 			// Apply sorting
 			switch (targetDirection)
@@ -336,16 +344,16 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 				case SortDirection.Ascending:
 					if (column.OrderByCallback == null)
-						_rows.OrderBy(x => x[column], reset);
+						_rows.OrderBy(x => x[column], reset.Value);
 					else
-						column.OrderByCallback(_rows, SortDirection.Ascending, column);
+						column.OrderByCallback(_rows, SortDirection.Ascending, column, reset.Value);
 					break;
 
 				case SortDirection.Descending:
 					if (column.OrderByCallback == null)
-						_rows.OrderByDescending(x => x[column], reset);
+						_rows.OrderByDescending(x => x[column], reset.Value);
 					else
-						column.OrderByCallback(_rows, SortDirection.Descending, column);
+						column.OrderByCallback(_rows, SortDirection.Descending, column, reset.Value);
 					break;
 			}
 
@@ -353,9 +361,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			for (int i = _columns.Count - 1; i >= 0; i--)
 			{
 				TableColumn<T> columnEntry = _columns[i];
-				SortDirection direction = _rows.GetSortingDirection(columnEntry);
+				direction = _rows.GetSortingDirection(columnEntry);
 				if (direction != SortDirection.None)
-					_columnSortCache[columnEntry] = direction;
+					_columnSortCache[columnEntry] = direction.Value;
 			}
 		}
 
@@ -546,6 +554,5 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			if (selectionHasChanged && SelectionChanged != null)
 				SelectionChanged.Invoke(this, _selectedRows);
 		}
-
 	}
 }

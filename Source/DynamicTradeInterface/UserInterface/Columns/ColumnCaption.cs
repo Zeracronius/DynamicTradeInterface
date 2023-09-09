@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -72,14 +73,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Text.Anchor = TextAnchor.MiddleLeft;
 			GUI.color = cached.Color;
 
-			Rect labelRect = new Rect(rect.x, rect.y, cached.LabelWidth, rect.height);
-			Widgets.Label(labelRect, cached.Label);
+			Rect labelRect = new Rect(rect.x, rect.y, Math.Min(rect.width, cached.LabelWidth), rect.height);
+			DrawLabel(ref labelRect, cached.Label, cached.LabelWidth);
 
-			Rect joinAsRect = new Rect(labelRect.xMax + GenUI.GapTiny, rect.y, cached.JoinAsWidth, rect.height);
+			Rect joinAsRect = new Rect(labelRect.xMax + GenUI.GapTiny, rect.y, Math.Min(rect.width - (labelRect.xMax + GenUI.GapTiny), cached.JoinAsWidth), rect.height);
 			if (cached.JoinAs != null)
 			{
 				GUI.color = TradeUI.NoTradeColor;
-				Widgets.Label(joinAsRect, cached.JoinAs);
+				DrawLabel(ref joinAsRect, cached.JoinAs, cached.JoinAsWidth);
 			}
 			
 			GUI.color = Color.white;
@@ -107,6 +108,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				TooltipHandler.TipRegion(joinAsRect, cached.JoinAsDesc);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void DrawLabel(ref Rect rect, string label, float width)
+		{
+			//if (width > rect.width)
+			//	label.Truncate(rect.width);
+			Widgets.Label(rect, label);
+		}
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
 		{
