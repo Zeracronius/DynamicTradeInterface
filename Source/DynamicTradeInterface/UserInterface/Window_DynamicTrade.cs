@@ -530,7 +530,10 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void LoadWares()
 		{
-			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables.Where(x => x.IsCurrency == false);
+			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables;
+			if (TradeSession.giftMode == false)
+				filteredWares = filteredWares.Where(x => x.IsCurrency == false);
+
 			if (TradeSession.trader.TraderKind.hideThingsNotWillingToTrade || _settings.ExcludeUnwillingItems)
 				filteredWares = filteredWares.Where(x => x.TraderWillTrade);
 
