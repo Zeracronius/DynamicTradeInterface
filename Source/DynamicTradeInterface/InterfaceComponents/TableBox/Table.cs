@@ -11,6 +11,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
 	internal class Table<T> where T : ITableRow
 	{
+		internal delegate void OrderByCallbackDelegate(ListFilter<T> rows, SortDirection sortDirection, TableColumn tableColumn, bool reset);
+
 		internal readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		internal readonly float SEARCH_PLACEHOLDER_SIZE;
 
@@ -173,7 +175,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// Initializes a new instance of the <see cref="Table{T}" /> class.
 		/// </summary>
 		/// <param name="filterCallback">Callback used to apply filter text.</param>
-		public Table(Func<T, string, bool> filterCallback)
+		public Table(ListFilter<T>.FilterCallbackDelegate filterCallback)
 		{
 			Text.Font = GameFont.Small;
 			SEARCH_PLACEHOLDER_SIZE = Text.CalcSize(SEARCH_PLACEHOLDER).x;
@@ -197,7 +199,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="header">Title of the column.</param>
 		/// <param name="width">Column width.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
-		public TableColumn<T> AddColumn(string header, float width, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback = null, string? tooltip = null)
+		public TableColumn<T> AddColumn(string header, float width, OrderByCallbackDelegate? orderByCallback = null, string? tooltip = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, orderByCallback, tooltip);
 			_columns.Add(column);
@@ -212,7 +214,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="callback">Render callback when cell in column is drawn.</param>
 		/// <param name="orderByCallback">Optional callback to tell the column how to order rows.</param>
 		/// <returns></returns>
-		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback = null, string? tooltip = null)
+		public TableColumn<T> AddColumn(string header, float width, RowCallback<Rect, T> callback, OrderByCallbackDelegate? orderByCallback = null, string? tooltip = null)
 		{
 			TableColumn<T> column = new TableColumn<T>(header, width, callback, orderByCallback, tooltip);
 			_columns.Add(column);

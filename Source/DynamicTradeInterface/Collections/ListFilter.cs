@@ -11,6 +11,8 @@ namespace DynamicTradeInterface.Collections
 {
 	internal class ListFilter<T>
 	{
+		public delegate bool FilterCallbackDelegate(T item, string filterString);
+
 		private struct SortingEntry
 		{
 			public bool Ascending;
@@ -28,7 +30,7 @@ namespace DynamicTradeInterface.Collections
 		ReadOnlyCollection<T> _filteredCollection;
 		List<T> _totalCollection;
 		List<T> _bufferList;
-		Func<T, string, bool> _filterCallback;
+		FilterCallbackDelegate _filterCallback;
 		string? _filterString;
 		Queue<SortingEntry> _sortingQueue;
 		Queue<SortingEntry> _sortingQueueBuffer;
@@ -72,7 +74,7 @@ namespace DynamicTradeInterface.Collections
 		/// </summary>
 		/// <param name="collection">Initial collection that is copied.</param>
 		/// <param name="filterCallback">Filter callback called for each item when filter text is modified. Provides Item, Filtertext and expects a bool returned on whether or not item is visible.</param>
-		public ListFilter(IEnumerable<T> collection, Func<T, string, bool> filterCallback)
+		public ListFilter(IEnumerable<T> collection, FilterCallbackDelegate filterCallback)
 		{
 			_totalCollection = collection.ToList();
 			_bufferList = new List<T>();
@@ -87,7 +89,7 @@ namespace DynamicTradeInterface.Collections
 		/// Initializes a new instance of the <see cref="ListFilter{T}"/> class.
 		/// </summary>
 		/// <param name="filterCallback">Filter callback called for each item when filter text is modified. Provides Item, Filtertext and expects a bool returned on whether or not item is visible.</param>
-		public ListFilter(Func<T, string, bool> filterCallback)
+		public ListFilter(FilterCallbackDelegate filterCallback)
 		{
 			_totalCollection = new List<T>();
 			_bufferList = new List<T>();

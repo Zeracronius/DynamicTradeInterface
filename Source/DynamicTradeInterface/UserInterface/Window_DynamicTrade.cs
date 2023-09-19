@@ -266,6 +266,12 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				table.AddRow(new TableRow<Tradeable>(item, item.Label + " " + item.ThingDef?.label));
 			}
+
+
+
+			Text.Font = _rowFont;
+			foreach (TradeColumnDef column in _columns)
+				column._postOpenCallback?.Invoke(table.RowItems.Select(x => x.RowObject), transactor);
 			table.Refresh();
 		}
 
@@ -372,7 +378,7 @@ namespace DynamicTradeInterface.UserInterface
 				_traderTable.Draw(bottom);
 			}
 
-			if (_currency != null)
+			if (_currency != null && TradeSession.giftMode == false)
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
 
 
@@ -510,16 +516,9 @@ namespace DynamicTradeInterface.UserInterface
 		private void RefreshData()
 		{
 			LoadWares();
+
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);
-
-			// Trigger PostOpen for each column in both tables.
-			Text.Font = _rowFont;
-			foreach (TradeColumnDef column in _columns)
-			{
-				column._postOpenCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
-				column._postOpenCallback?.Invoke(_traderTable.RowItems.Select(x => x.RowObject), Transactor.Trader);
-			}
 
 			if (_settings.RememberSortings)
 			{
@@ -530,7 +529,10 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void LoadWares()
 		{
-			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables.Where(x => x.IsCurrency == false);
+			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables;
+			if (TradeSession.giftMode == false)
+				filteredWares = filteredWares.Where(x => x.IsCurrency == false);
+
 			if (TradeSession.trader.TraderKind.hideThingsNotWillingToTrade || _settings.ExcludeUnwillingItems)
 				filteredWares = filteredWares.Where(x => x.TraderWillTrade);
 

@@ -57,10 +57,10 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 
 
-	internal class TableColumn<T> : TableColumn
+	internal class TableColumn<T> : TableColumn where T : ITableRow
 	{
 		public RowCallback<Rect, T>? Callback;
-		public Action<ListFilter<T>, SortDirection, TableColumn, bool>? OrderByCallback;
+		public Table<T>.OrderByCallbackDelegate? OrderByCallback;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TableColumn{T}"/> class.
@@ -68,7 +68,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="caption">The column's title.</param>
 		/// <param name="width">The width of the column. Use 0.xf for percentage/fractional widths.</param>
 		/// <param name="orderByCallback">Callback for ordering by this column. Arguments are the collection to apply ordering to and if current ordering is ascending. Null if not sortable.</param>
-		public TableColumn(string caption, float width, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback = null, string? tooltip = null)
+		public TableColumn(string caption, float width, Table<T>.OrderByCallbackDelegate? orderByCallback = null, string? tooltip = null)
 		   : base(caption, width, tooltip)
 		{
 			Callback = null;
@@ -82,7 +82,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="width">The width of the column. Use 0.xf for percentage/fractional widths.</param>
 		/// <param name="callback">The rendering callback when a cell of this column should be rendered.</param>
 		/// <param name="orderByCallback">Callback for ordering by this column. Arguments are the collection to apply ordering to and if current ordering is ascending. Null if not sortable.</param>
-		public TableColumn(string caption, float width, RowCallback<Rect, T> callback, Action<ListFilter<T>, SortDirection, TableColumn, bool>? orderByCallback, string? tooltip = null)
+		public TableColumn(string caption, float width, RowCallback<Rect, T> callback, Table<T>.OrderByCallbackDelegate? orderByCallback, string? tooltip = null)
 		   : base(caption, width, tooltip)
 		{
 			Callback = callback;
