@@ -11,15 +11,35 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCategory
 	{
-		private static Dictionary<Tradeable, string> _editableCache = new Dictionary<Tradeable, string>();
+        struct Cache
+        {
+			public string Label;
+			public string Tooltip;
+        }
+
+        private static Dictionary<Tradeable, Cache> _editableCache = new Dictionary<Tradeable, Cache>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
+			StringBuilder toolTipBuilder = new StringBuilder();
 			foreach (var row in rows)
 			{
 				ThingDef? def = row.ThingDef;
-				if (def != null)
-					_editableCache[row] = def.FirstThingCategory.LabelCap;
+				if (def != null && def.thingCategories?.Count > 0)
+				{
+					toolTipBuilder.Clear();
+					Cache cache = new Cache();
+					for (int i = 0; i < def.thingCategories.Count; i++)
+					{
+						ThingCategoryDef category = def.thingCategories[i];
+						if (i == 0)
+							cache.Label = category.LabelCap;
+						toolTipBuilder.AppendLine(category.LabelCap);
+					}
+
+					cache.Tooltip = toolTipBuilder.ToString();
+					_editableCache[row] = cache;
+				}
 			}
 		}
 
@@ -31,12 +51,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			if (_editableCache.TryGetValue(row, out string category))
+			if (_editableCache.TryGetValue(row, out Cache category))
 			{
-				Widgets.Label(rect, category);
+				Widgets.Label(rect, category.Label);
 				if (Mouse.IsOver(rect))
 				{
-					TooltipHandler.TipRegion(rect, category);
+					TooltipHandler.TipRegion(rect, category.Tooltip);
 				}
 			}
 		}
@@ -45,8 +65,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			return (Tradeable row) =>
 			{
-				if (_editableCache.TryGetValue(row, out string category))
-					return category;
+				if (_editableCache.TryGetValue(row, out Cache category))
+					return category.Tooltip;
 				else
 					return string.Empty;
 			};
