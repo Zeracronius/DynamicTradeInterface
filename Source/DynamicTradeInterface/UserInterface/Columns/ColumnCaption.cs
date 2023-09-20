@@ -76,7 +76,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Rect labelRect = new Rect(rect.x, rect.y, Math.Min(rect.width, cached.LabelWidth), rect.height);
 			DrawLabel(ref labelRect, cached.Label, cached.LabelWidth);
 
-			Rect joinAsRect = new Rect(labelRect.xMax + GenUI.GapTiny, rect.y, Math.Min(rect.width - (labelRect.xMax + GenUI.GapTiny), cached.JoinAsWidth), rect.height);
+			Rect joinAsRect = new Rect(labelRect.xMax + GenUI.GapTiny, rect.y, Math.Min(rect.width - (labelRect.width + GenUI.GapTiny), cached.JoinAsWidth), rect.height);
 			if (cached.JoinAs != null)
 			{
 				GUI.color = TradeUI.NoTradeColor;
