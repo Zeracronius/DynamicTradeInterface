@@ -11,13 +11,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCategory
 	{
-        struct Cache
-        {
+		struct Cache
+		{
 			public string Label;
 			public string Tooltip;
-        }
+		}
 
-        private static Dictionary<Tradeable, Cache> _editableCache = new Dictionary<Tradeable, Cache>();
+		private static Dictionary<Tradeable, Cache> _editableCache = new Dictionary<Tradeable, Cache>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
@@ -70,6 +70,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				else
 					return string.Empty;
 			};
+		}
+
+		public static string SearchValue(Tradeable row, Transactor transactor)
+		{
+			if (_editableCache.TryGetValue(row, out Cache category))
+				return category.Tooltip;
+
+			return string.Empty;
 		}
 	}
 }

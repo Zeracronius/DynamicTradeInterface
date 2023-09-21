@@ -15,6 +15,7 @@ namespace DynamicTradeInterface.Defs
 		internal delegate void TradeColumnCallback(ref Rect boundingBox, Tradeable item, Transactor transactor, ref bool refresh);
 		internal delegate void TradeColumnEventCallback(IEnumerable<Tradeable> rows, Transactor transactor);
 		internal delegate Func<Tradeable, IComparable> TradeColumnOrderValueCallback(Transactor transactor);
+		internal delegate string TradeColumnSearchValueCallback(Tradeable item, Transactor transactor);
 
 		/// <summary>
 		/// Colon-based method identifier string for method called when column is drawn.
@@ -25,6 +26,11 @@ namespace DynamicTradeInterface.Defs
 		/// Colon-based method identifier string for method to allow rows to be sorted by this column.
 		/// </summary> 
 		public string? orderValueCallbackHandler = null;
+
+		/// <summary>
+		/// Colon-based method identifier string for method to allow this column to provide rows with additional searchable strings.
+		/// </summary> 
+		public string? searchValueCallbackHandler = null;
 
 		/// <summary>
 		/// Colon-based method identifier string for method called right after the trade window has been opened. Can be used to cache data.
@@ -58,10 +64,9 @@ namespace DynamicTradeInterface.Defs
 		/// </summary>
 		public SortDirection initialSort = SortDirection.Descending;
 
-		//TODO way to add additional data to search string.
-
 		internal TradeColumnCallback? _callback;
 		internal TradeColumnOrderValueCallback? _orderValueCallback;
+		internal TradeColumnSearchValueCallback? _searchValueCallback;
 		internal TradeColumnEventCallback? _postOpenCallback;
 		internal TradeColumnEventCallback? _postClosedCallback;
 

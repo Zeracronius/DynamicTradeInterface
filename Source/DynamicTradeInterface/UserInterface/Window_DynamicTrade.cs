@@ -275,10 +275,33 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 
-
+			// Allow columns to cache data.
 			Text.Font = _rowFont;
 			foreach (TradeColumnDef column in _columns)
 				column._postOpenCallback?.Invoke(table.RowItems.Select(x => x.RowObject), transactor);
+
+			// Fetch additional search strings per row per column.
+			StringBuilder searchBuilder = new StringBuilder();
+			foreach (TableRow<Tradeable> item in table.RowItems)
+			{
+				searchBuilder.Clear();
+				searchBuilder.Append(item.SearchString);
+				searchBuilder.Append(' ');
+
+				foreach (TradeColumnDef column in _columns)
+				{
+					string? searchTerm = column._searchValueCallback?.Invoke(item.RowObject, transactor);
+
+					if (String.IsNullOrWhiteSpace(searchTerm) == false)
+					{
+						searchBuilder.Append(searchTerm);
+						searchBuilder.Append(' ');
+					}
+				}
+
+				item.SearchString = searchBuilder.ToString().ToLower();
+			}
+
 			table.Refresh();
 		}
 

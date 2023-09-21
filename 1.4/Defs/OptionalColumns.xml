@@ -42,6 +42,7 @@
 		<showCaption>true</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:OrderbyValue</orderValueCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:SearchValue</searchValueCallbackHandler>
 		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:PostOpen</postOpenCallbackHandler>
 		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>80</defaultWidth>

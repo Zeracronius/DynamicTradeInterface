@@ -150,14 +150,17 @@ namespace DynamicTradeInterface.Mod
 					}
 				}
 
+				columnDef._searchValueCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnSearchValueCallback>(columnDef.searchValueCallbackHandler,
+					$"Unable to locate search value callback '{columnDef.searchValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
+
 				columnDef._orderValueCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnOrderValueCallback>(columnDef.orderValueCallbackHandler,
-					$"Unable to locate order value callback '{columnDef.orderValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
+					$"Unable to locate order value callback '{columnDef.orderValueCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, IComparable>'");
 
 				columnDef._postOpenCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnEventCallback>(columnDef.postOpenCallbackHandler,
-					$"Unable to locate order value callback '{columnDef.postOpenCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
+					$"Unable to locate post-open callback '{columnDef.postOpenCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
 
 				columnDef._postClosedCallback = ParseCallbackHandler<TradeColumnDef.TradeColumnEventCallback>(columnDef.postClosedCallbackHandler,
-					$"Unable to locate order value callback '{columnDef.postClosedCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
+					$"Unable to locate post-closed callback '{columnDef.postClosedCallbackHandler}' for column {columnDef.defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
 			}
 
 			// Default visible columns
