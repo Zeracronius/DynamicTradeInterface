@@ -22,4 +22,7 @@
 	<DynamicTradeWindowGenepackMissing>Missing</DynamicTradeWindowGenepackMissing>
 	<DynamicTradeWindowGenepackIsolated>Isolated</DynamicTradeWindowGenepackIsolated>
 	<DynamicTradeWindowGenepackMixed>Mixed</DynamicTradeWindowGenepackMixed>
+
+
+	<DynamicTradeWindowExtraIconsColumnTrained>Trained</DynamicTradeWindowExtraIconsColumnTrained>
 </LanguageData>

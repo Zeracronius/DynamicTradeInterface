@@ -89,7 +89,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 						continue;
 
 					if (tooltip.Length == 0)
-						tooltip.AppendLine("Trained:");
+						tooltip.AppendLine("DynamicTradeWindowExtraIconsColumnTrained".Translate() + ":");
 
 					tooltip.Append(trainableDef.LabelCap);
 					tooltip.Append(": ");
@@ -103,7 +103,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				_trainingTooltip = tooltip.ToString();
 		}
 
-		public void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
+		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
 		{
 			float curX = rect.xMax;
 
@@ -229,6 +229,56 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				}
 				iconRect.x -= iconRect.width;
 			}
+		}
+
+		public string GetSearchString()
+		{
+			StringBuilder result = new StringBuilder();
+
+			if (_ageTexture != null)
+			{
+				result.Append(_pawn.ageTracker.CurLifeStage.label);
+				result.Append(' ');
+			}
+
+			if (_rideable)
+			{
+				result.Append(CaravanRideableUtility.GetIconTooltipText(_pawn));
+				result.Append(' ');
+			}
+
+			if (_bonded)
+			{
+				result.Append("AnimalBonded".Translate().Trim());
+				result.Append(' ');
+			}
+
+			if (_pregnant)
+			{
+				result.Append("AnimalPregnant".Translate().Trim());
+				result.Append(' ');
+			}
+
+			if (_sick)
+			{
+				result.Append("CaravanAnimalSick".Translate().Trim());
+				result.Append(' ');
+			}
+
+			if (_trainingTooltip != null)
+			{
+				result.Append("DynamicTradeWindowExtraIconsColumnTrained".Translate());
+				result.Append(' ');
+			}
+
+			XenotypeDef? xeno = _pawn.genes?.Xenotype;
+			if (xeno != null && xeno != XenotypeDefOf.Baseliner)
+			{
+				result.Append(xeno.label);
+				result.Append(' ');
+			}
+
+			return result.ToString();
 		}
 	}
 }

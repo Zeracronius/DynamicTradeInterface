@@ -105,7 +105,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			_icon = GeneAssistant.IconFor(_geneType);
 		}
 
-		public void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
+		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
 		{
 			if (_icon != null)
 			{
@@ -115,6 +115,11 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				if (Mouse.IsOver(iconRect))
 					TooltipHandler.TipRegion(iconRect, _tooltip);
 			}
+		}
+
+		public string GetSearchString()
+		{
+			return _tooltip;
 		}
 	}
 }
