@@ -28,6 +28,7 @@
 		<label>counter box</label>
 		<description>A faster read-only version of the counter box where the current quantity bought or sold is shown.</description>
 		<showCaption>false</showCaption>
+		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:OrderbyValue</orderValueCallbackHandler>
 		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounterLabel:PostOpen</postOpenCallbackHandler>
@@ -40,8 +41,10 @@
 		<label>category</label>
 		<description>Shows the main category of the thing.</description>
 		<showCaption>true</showCaption>
+		<defaultVisible>false</defaultVisible>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:OrderbyValue</orderValueCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:SearchValue</searchValueCallbackHandler>
 		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:PostOpen</postOpenCallbackHandler>
 		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>80</defaultWidth>

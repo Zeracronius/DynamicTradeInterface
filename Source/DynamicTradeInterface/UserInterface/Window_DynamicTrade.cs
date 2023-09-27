@@ -11,11 +11,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using static HarmonyLib.Code;
 
 namespace DynamicTradeInterface.UserInterface
 {
@@ -31,6 +30,7 @@ namespace DynamicTradeInterface.UserInterface
 		Tradeable? _currency;
 		List<Tradeable> _tradeables;
 		CaravanWidget? _caravanWidget;
+		Regex? _searchRegex;
 		bool _refresh;
 		bool _giftOnly;
 
@@ -77,7 +77,7 @@ namespace DynamicTradeInterface.UserInterface
 			_rowFont = GameFont.Small;
 			_giftOnly = giftOnly;
 
-			_colonyTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
+			_colonyTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
 				DrawScrollbarAlways = true,
 				LineFont = _rowFont,
@@ -86,7 +86,7 @@ namespace DynamicTradeInterface.UserInterface
 				DrawBorder = true,
 			};
 			_colonyTable.LineFont = GameFont.Small;
-			_traderTable = new Table<TableRow<Tradeable>>((item, text) => item.SearchString.Contains(text))
+			_traderTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
 				DrawScrollbarAlways = true,
 				LineFont = _rowFont,
@@ -126,8 +126,31 @@ namespace DynamicTradeInterface.UserInterface
 			forcePause = true;
 			absorbInputAroundWindow = true;
 			_confirmations = new Queue<string>();
+
+			_colonyTable.ColumnResized += Table_ColumnResized;
+			_traderTable.ColumnResized += Table_ColumnResized;
 		}
 
+		private void Table_ColumnResized(TableColumn column)
+		{
+			TradeColumnDef? columnDef = column.Tag as TradeColumnDef;
+			if (columnDef == null)
+				return;
+
+			_colonyTable.SetColumnWidth(columnDef, column.Width);
+			_traderTable.SetColumnWidth(columnDef, column.Width);
+
+            DynamicTradeInterfaceSettings.ColumnCustomization columnCustomization = _settings.CreateColumnCustomization(columnDef);
+			columnCustomization.Width = column.Width;
+		}
+
+		private bool ApplySearch(TableRow<Tradeable> row, string searchText)
+		{
+			if (_searchRegex != null)
+				return _searchRegex.IsMatch(row.SearchString);
+
+			return row.SearchString.Contains(searchText);
+		}
 
 		public override void PreOpen()
 		{
@@ -260,6 +283,13 @@ namespace DynamicTradeInterface.UserInterface
 
 				column.ShowHeader = columnDef.showCaption;
 				column.Tag = columnDef;
+
+				var customization = _settings.GetColumnCustomization(columnDef);
+				if (customization != null)
+				{
+					column.Width = customization.Width;
+					column.ShowHeader = customization.ShowCaption;
+				}
 			}
 
 			foreach (Tradeable item in _tradeables.Where(x => x.CountHeldBy(transactor) > 0))
@@ -268,10 +298,33 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 
-
+			// Allow columns to cache data.
 			Text.Font = _rowFont;
 			foreach (TradeColumnDef column in _columns)
 				column._postOpenCallback?.Invoke(table.RowItems.Select(x => x.RowObject), transactor);
+
+			// Fetch additional search strings per row per column.
+			StringBuilder searchBuilder = new StringBuilder();
+			foreach (TableRow<Tradeable> item in table.RowItems)
+			{
+				searchBuilder.Clear();
+				searchBuilder.Append(item.SearchString);
+				searchBuilder.Append(' ');
+
+				foreach (TradeColumnDef column in _columns)
+				{
+					string? searchTerm = column._searchValueCallback?.Invoke(item.RowObject, transactor);
+
+					if (String.IsNullOrWhiteSpace(searchTerm) == false)
+					{
+						searchBuilder.Append(searchTerm);
+						searchBuilder.Append(' ');
+					}
+				}
+
+				item.SearchString = searchBuilder.ToString().ToLower();
+			}
+
 			table.Refresh();
 		}
 
@@ -496,13 +549,32 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			float clearButtonSize = Text.LineHeight;
 			Rect searchBox = new Rect(x, y, width - clearButtonSize - Table<ITableRow>.CELL_SPACING, clearButtonSize);
-			_searchText = Widgets.TextField(searchBox, _searchText);
+
+			string searchString = Widgets.TextField(searchBox, _searchText);
 			if (Widgets.ButtonText(new Rect(searchBox.xMax + Table<ITableRow>.CELL_SPACING, y, clearButtonSize, clearButtonSize), "X"))
-				_searchText = "";
+				searchString = "";
 
 
-			if (_searchText == string.Empty)
+			if (searchString == string.Empty)
 				Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + 5, searchBox.y, _colonyTable.SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), _colonyTable.SEARCH_PLACEHOLDER);
+
+
+
+			if (_searchText == searchString || _searchText != null && _searchText.Equals(searchString))
+				return;
+
+			_searchText = searchString.ToLower();
+			try
+			{
+				// Try parse as regex. Option?
+				// .Net regex parser is internal.
+				_searchRegex = new Regex(_searchText);
+			}
+			catch
+			{
+				// Catch invalid regex exception.
+				_searchRegex = null;
+			}
 
 			_colonyTable.Filter = _searchText;
 			_traderTable.Filter = _searchText;

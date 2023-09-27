@@ -57,7 +57,16 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			if (_rowCache.TryGetValue(row, out var cache))
-				cache.Draw(ref rect, row, transactor, ref refresh);
+				cache.Draw(ref rect, transactor, ref refresh);
+		}
+
+
+		public static string SearchValue(Tradeable row, Transactor transactor)
+		{
+			if (_rowCache.TryGetValue(row, out IDrawable? cache))
+				return cache.GetSearchString();
+
+			return string.Empty;
 		}
 	}
 }

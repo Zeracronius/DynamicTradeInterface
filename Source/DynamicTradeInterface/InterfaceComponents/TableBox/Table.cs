@@ -4,6 +4,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -12,6 +13,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	internal class Table<T> where T : ITableRow
 	{
 		internal delegate void OrderByCallbackDelegate(ListFilter<T> rows, SortDirection sortDirection, TableColumn tableColumn, bool reset);
+
+		public event Action<TableColumn>? ColumnResized;
 
 		internal readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		internal readonly float SEARCH_PLACEHOLDER_SIZE;
@@ -36,6 +39,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private bool _allowSorting;
 		private bool _canSelectRows;
 		private Dictionary<TableColumn<T>, SortDirection> _columnSortCache;
+
+		private TableColumn<T>? _resizingColumn;
 
 		public IList<T> RowItems => _rows.Items;
 
@@ -255,6 +260,11 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public void Refresh()
 		{
 			_rows.Invalidate();
+			InvalidateColumnWidths();
+		}
+
+		private void InvalidateColumnWidths()
+		{
 			_fixedColumnWidth = 0;
 			_dynamicColumnWidth = 0;
 			for (int i = 0; i < _columns.Count; i++)
@@ -276,6 +286,15 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			_rows.Items.Clear();
 			_selectedRows.Clear();
 			_columns.Clear();
+		}
+
+		public void SetColumnWidth(object tag, float width)
+		{
+			TableColumn tableColumn = Columns.SingleOrDefault(x => x.Tag == tag);
+			if (tableColumn != null)
+				tableColumn.Width = width;
+
+			InvalidateColumnWidths();
 		}
 
 		/// <summary>
@@ -425,7 +444,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				for (int i = 0; i < columnCount; i++)
 				{
 					TableColumn<T> column = _columns[i];
-					if (column.IsFixedWidth)
+					bool fixedWidth = column.IsFixedWidth;
+					if (fixedWidth)
 					{
 						columnHeader.width = column.Width;
 					}
@@ -461,6 +481,39 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 					if (canOrder && Widgets.ButtonInvisible(columnHeader, true))
 						Sort(column);
+
+					// Add column resize widget.
+					if (_resizingColumn == null)
+					{
+						// Only allow resizing columns with fixed width.
+						if (fixedWidth)
+						{
+							Rect dragRect = new Rect(columnHeader.xMax, columnHeader.y, CELL_SPACING, columnHeader.height);
+							bool isOver = Mouse.IsOver(dragRect);
+							if (isOver)
+							{
+								Widgets.DrawHighlight(dragRect);
+								if (Event.current.type == EventType.MouseDown)
+								{
+									_resizingColumn = column;
+									Event.current.Use();
+								}
+							}
+						}
+					}
+					else if (_resizingColumn == column)
+					{
+						columnHeader.xMax = Event.current.mousePosition.x;
+						_resizingColumn.Width = columnHeader.width;
+
+						// End dragging event.
+						if (Event.current.rawType == EventType.MouseUp)
+						{
+							InvalidateColumnWidths();
+							ColumnResized?.Invoke(_resizingColumn);
+							_resizingColumn = null;
+						}
+					}
 
 					columnHeader.x = columnHeader.xMax + CELL_SPACING;
 				}

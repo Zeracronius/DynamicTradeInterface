@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using DynamicTradeInterface.InterfaceComponents;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,11 +44,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				}
 
+				Color color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor;
+				if (QualityColors.Active)
+					QualityColors.GetColor(row, default, ref color);
+
 				Cache cache = new Cache()
 				{
 					Label = label,
 					LabelWidth = Text.CalcSize(label).x,
-					Color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor,
+					Color = color,
 					JoinAs = joinAsLabel,
 					JoinAsDesc = joinAsDesc,
 					JoinAsWidth = joinAsWidth,
@@ -72,7 +77,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Text.WordWrap = false;
 			Text.Anchor = TextAnchor.MiddleLeft;
 			GUI.color = cached.Color;
-
+			
 			Rect labelRect = new Rect(rect.x, rect.y, Math.Min(rect.width, cached.LabelWidth), rect.height);
 			DrawLabel(ref labelRect, cached.Label, cached.LabelWidth);
 

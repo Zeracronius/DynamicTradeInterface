@@ -10,6 +10,8 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
 	public interface IDrawable
 	{
-		void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh);
+		void Draw(ref Rect rect, Transactor transactor, ref bool refresh);
+
+		string GetSearchString();
 	}
 }

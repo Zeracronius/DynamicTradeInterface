@@ -21,7 +21,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <summary>
 		/// Gets the width of the column. Use decimal value between 0 and 1 as percentage for dynamic width. <see cref="TableColumn.IsFixedWidth"/>
 		/// </summary>
-		public float Width { get; }
+		public float Width { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the header of this column should be shown.
