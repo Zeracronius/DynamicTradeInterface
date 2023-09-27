@@ -274,5 +274,10 @@ namespace DynamicTradeInterface.Mod
 			_columnCustomization[columnDef] = customization;
 			return customization;
 		}
+
+		public void ClearColumnCustomization()
+		{
+			_columnCustomization.Clear();
+		}
 	}
 }
