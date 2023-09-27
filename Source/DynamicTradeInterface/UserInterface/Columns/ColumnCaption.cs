@@ -52,7 +52,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				{
 					Label = label,
 					LabelWidth = Text.CalcSize(label).x,
-					Color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor,
+					Color = color,
 					JoinAs = joinAsLabel,
 					JoinAsDesc = joinAsDesc,
 					JoinAsWidth = joinAsWidth,
@@ -77,7 +77,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Text.WordWrap = false;
 			Text.Anchor = TextAnchor.MiddleLeft;
 			GUI.color = cached.Color;
-
+			
 			Rect labelRect = new Rect(rect.x, rect.y, Math.Min(rect.width, cached.LabelWidth), rect.height);
 			DrawLabel(ref labelRect, cached.Label, cached.LabelWidth);
 
