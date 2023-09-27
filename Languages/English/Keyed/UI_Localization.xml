@@ -11,6 +11,7 @@
 	<ConfigurationWindowEnableGhostButtonsTooltip>Improve performance by only showing trade buttons near the cursor.</ConfigurationWindowEnableGhostButtonsTooltip>
 	<ConfigurationWindowRememberSortings>Remember sorting</ConfigurationWindowRememberSortings>
 	<ConfigurationWindowRememberSortingsTooltip>Save column sortings in mod configurations.</ConfigurationWindowRememberSortingsTooltip>
+	<ConfigurationWindowResetWidths>Reset widths</ConfigurationWindowResetWidths>
 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
