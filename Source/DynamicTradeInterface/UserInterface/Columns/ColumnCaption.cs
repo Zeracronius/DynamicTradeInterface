@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using DynamicTradeInterface.InterfaceComponents;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					}
 
 				}
+
+				Color color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor;
+				if (QualityColors.Active)
+					QualityColors.GetColor(row, default, ref color);
 
 				Cache cache = new Cache()
 				{
