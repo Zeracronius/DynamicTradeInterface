@@ -38,7 +38,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					if (thing != null && thing.def?.useHitPoints == true)
 						return (float)thing.MaxHitPoints / thing.HitPoints * 100;
 				}
-				return 101;
+				return 101f;
 			};
 		}
 	}
