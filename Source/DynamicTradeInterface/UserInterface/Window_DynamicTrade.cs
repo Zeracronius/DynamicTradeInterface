@@ -126,6 +126,18 @@ namespace DynamicTradeInterface.UserInterface
 			forcePause = true;
 			absorbInputAroundWindow = true;
 			_confirmations = new Queue<string>();
+
+			_colonyTable.ColumnResized += Table_ColumnResized;
+			_traderTable.ColumnResized += Table_ColumnResized;
+		}
+
+		private void Table_ColumnResized(TableColumn column)
+		{
+			if (column.Tag == null)
+				return;
+
+			_colonyTable.SetColumnWidth(column.Tag, column.Width);
+			_traderTable.SetColumnWidth(column.Tag, column.Width);
 		}
 
 		private bool ApplySearch(TableRow<Tradeable> row, string searchText)
