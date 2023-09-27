@@ -14,7 +14,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	{
 		internal delegate void OrderByCallbackDelegate(ListFilter<T> rows, SortDirection sortDirection, TableColumn tableColumn, bool reset);
 
-		public event Action<TableColumn> ColumnResized;
+		public event Action<TableColumn>? ColumnResized;
 
 		internal readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		internal readonly float SEARCH_PLACEHOLDER_SIZE;

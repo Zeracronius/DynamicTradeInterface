@@ -133,11 +133,15 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void Table_ColumnResized(TableColumn column)
 		{
-			if (column.Tag == null)
+			TradeColumnDef? columnDef = column.Tag as TradeColumnDef;
+			if (columnDef == null)
 				return;
 
-			_colonyTable.SetColumnWidth(column.Tag, column.Width);
-			_traderTable.SetColumnWidth(column.Tag, column.Width);
+			_colonyTable.SetColumnWidth(columnDef, column.Width);
+			_traderTable.SetColumnWidth(columnDef, column.Width);
+
+            DynamicTradeInterfaceSettings.ColumnCustomization columnCustomization = _settings.CreateColumnCustomization(columnDef);
+			columnCustomization.Width = column.Width;
 		}
 
 		private bool ApplySearch(TableRow<Tradeable> row, string searchText)
@@ -279,6 +283,13 @@ namespace DynamicTradeInterface.UserInterface
 
 				column.ShowHeader = columnDef.showCaption;
 				column.Tag = columnDef;
+
+				var customization = _settings.GetColumnCustomization(columnDef);
+				if (customization != null)
+				{
+					column.Width = customization.Width;
+					column.ShowHeader = customization.ShowCaption;
+				}
 			}
 
 			foreach (Tradeable item in _tradeables.Where(x => x.CountHeldBy(transactor) > 0))

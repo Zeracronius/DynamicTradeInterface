@@ -10,6 +10,33 @@ namespace DynamicTradeInterface.Mod
 {
 	internal class DynamicTradeInterfaceSettings : ModSettings
 	{
+		internal class ColumnCustomization : IExposable
+		{
+			public ColumnCustomization()
+			{
+
+			}
+
+			internal ColumnCustomization(TradeColumnDef columnDef)
+			{
+				Width = columnDef.defaultWidth;
+				ShowCaption = columnDef.showCaption;
+			}
+
+			public float Width;
+			public bool ShowCaption;
+
+			public void ExposeData()
+			{
+				Scribe_Values.Look(ref Width, nameof(Width));
+				Scribe_Values.Look(ref ShowCaption, nameof(ShowCaption));
+			}
+		}
+
+		Dictionary<TradeColumnDef, ColumnCustomization> _columnCustomization = new Dictionary<TradeColumnDef, ColumnCustomization>();
+
+
+
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
 		const float DEFAULT_TRADE_HEIGHT = 0.8f;
 
@@ -101,6 +128,7 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false); 
 			Scribe_Values.Look(ref _rememberSorting, nameof(RememberSortings), false);
 
+
 			if (_tradeWidthPercentage < 0.01)
 				_tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
 
@@ -124,6 +152,11 @@ namespace DynamicTradeInterface.Mod
 				_colonySorting = _colonySorting.Where(x => x.ColumnDef != null).ToList();
 			else
 				_colonySorting = new List<ColumnSorting>();
+
+
+			Scribe_Collections.Look(ref _columnCustomization, nameof(ColumnCustomization), LookMode.Def, LookMode.Deep);
+			if (_columnCustomization == null)
+				_columnCustomization = new Dictionary<TradeColumnDef, ColumnCustomization>();
 		}
 
 		private void InitializeColumns()
@@ -224,6 +257,22 @@ namespace DynamicTradeInterface.Mod
 				if (_validColumnDefs.Contains(columnDef))
 					yield return columnDef;
 			}
+		}
+
+		public ColumnCustomization? GetColumnCustomization(TradeColumnDef columnDef)
+		{
+			_columnCustomization.TryGetValue(columnDef, out ColumnCustomization customization);
+			return customization;
+		}
+
+		public ColumnCustomization CreateColumnCustomization(TradeColumnDef columnDef)
+		{
+			if (_columnCustomization.TryGetValue(columnDef, out ColumnCustomization customization))
+				return customization;
+
+			customization = new ColumnCustomization(columnDef);
+			_columnCustomization[columnDef] = customization;
+			return customization;
 		}
 	}
 }
