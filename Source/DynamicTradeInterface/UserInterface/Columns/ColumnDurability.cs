@@ -19,7 +19,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				Thing thing = row.AnyThing;
 				if (thing != null && thing.def?.useHitPoints == true)
 				{
-					float hitpointsRatio = (float)thing.MaxHitPoints / thing.HitPoints;
+					float hitpointsRatio = (float)thing.HitPoints / thing.MaxHitPoints;
 
 					GUI.color = new Color(1, hitpointsRatio, hitpointsRatio);
 					Widgets.Label(rect, ((int)(hitpointsRatio * 100)).ToStringCached() + "%");
@@ -36,7 +36,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				{
 					Thing thing = row.AnyThing;
 					if (thing != null && thing.def?.useHitPoints == true)
-						return (float)thing.MaxHitPoints / thing.HitPoints * 100;
+						return (float)thing.HitPoints / thing.MaxHitPoints * 100;
 				}
 				return 101f;
 			};
