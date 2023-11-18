@@ -33,7 +33,8 @@ namespace DynamicTradeInterface.UserInterface
 		Regex? _searchRegex;
 		bool _refresh;
 		bool _giftOnly;
-
+        bool _isLoaded;
+        
 		GameFont _rowFont;
 
 		float _headerHeight;
@@ -76,7 +77,7 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			_rowFont = GameFont.Small;
 			_giftOnly = giftOnly;
-
+            
 			_colonyTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
 				DrawScrollbarAlways = true,
@@ -152,9 +153,9 @@ namespace DynamicTradeInterface.UserInterface
 			return row.SearchString.Contains(searchText);
 		}
 
-		public override void PreOpen()
+		public override void PostOpen()
 		{
-			base.PreOpen();
+			base.PostOpen();
 			DragSelect.Initialize();
 
 			_currency = TradeSession.deal.CurrencyTradeable;
@@ -181,7 +182,7 @@ namespace DynamicTradeInterface.UserInterface
 				_acceptButtonText = $"{_offerGiftsText} (0)";
 			else
 				_acceptButtonText = _acceptText;
-
+            
 
 			_resetButtonText = "ResetButton".Translate();
 			_cancelButtonText = "CancelButton".Translate();
@@ -193,9 +194,10 @@ namespace DynamicTradeInterface.UserInterface
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
 
-		}
+            _isLoaded = true;
+        }
 
-		public override Vector2 InitialSize => new Vector2(UI.screenWidth * _settings.TradeWidthPercentage, UI.screenHeight * _settings.TradeHeightPercentage);
+        public override Vector2 InitialSize => new Vector2(UI.screenWidth * _settings.TradeWidthPercentage, UI.screenHeight * _settings.TradeHeightPercentage);
 
 		public override void PreClose()
 		{
@@ -364,6 +366,10 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+            // Don't render until window has finished loading.
+            if (_isLoaded == false)
+                return;
+
 			if (_frameCache != null)
 				_frameCache.Clear();
 
