@@ -19,6 +19,8 @@
 	<ConfigurationWindowColumnMaxMs>Max ms</ConfigurationWindowColumnMaxMs>
 
 	<DynamicTradeWindowUnwilling>Unwilling</DynamicTradeWindowUnwilling>
+	<DynamicTradeWindowLocked>Window is locked in place.</DynamicTradeWindowLocked>
+	<DynamicTradeWindowUnlocked>Window can be dragged.</DynamicTradeWindowUnlocked>
 
 	<DynamicTradeWindowGenepackMissing>Missing</DynamicTradeWindowGenepackMissing>
 	<DynamicTradeWindowGenepackIsolated>Isolated</DynamicTradeWindowGenepackIsolated>

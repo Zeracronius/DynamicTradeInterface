@@ -50,6 +50,7 @@ namespace DynamicTradeInterface.Mod
 		bool _excludeUnwillingItems;
 		bool _ghostButtons;
 		bool _rememberSorting;
+        bool _tradeWindowLocked;
 		List<ColumnSorting> _colonySorting;
 		List<ColumnSorting> _traderSorting;
 
@@ -104,9 +105,16 @@ namespace DynamicTradeInterface.Mod
 		{
 			get => _rememberSorting;
 			set => _rememberSorting = value;
-		}
+        }
 
-		public List<ColumnSorting> StoredColonySorting
+        public bool TradeWindowLocked
+        {
+            get => _tradeWindowLocked;
+            set => _tradeWindowLocked = value;
+        }
+
+
+        public List<ColumnSorting> StoredColonySorting
 		{
 			get => _colonySorting;
 		}
