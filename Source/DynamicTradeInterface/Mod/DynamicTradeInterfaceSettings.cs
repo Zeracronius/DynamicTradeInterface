@@ -50,7 +50,7 @@ namespace DynamicTradeInterface.Mod
 		bool _excludeUnwillingItems;
 		bool _ghostButtons;
 		bool _rememberSorting;
-        bool _tradeWindowLocked;
+		bool _tradeWindowLocked;
 		List<ColumnSorting> _colonySorting;
 		List<ColumnSorting> _traderSorting;
 
@@ -105,16 +105,16 @@ namespace DynamicTradeInterface.Mod
 		{
 			get => _rememberSorting;
 			set => _rememberSorting = value;
-        }
+		}
 
-        public bool TradeWindowLocked
-        {
-            get => _tradeWindowLocked;
-            set => _tradeWindowLocked = value;
-        }
+		public bool TradeWindowLocked
+		{
+			get => _tradeWindowLocked;
+			set => _tradeWindowLocked = value;
+		}
 
 
-        public List<ColumnSorting> StoredColonySorting
+		public List<ColumnSorting> StoredColonySorting
 		{
 			get => _colonySorting;
 		}
@@ -133,12 +133,12 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
 
 			Scribe_Values.Look(ref _excludeUnwillingItems, nameof(ExcludeUnwillingItems), false);
-			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false); 
-			Scribe_Values.Look(ref _rememberSorting, nameof(RememberSortings), false)
-            Scribe_Values.Look(ref _tradeWindowLocked, nameof(TradeWindowLocked), false);
+			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false);
+			Scribe_Values.Look(ref _rememberSorting, nameof(RememberSortings), false);
+			Scribe_Values.Look(ref _tradeWindowLocked, nameof(TradeWindowLocked), false);
 
 
-            if (_tradeWidthPercentage < 0.01)
+			if (_tradeWidthPercentage < 0.01)
 				_tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
 
 			if (_tradeHeightPercentage < 0.01)
