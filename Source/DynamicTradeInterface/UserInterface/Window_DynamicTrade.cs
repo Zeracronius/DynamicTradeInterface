@@ -133,7 +133,7 @@ namespace DynamicTradeInterface.UserInterface
 			_unlockedIcon = Textures.UnlockedIcon;
 
 			resizeable = true;
-			draggable = true;
+			draggable = _settings.TradeWindowLocked == false;
 			forcePause = true;
 			absorbInputAroundWindow = true;
 			_confirmations = new Queue<string>();
