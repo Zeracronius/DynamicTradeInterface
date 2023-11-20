@@ -39,7 +39,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					{
 						joinAsLabel = (pawn.guest.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
 						joinAsDesc = (pawn.guest.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonistDesc" : "JoinsAsSlaveDesc").Translate();
-						joinAsWidth = Text.CalcSize(joinAsLabel).x;
+						joinAsWidth = Mathf.Ceil(Text.CalcSize(joinAsLabel).x) + GenUI.GapSmall;
 					}
 
 				}
@@ -51,7 +51,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				Cache cache = new Cache()
 				{
 					Label = label,
-					LabelWidth = Text.CalcSize(label).x,
+					LabelWidth = Mathf.Ceil(Text.CalcSize(label).x) + GenUI.GapTiny,
 					Color = color,
 					JoinAs = joinAsLabel,
 					JoinAsDesc = joinAsDesc,
@@ -81,7 +81,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Rect labelRect = new Rect(rect.x, rect.y, Math.Min(rect.width, cached.LabelWidth), rect.height);
 			DrawLabel(ref labelRect, cached.Label, cached.LabelWidth);
 
-			Rect joinAsRect = new Rect(labelRect.xMax + GenUI.GapTiny, rect.y, Math.Min(rect.width - (labelRect.width + GenUI.GapTiny), cached.JoinAsWidth), rect.height);
+			Rect joinAsRect = new Rect(labelRect.xMax, rect.y, Math.Min(rect.width - labelRect.width, cached.JoinAsWidth), rect.height);
 			if (cached.JoinAs != null)
 			{
 				GUI.color = TradeUI.NoTradeColor;

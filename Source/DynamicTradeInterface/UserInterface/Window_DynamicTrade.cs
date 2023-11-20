@@ -49,6 +49,9 @@ namespace DynamicTradeInterface.UserInterface
 		string _acceptText;
 		string _cannotAffordText;
 
+		string _lockedTooltip;
+		string _unlockedTooltip;
+
 		string _showSellableItemsDesc;
 		string _tradeModeTip;
 		string _giftModeTip;
@@ -59,6 +62,8 @@ namespace DynamicTradeInterface.UserInterface
 		Texture2D _giftModeIcon;
 		Texture2D _arrowIcon;
 		Texture2D _resetIcon;
+		Texture2D _lockedIcon;
+		Texture2D _unlockedIcon;
 
 		Dictionary<TradeColumnDef, long>? _frameCache;
 
@@ -115,11 +120,17 @@ namespace DynamicTradeInterface.UserInterface
 			_acceptText = string.Empty;
 			_searchText = string.Empty;
 
+			_lockedTooltip = string.Empty;
+			_unlockedTooltip = string.Empty;
+
+
 			_tradeModeIcon = Textures.TradeModeIcon;
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
 			_giftModeIcon = Textures.GiftModeIcon;
 			_arrowIcon = Textures.TradeArrow;
 			_resetIcon = Textures.ResetIcon;
+			_lockedIcon = Textures.LockedIcon;
+			_unlockedIcon = Textures.UnlockedIcon;
 
 			resizeable = true;
 			draggable = true;
@@ -140,7 +151,7 @@ namespace DynamicTradeInterface.UserInterface
 			_colonyTable.SetColumnWidth(columnDef, column.Width);
 			_traderTable.SetColumnWidth(columnDef, column.Width);
 
-            DynamicTradeInterfaceSettings.ColumnCustomization columnCustomization = _settings.CreateColumnCustomization(columnDef);
+			DynamicTradeInterfaceSettings.ColumnCustomization columnCustomization = _settings.CreateColumnCustomization(columnDef);
 			columnCustomization.Width = column.Width;
 		}
 
@@ -189,6 +200,9 @@ namespace DynamicTradeInterface.UserInterface
 			_showSellableItemsDesc = "CommandShowSellableItemsDesc".Translate();
 			_tradeModeTip = "TradeModeTip".Translate();
 			_giftModeTip = "GiftModeTip".Translate(_traderFaction);
+
+			_lockedTooltip = "DynamicTradeWindowLocked".Translate();
+			_unlockedTooltip = "DynamicTradeWindowUnlocked".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
@@ -384,6 +398,21 @@ namespace DynamicTradeInterface.UserInterface
 				settingsMenu.OnClosed += SettingsMenu_OnClosed;
 				Find.WindowStack.Add(settingsMenu);
 			}
+
+
+
+			// Trade interface locked button.
+			Texture2D lockIcon = this.draggable ? _unlockedIcon : _lockedIcon;
+			Rect lockRect = new Rect(inRect.xMax - 30, inRect.y, 30, 30);
+			if (Widgets.ButtonImage(lockRect, lockIcon))
+			{
+				_settings.TradeWindowLocked = !_settings.TradeWindowLocked;
+				this.draggable = _settings.TradeWindowLocked == false;
+			}
+
+			if (Mouse.IsOver(lockRect))
+				TooltipHandler.TipRegion(lockRect, this.draggable ? _unlockedTooltip : _lockedTooltip);
+
 
 			float currencyLineHeight = 0;
 			if (_currency != null)

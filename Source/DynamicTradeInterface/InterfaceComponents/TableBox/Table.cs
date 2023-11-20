@@ -183,7 +183,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		public Table(ListFilter<T>.FilterCallbackDelegate filterCallback)
 		{
 			Text.Font = GameFont.Small;
-			SEARCH_PLACEHOLDER_SIZE = Text.CalcSize(SEARCH_PLACEHOLDER).x;
+			SEARCH_PLACEHOLDER_SIZE = Mathf.Ceil(Text.CalcSize(SEARCH_PLACEHOLDER).x) + GenUI.GapTiny;
 
 			_rows = new ListFilter<T>(filterCallback);
 			_columnSortCache = new Dictionary<TableColumn<T>, SortDirection>();
