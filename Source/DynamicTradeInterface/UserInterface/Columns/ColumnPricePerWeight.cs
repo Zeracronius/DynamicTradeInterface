@@ -34,7 +34,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					continue;
 
 				Thing thing = row.AnyThing;
-				if (thing == null)
+				if (thing == null || thing.def == null)
 					continue;
 
 				TradeAction action = transactor == Transactor.Colony ? TradeAction.PlayerSells : TradeAction.PlayerBuys;
@@ -72,7 +72,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (row.IsThing)
 				{
 					Thing thing = row.AnyThing;
-					if (thing != null)
+					if (thing != null && thing.def != null)
 						return row.GetPriceFor(action) / thing.def.BaseMass;
 				}
 				return 0;

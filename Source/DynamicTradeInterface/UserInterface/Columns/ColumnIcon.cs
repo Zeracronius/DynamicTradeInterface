@@ -16,7 +16,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (row.IsThing)
 			{
 				Thing thing = row.AnyThing;
-				if (thing != null)
+				if (thing != null && thing.def != null)
 					Widgets.ThingIcon(rect, thing);
 			}
 			else
