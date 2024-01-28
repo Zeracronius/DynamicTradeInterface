@@ -767,7 +767,7 @@ namespace DynamicTradeInterface.UserInterface
 		private void ExecuteTrade()
 		{
 			// This check exists in TradeSession.deal.TryExecute and directly references Dialog_Trade to flash silver.
-			if (_currency == null || _currency.CountPostDealFor(Transactor.Colony) < 0)
+			if (TradeSession.giftMode == false && (_currency == null || _currency.CountPostDealFor(Transactor.Colony) < 0))
 			{
 				FlashSilver();
 				Messages.Message(_cannotAffordText, MessageTypeDefOf.RejectInput, historical: false);
