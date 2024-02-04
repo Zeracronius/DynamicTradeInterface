@@ -13,7 +13,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnCounter
 	{
-		private struct Cache
+		private class Cache
 		{
 			public bool WillTrade;
 			public bool Interactive;
@@ -21,6 +21,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			public int MaximumQuantity;
 			public bool SellingToSlavery;
 			public bool CanSellToSlavery;
+			public string? Identity;
 		}
 
 		private static string? _dynamicTradeUnwilling;
@@ -40,6 +41,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					MaximumQuantity = row.GetMaximumToTransfer(),
 					SellingToSlavery = TransferableUIUtility.TradeIsPlayerSellingToSlavery(row, TradeSession.trader.Faction),
 					CanSellToSlavery = new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo(),
+					Identity = row.AnyThing.ToString(),
 				};
 
 			if (transactor == Transactor.Colony)
@@ -111,7 +113,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					maxTransfer = cached.MaximumQuantity;
 
 					string buffer = row.EditBuffer;
-					Widgets.TextFieldNumeric(rect3, ref val, ref buffer, minTransfer, maxTransfer);
+					Components.TextFieldNumeric(rect3, cached.Identity + (byte)transactor, ref val, ref buffer, minTransfer, maxTransfer);
 
 					if (val != countToTransfer)
 					{
