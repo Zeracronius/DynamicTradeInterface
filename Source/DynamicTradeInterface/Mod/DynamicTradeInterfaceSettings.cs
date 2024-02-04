@@ -51,6 +51,7 @@ namespace DynamicTradeInterface.Mod
 		bool _ghostButtons;
 		bool _rememberSorting;
 		bool _tradeWindowLocked;
+		bool _stackDurability;
 		List<ColumnSorting> _colonySorting;
 		List<ColumnSorting> _traderSorting;
 
@@ -101,6 +102,12 @@ namespace DynamicTradeInterface.Mod
 			set => _ghostButtons = value;
 		}
 
+		public bool StackDurability
+		{
+			get => _stackDurability;
+			set => _stackDurability = value;
+		}
+
 		public bool RememberSortings
 		{
 			get => _rememberSorting;
@@ -136,6 +143,7 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false);
 			Scribe_Values.Look(ref _rememberSorting, nameof(RememberSortings), false);
 			Scribe_Values.Look(ref _tradeWindowLocked, nameof(TradeWindowLocked), false);
+			Scribe_Values.Look(ref _stackDurability, nameof(StackDurability), false);
 
 
 			if (_tradeWidthPercentage < 0.01)

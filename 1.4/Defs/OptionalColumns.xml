@@ -6,6 +6,8 @@
 		<description>Shows the remaining hitpoints (if any) as a percentage.</description>
 		<defaultWidth>40</defaultWidth>
 		<defaultVisible>false</defaultVisible>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:PostClosed</postClosedCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:PostOpen</postOpenCallbackHandler>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:Draw</callbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnDurability:OrderbyValue</orderValueCallbackHandler>
 	</DynamicTradeInterface.Defs.TradeColumnDef>

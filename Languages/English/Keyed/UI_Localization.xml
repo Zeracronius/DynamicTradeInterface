@@ -12,7 +12,9 @@
 	<ConfigurationWindowRememberSortings>Remember sorting</ConfigurationWindowRememberSortings>
 	<ConfigurationWindowRememberSortingsTooltip>Save column sortings in mod configurations.</ConfigurationWindowRememberSortingsTooltip>
 	<ConfigurationWindowResetWidths>Reset widths</ConfigurationWindowResetWidths>
-
+	<ConfigurationWindowEnableBulkDurability>Stacked durability</ConfigurationWindowEnableBulkDurability>
+	<ConfigurationWindowEnableBulkDurabilityTooltip>Show averaged durability for stacked items in durability column.</ConfigurationWindowEnableBulkDurabilityTooltip>
+	
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
 	<ConfigurationWindowColumnAvgMs>Avg ms</ConfigurationWindowColumnAvgMs>
