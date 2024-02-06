@@ -35,6 +35,7 @@ namespace DynamicTradeInterface.UserInterface
 		bool _giftOnly;
 
 		GameFont _rowFont;
+		GameFont _currencyFont;
 
 		float _headerHeight;
 		string _colonyHeader;
@@ -80,6 +81,7 @@ namespace DynamicTradeInterface.UserInterface
 		public Window_DynamicTrade(bool giftOnly = false)
 		{
 			_rowFont = GameFont.Small;
+			_currencyFont = GameFont.Medium;
 			_giftOnly = giftOnly;
 
 			_colonyTable = new Table<TableRow<Tradeable>>(ApplySearch)
@@ -378,6 +380,9 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
+				return;
+
 			if (_frameCache != null)
 				_frameCache.Clear();
 
@@ -416,7 +421,7 @@ namespace DynamicTradeInterface.UserInterface
 
 			float currencyLineHeight = 0;
 			if (_currency != null)
-				currencyLineHeight = Text.LineHeightOf(_rowFont);
+				currencyLineHeight = Text.LineHeightOf(_currencyFont);
 			inRect.SplitHorizontallyWithMargin(out Rect body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: currencyLineHeight + _mainButtonSize.y + GenUI.GapSmall);
 
 			Rect left, right;
@@ -467,11 +472,14 @@ namespace DynamicTradeInterface.UserInterface
 			float width = _mainButtonSize.x * 2 + _mainButtonSize.y + GenUI.GapTiny * 2;
 			Rect mainButtonRect = new Rect(footer.center.x - width / 2, footer.yMax - GenUI.GapTiny - _mainButtonSize.y, _mainButtonSize.x, _mainButtonSize.y);
 			// Accept
+			Color normal = GUI.color;
+			GUI.color = Color.green;
 			if (Widgets.ButtonText(mainButtonRect, _acceptButtonText))
 			{
 				OnAccept();
 			}
 			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
+			GUI.color = normal;
 
 			// Reset
 			Rect resetButtonRect = new Rect(mainButtonRect.x, mainButtonRect.y, mainButtonRect.height, mainButtonRect.height);
@@ -649,6 +657,8 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void DrawCurrencyRow(Rect currencyRowRect, Tradeable currency)
 		{
+			var currentFont = Text.Font;
+			Text.Font = _currencyFont;
 			bool shouldFlash = false;
 			if (Dialog_Trade.lastCurrencyFlashTime > 0)
 			{
@@ -725,6 +735,7 @@ namespace DynamicTradeInterface.UserInterface
 			// Trader currency
 			Widgets.Label(right, currency.CountHeldBy(Transactor.Trader).ToStringCached());
 
+			Text.Font = currentFont;
 			Text.Anchor = TextAnchor.UpperLeft;
 		}
 

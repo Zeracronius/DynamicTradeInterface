@@ -24,6 +24,23 @@
 	<DynamicTradeWindowLocked>Window is locked in place.</DynamicTradeWindowLocked>
 	<DynamicTradeWindowUnlocked>Window can be dragged.</DynamicTradeWindowUnlocked>
 
+	<DynamicTradeWindowGiftLess>Gift {0} less.</DynamicTradeWindowGiftLess>
+	<DynamicTradeWindowGiftNone>Gift none.</DynamicTradeWindowGiftNone>
+	<DynamicTradeWindowGiftMore>Gift {0} more.</DynamicTradeWindowGiftMore>
+	<DynamicTradeWindowGiftAll>Gift all.</DynamicTradeWindowGiftAll>
+
+	<DynamicTradeWindowBuyMore>Buy {0} more.</DynamicTradeWindowBuyMore>
+	<DynamicTradeWindowBuyAll>Buy all.</DynamicTradeWindowBuyAll>
+	<DynamicTradeWindowBuyAffordable>Buy affordable.</DynamicTradeWindowBuyAffordable>
+	<DynamicTradeWindowSellMore>Sell {0} more.</DynamicTradeWindowSellMore>
+	<DynamicTradeWindowSellAll>Sell all.</DynamicTradeWindowSellAll>
+	<DynamicTradeWindowSellAffordable>Sell affordable.</DynamicTradeWindowSellAffordable>
+
+	<DynamicTradeWindowUnaffordable>Unaffordable.</DynamicTradeWindowUnaffordable>
+
+
+
+
 	<DynamicTradeWindowGenepackMissing>Missing</DynamicTradeWindowGenepackMissing>
 	<DynamicTradeWindowGenepackIsolated>Isolated</DynamicTradeWindowGenepackIsolated>
 	<DynamicTradeWindowGenepackMixed>Mixed</DynamicTradeWindowGenepackMixed>
