@@ -1,7 +1,5 @@
-﻿using DynamicTradeInterface.Attributes;
-using DynamicTradeInterface.InterfaceComponents;
+﻿using DynamicTradeInterface.InterfaceComponents;
 using RimWorld;
-using RimWorld.QuestGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +13,79 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnButtons
 	{
-		private static Dictionary<Tradeable, (bool, bool, int, int)> _editableCache = new Dictionary<Tradeable, (bool, bool, int, int)>();
+		private static Dictionary<Tradeable, Cache> _editableCache = new Dictionary<Tradeable, Cache>();
 		private static Mod.DynamicTradeInterfaceSettings? _settings;
+		private static int _colonyPostDeal = 0;
+		private static int _traderPostDeal = 0;
+		private static bool _invalidatePostDeal = false;
+		private static Color _outOfFundsColor = new Color(0.5f, 0, 0);
+
+		private static string BuyKey = "";
+		private static string BuyAll = "";
+		private static string BuyAffordable = "";
+		private static string SellKey = "";
+		private static string SellAll = "";
+		private static string SellAffordable = "";
+		private static string Unaffordable = "";
+
+		private class Cache
+		{
+			public bool WillTrade;
+			public bool LargeRange;
+			public int MinimumQuantity;
+			public int MaximumQuantity;
+			public float ColonyBuyPrice;
+			public float ColonySellPrice;
+		}
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
-			foreach (var row in rows)
-				_editableCache[row] = (row.TraderWillTrade == true && row.Interactive == true, row.GetRange() > 1, row.GetMinimumToTransfer(), row.GetMaximumToTransfer());
+			if (transactor == Transactor.Colony)
+			{
+				_settings = Mod.DynamicTradeInterfaceMod.Settings;
+				if (TradeSession.giftMode)
+				{
+					BuyKey = "DynamicTradeWindowGiftLess";
+					BuyAll = "DynamicTradeWindowGiftNone".Translate();
+					BuyKey = "DynamicTradeWindowGiftMore";
+					SellAll = "DynamicTradeWindowGiftAll".Translate();
+				}
+				else
+				{
+					BuyKey = "DynamicTradeWindowBuyMore";
+					BuyAll = "DynamicTradeWindowBuyAll".Translate();
+					BuyAffordable = "DynamicTradeWindowBuyAffordable".Translate();
+					SellKey = "DynamicTradeWindowSellMore";
+					SellAll = "DynamicTradeWindowSellAll".Translate();
+					SellAffordable = "DynamicTradeWindowSellAffordable".Translate();
+					Unaffordable = "DynamicTradeWindowUnaffordable".Translate();
+				}
 
-			_settings = Mod.DynamicTradeInterfaceMod.Settings;
+			}
+
+			int postDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
+			switch (transactor)
+			{
+				case Transactor.Colony:
+					_colonyPostDeal = postDeal;
+					break;
+
+				case Transactor.Trader:
+					_traderPostDeal = postDeal;
+					break;
+			}
+
+
+			foreach (var row in rows)
+				_editableCache[row] = new Cache()
+				{
+					WillTrade = row.TraderWillTrade == true && row.Interactive == true,
+					LargeRange = row.GetRange() > 1,
+					MinimumQuantity = row.GetMinimumToTransfer(),
+					MaximumQuantity = row.GetMaximumToTransfer(),
+					ColonyBuyPrice =  row.GetPriceFor(TradeAction.PlayerBuys),
+					ColonySellPrice = row.GetPriceFor(TradeAction.PlayerSells),
+				};
 		}
 
 
@@ -37,15 +99,33 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			// Can edit?
-			if (_editableCache.TryGetValue(row, out (bool, bool, int, int) cached) == false)
+			if (_editableCache.TryGetValue(row, out Cache cached) == false)
 				return;
 
-			if (cached.Item1 == false)
+			if (cached.WillTrade == false)
 				return;
+
+			if (_invalidatePostDeal && Event.current.type == EventType.Repaint)
+			{
+				_invalidatePostDeal = false;
+				_colonyPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Colony);
+				_traderPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Trader);
+			}
+
 
 			int currentAmountToTransfer = row.CountToTransfer;
 
-			if (_settings?.GhostButtons == true && currentAmountToTransfer == 0 && Mouse.IsOver(rect.ExpandedBy(rect.width / 2, rect.height * 2)) == false)
+			bool canSellAny = true;
+			bool canBuyAny = true;
+
+			if (TradeSession.giftMode == false)
+			{
+				canSellAny = cached.ColonySellPrice < _traderPostDeal;
+				canBuyAny = cached.ColonyBuyPrice < _colonyPostDeal;
+			}
+
+			bool mouseNear = Mouse.IsOver(rect.ExpandedBy(rect.width / 2, rect.height * 2));
+			if (_settings?.GhostButtons == true && currentAmountToTransfer == 0 && mouseNear == false)
 				return;
 
 			TransferablePositiveCountDirection positiveDirection = row.PositiveCountDirection;
@@ -55,19 +135,51 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			// Source is left.
 			int adjustMultiplier = GenUI.CurrentAdjustmentMultiplier();
 			int adjustAmount = baseCount * adjustMultiplier;
-			bool largeRange = cached.Item2;
+			bool largeRange = cached.LargeRange;
 
 			float gap = 2;
 			// << < 0 > >>
 			float width = rect.width / 5 - gap;
 			Rect baseButtonRect = new Rect(rect.x, rect.y, width, rect.height);
 
+
+			Color normal = GUI.color;
+			Color buttonColor = normal;
 			// Draw left arrows
 			Rect button = new Rect(baseButtonRect);
-			if (CanAdjustBy(adjustAmount, currentAmountToTransfer, cached.Item3, cached.Item4))
+			if (CanAdjustBy(adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
 			{
+				if ((canBuyAny == false && positiveDirection == TransferablePositiveCountDirection.Source) ||
+					(canSellAny == false && positiveDirection == TransferablePositiveCountDirection.Destination))
+					buttonColor = _outOfFundsColor;
+
 				if (largeRange)
 				{
+					// Tooltip
+					if (mouseNear && Mouse.IsOver(button))
+					{
+						string tooltip;
+						if (positiveDirection == TransferablePositiveCountDirection.Source)
+						{
+							if (Event.current.shift || TradeSession.giftMode || canBuyAny == false)
+								tooltip = BuyAll;
+							else
+								tooltip = BuyAffordable;
+						}
+						else
+						{
+							if (Event.current.shift || TradeSession.giftMode || canSellAny == false)
+								tooltip = SellAll;
+							else
+								tooltip = SellAffordable;
+						}
+						if (canSellAny == false || canBuyAny == false)
+							tooltip += "\n" + Unaffordable;
+						TooltipHandler.TipRegion(button, tooltip);
+					}
+
+					// Draw left double arrow
+					GUI.color = buttonColor;
 					if (Widgets.ButtonText(button, "<<") || DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left))
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
@@ -81,6 +193,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 						refresh = true;
 						SoundDefOf.Tick_High.PlayOneShotOnCamera();
 					}
+					GUI.color = normal;
 					button.x += button.width + gap;
 				}
 				else
@@ -88,12 +201,30 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					button.width += gap + baseButtonRect.width;
 				}
 
+				// Tooltip
+				if (mouseNear && Mouse.IsOver(button))
+				{
+					string tooltip;
+					if (positiveDirection == TransferablePositiveCountDirection.Source)
+						tooltip = BuyKey.Translate(Math.Abs(adjustAmount));
+					else
+						tooltip = SellKey.Translate(Math.Abs(adjustAmount));
+
+					if (canSellAny == false || canBuyAny == false)
+						tooltip += "\n" + Unaffordable;
+					TooltipHandler.TipRegion(button, tooltip);
+				}
+
+				// Draw left arrow
+				GUI.color = buttonColor;
 				if (Widgets.ButtonText(button, "<") || (!largeRange && DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left)))
 				{
 					row.AdjustBy(adjustAmount);
 					refresh = true;
 					SoundDefOf.Tick_High.PlayOneShotOnCamera();
 				}
+				GUI.color = normal;
+
 				baseButtonRect.x = button.xMax + gap;
 			}
 			else
@@ -114,12 +245,32 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			baseButtonRect.x += baseButtonRect.width + gap;
 
 			// Draw right arrows
-			if (CanAdjustBy(-adjustAmount, currentAmountToTransfer, cached.Item3, cached.Item4))
+			if (CanAdjustBy(-adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
 			{
+				buttonColor = normal;
+				if ((canSellAny == false && positiveDirection == TransferablePositiveCountDirection.Source) ||
+					(canBuyAny == false && positiveDirection == TransferablePositiveCountDirection.Destination))
+					buttonColor = _outOfFundsColor;
+
 				if (largeRange == false)
 					baseButtonRect.width = baseButtonRect.width * 2 + gap;
 
+				// Tooltip
+				if (mouseNear && Mouse.IsOver(baseButtonRect))
+				{
+					string tooltip;
+					if (positiveDirection == TransferablePositiveCountDirection.Source)
+						tooltip = SellKey.Translate(Math.Abs(adjustAmount));
+					else
+						tooltip = BuyKey.Translate(Math.Abs(adjustAmount));
 
+					if (canSellAny == false || canBuyAny == false)
+						tooltip += "\n" + Unaffordable;
+					TooltipHandler.TipRegion(baseButtonRect, tooltip);
+				}
+
+
+				GUI.color = buttonColor;
 				if (Widgets.ButtonText(baseButtonRect, ">") || (!largeRange && DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right)))
 				{
 					row.AdjustBy(-adjustAmount);
@@ -127,10 +278,37 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 
 				}
+				GUI.color = normal;
+
 				baseButtonRect.x += baseButtonRect.width + gap;
 
 				if (largeRange)
 				{
+					// Tooltip
+					if (mouseNear && Mouse.IsOver(baseButtonRect))
+					{
+						string tooltip;
+						if (positiveDirection == TransferablePositiveCountDirection.Source)
+						{
+							if (Event.current.shift || TradeSession.giftMode || canSellAny == false)
+								tooltip = SellAll;
+							else
+								tooltip = SellAffordable;
+						}
+						else
+						{
+							if (Event.current.shift || TradeSession.giftMode || canBuyAny == false)
+								tooltip = BuyAll;
+							else
+								tooltip = BuyAffordable;
+						}
+						if (canSellAny == false || canBuyAny == false)
+							tooltip += "\n" + Unaffordable;
+						TooltipHandler.TipRegion(baseButtonRect, tooltip);
+					}
+
+					// Draw right double arrow
+					GUI.color = buttonColor;
 					if (Widgets.ButtonText(baseButtonRect, ">>") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right))
 					{
 						if (positiveDirection == TransferablePositiveCountDirection.Source)
@@ -144,8 +322,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 						refresh = true;
 						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 					}
+					GUI.color = normal;
 				}
 			}
+
+			if (refresh)
+				_invalidatePostDeal = true;
 		}
 
 		private static bool CanAdjustBy(int target, int current, int minimum, int maximum)
@@ -237,16 +419,16 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				row.AdjustTo(0);
 		}
 
-
 		private static int MaxAmount(Tradeable row, TradeAction action)
 		{
-			Transactor transactor = Transactor.Colony;
-			if (action == TradeAction.PlayerSells)
-				transactor = Transactor.Trader;
+			int currency = 0;
+			if (action == TradeAction.PlayerBuys)
+				currency = _colonyPostDeal;
+			else
+				currency = _traderPostDeal;
 
 			float price = row.GetPriceFor(action);
 			int priceOffset = (int)(price * -row.CountToTransfer);
-			int currency = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
 
 			if (priceOffset > 0)
 				currency += priceOffset;

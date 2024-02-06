@@ -33,6 +33,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _enableHideUnwillingTooltip;
 		string _enableGhostButtons;
 		string _enableGhostButtonsTooltip;
+		string _enableBulkDurability;
+		string _enableBulkDurabilityTooltip;
 		string _rememberSortings;
 		string _rememberSortingsTooltip;
 		string _resetWidthsText;
@@ -63,6 +65,8 @@ namespace DynamicTradeInterface.UserInterface
 			_rememberSortings = string.Empty;
 			_rememberSortingsTooltip = string.Empty;
 			_resetWidthsText = string.Empty;
+			_enableBulkDurability = string.Empty;
+			_enableBulkDurabilityTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -84,6 +88,8 @@ namespace DynamicTradeInterface.UserInterface
 				_rememberSortings = "ConfigurationWindowRememberSortings".Translate();
 				_rememberSortingsTooltip = "ConfigurationWindowRememberSortingsTooltip".Translate();
 				_resetWidthsText = "ConfigurationWindowResetWidths".Translate();
+				_enableBulkDurability = "ConfigurationWindowEnableBulkDurability".Translate();;
+				_enableBulkDurabilityTooltip = "ConfigurationWindowEnableBulkDurabilityTooltip".Translate();
 
 
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
@@ -207,6 +213,13 @@ namespace DynamicTradeInterface.UserInterface
 				TooltipHandler.TipRegion(checkbox, _enableGhostButtonsTooltip);
 			_settings.GhostButtons = value;
 
+			checkbox.y = checkbox.yMax;
+
+			value = _settings.StackDurability;
+			Widgets.CheckboxLabeled(checkbox, _enableBulkDurability, ref value);
+			if (Mouse.IsOver(checkbox))
+				TooltipHandler.TipRegion(checkbox, _enableBulkDurabilityTooltip);
+			_settings.StackDurability = value;
 
 			checkbox.y = checkbox.yMax;
 
