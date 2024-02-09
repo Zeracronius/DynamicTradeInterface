@@ -165,6 +165,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 								tooltip = BuyAll;
 							else
 								tooltip = BuyAffordable;
+
+							if (canBuyAny == false)
+								tooltip += "\n" + Unaffordable;
 						}
 						else
 						{
@@ -172,9 +175,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 								tooltip = SellAll;
 							else
 								tooltip = SellAffordable;
+
+							if (canSellAny == false)
+								tooltip += "\n" + Unaffordable;
 						}
-						if (canSellAny == false || canBuyAny == false)
-							tooltip += "\n" + Unaffordable;
 						TooltipHandler.TipRegion(button, tooltip);
 					}
 
@@ -206,12 +210,19 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				{
 					string tooltip;
 					if (positiveDirection == TransferablePositiveCountDirection.Source)
+					{
 						tooltip = BuyKey.Translate(Math.Abs(adjustAmount));
+
+						if (canBuyAny == false)
+							tooltip += "\n" + Unaffordable;
+					}
 					else
+					{
 						tooltip = SellKey.Translate(Math.Abs(adjustAmount));
 
-					if (canSellAny == false || canBuyAny == false)
-						tooltip += "\n" + Unaffordable;
+						if (canSellAny == false)
+							tooltip += "\n" + Unaffordable;
+					}
 					TooltipHandler.TipRegion(button, tooltip);
 				}
 
@@ -260,12 +271,19 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				{
 					string tooltip;
 					if (positiveDirection == TransferablePositiveCountDirection.Source)
+					{
 						tooltip = SellKey.Translate(Math.Abs(adjustAmount));
+
+						if (canSellAny == false)
+							tooltip += "\n" + Unaffordable;
+					}
 					else
+					{
 						tooltip = BuyKey.Translate(Math.Abs(adjustAmount));
 
-					if (canSellAny == false || canBuyAny == false)
-						tooltip += "\n" + Unaffordable;
+						if (canBuyAny == false)
+							tooltip += "\n" + Unaffordable;
+					}
 					TooltipHandler.TipRegion(baseButtonRect, tooltip);
 				}
 
@@ -294,6 +312,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 								tooltip = SellAll;
 							else
 								tooltip = SellAffordable;
+
+							if (canSellAny == false)
+								tooltip += "\n" + Unaffordable;
 						}
 						else
 						{
@@ -301,9 +322,10 @@ namespace DynamicTradeInterface.UserInterface.Columns
 								tooltip = BuyAll;
 							else
 								tooltip = BuyAffordable;
+
+							if (canBuyAny == false)
+								tooltip += "\n" + Unaffordable;
 						}
-						if (canSellAny == false || canBuyAny == false)
-							tooltip += "\n" + Unaffordable;
 						TooltipHandler.TipRegion(baseButtonRect, tooltip);
 					}
 

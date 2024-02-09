@@ -58,6 +58,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _giftModeTip;
 		string _searchText;
 
+		string _focusedControl;
+
 		Texture2D _tradeModeIcon;
 		Texture2D _showSellableItemsIcon;
 		Texture2D _giftModeIcon;
@@ -124,6 +126,7 @@ namespace DynamicTradeInterface.UserInterface
 
 			_lockedTooltip = string.Empty;
 			_unlockedTooltip = string.Empty;
+			_focusedControl = string.Empty;
 
 
 			_tradeModeIcon = Textures.TradeModeIcon;
@@ -579,6 +582,25 @@ namespace DynamicTradeInterface.UserInterface
 				}
 				else
 					_acceptButtonText = _acceptText;
+			}
+
+
+			if (_settings.AutoRefocus)
+			{
+				if (Event.current.type == EventType.Used)
+				{
+					_focusedControl = GUI.GetNameOfFocusedControl();
+				}
+				else if (String.IsNullOrEmpty(_focusedControl) == false)
+				{
+					GUI.FocusControl(_focusedControl);
+					TextEditor? te = GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl) as TextEditor;
+					if (te != null)
+					{
+						te.SelectNone(); 
+						te.MoveTextEnd();
+					}
+				}
 			}
 		}
 
