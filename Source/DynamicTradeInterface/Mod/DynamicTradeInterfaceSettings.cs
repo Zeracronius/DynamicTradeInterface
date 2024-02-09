@@ -33,25 +33,15 @@ namespace DynamicTradeInterface.Mod
 			}
 		}
 
-		Dictionary<TradeColumnDef, ColumnCustomization> _columnCustomization = new Dictionary<TradeColumnDef, ColumnCustomization>();
-
-
 
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
 		const float DEFAULT_TRADE_HEIGHT = 0.8f;
 
-		private HashSet<TradeColumnDef> _validColumnDefs;
-		private List<TradeColumnDef> _visibleColumns;
-
-		bool _profilingEnabled;
+		Dictionary<TradeColumnDef, ColumnCustomization> _columnCustomization;
 		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;
-		float _tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
-		float _tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
-		bool _excludeUnwillingItems;
-		bool _ghostButtons;
-		bool _rememberSorting;
-		bool _tradeWindowLocked;
-		bool _stackDurability;
+		HashSet<TradeColumnDef> _validColumnDefs;
+		List<TradeColumnDef> _visibleColumns;
+
 		List<ColumnSorting> _colonySorting;
 		List<ColumnSorting> _traderSorting;
 
@@ -61,6 +51,7 @@ namespace DynamicTradeInterface.Mod
 			_visibleColumns = new List<TradeColumnDef>();
 			ValidationDefs = new HashSet<TradeValidationDef>();
 			_tradeColumnProfilings = new Dictionary<TradeColumnDef, Queue<long>>();
+			_columnCustomization = new Dictionary<TradeColumnDef, ColumnCustomization>();
 			_colonySorting = new List<ColumnSorting>();
 			_traderSorting = new List<ColumnSorting>();
 		}
@@ -69,56 +60,19 @@ namespace DynamicTradeInterface.Mod
 		internal List<TradeColumnDef> VisibleColumns => _visibleColumns;
 		public HashSet<TradeValidationDef> ValidationDefs { get; }
 
-		internal bool ProfilingEnabled
-		{
-			get => _profilingEnabled;
-			set => _profilingEnabled = value;
-		}
 
 		internal Dictionary<TradeColumnDef, Queue<long>> TradeColumnProfilings => _tradeColumnProfilings;
 
 
-		public float TradeWidthPercentage 
-		{ 
-			get => _tradeWidthPercentage; 
-			set => _tradeWidthPercentage = value; 
-		}
-
-		public float TradeHeightPercentage 
-		{ 
-			get => _tradeHeightPercentage; 
-			set => _tradeHeightPercentage = value; 
-		}
-
-		public bool ExcludeUnwillingItems
-		{
-			get => _excludeUnwillingItems;
-			set => _excludeUnwillingItems = value;
-		}
-
-		public bool GhostButtons
-		{
-			get => _ghostButtons;
-			set => _ghostButtons = value;
-		}
-
-		public bool StackDurability
-		{
-			get => _stackDurability;
-			set => _stackDurability = value;
-		}
-
-		public bool RememberSortings
-		{
-			get => _rememberSorting;
-			set => _rememberSorting = value;
-		}
-
-		public bool TradeWindowLocked
-		{
-			get => _tradeWindowLocked;
-			set => _tradeWindowLocked = value;
-		}
+		public bool ProfilingEnabled;
+		public float TradeWidthPercentage;
+		public float TradeHeightPercentage;
+		public bool ExcludeUnwillingItems;
+		public bool GhostButtons;
+		public bool StackDurability;
+		public bool RememberSortings;
+		public bool TradeWindowLocked;
+		public bool AutoRefocus;
 
 
 		public List<ColumnSorting> StoredColonySorting
@@ -136,21 +90,22 @@ namespace DynamicTradeInterface.Mod
 			base.ExposeData();
 
 
-			Scribe_Values.Look(ref _tradeWidthPercentage, nameof(TradeWidthPercentage), DEFAULT_TRADE_WIDTH);
-			Scribe_Values.Look(ref _tradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
+			Scribe_Values.Look(ref TradeWidthPercentage, nameof(TradeWidthPercentage), DEFAULT_TRADE_WIDTH);
+			Scribe_Values.Look(ref TradeHeightPercentage, nameof(TradeHeightPercentage), DEFAULT_TRADE_HEIGHT);
 
-			Scribe_Values.Look(ref _excludeUnwillingItems, nameof(ExcludeUnwillingItems), false);
-			Scribe_Values.Look(ref _ghostButtons, nameof(GhostButtons), false);
-			Scribe_Values.Look(ref _rememberSorting, nameof(RememberSortings), false);
-			Scribe_Values.Look(ref _tradeWindowLocked, nameof(TradeWindowLocked), false);
-			Scribe_Values.Look(ref _stackDurability, nameof(StackDurability), false);
+			Scribe_Values.Look(ref ExcludeUnwillingItems, nameof(ExcludeUnwillingItems), false);
+			Scribe_Values.Look(ref GhostButtons, nameof(GhostButtons), false);
+			Scribe_Values.Look(ref RememberSortings, nameof(RememberSortings), false);
+			Scribe_Values.Look(ref TradeWindowLocked, nameof(TradeWindowLocked), false);
+			Scribe_Values.Look(ref StackDurability, nameof(StackDurability), false);
+			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), true);
 
 
-			if (_tradeWidthPercentage < 0.01)
-				_tradeWidthPercentage = DEFAULT_TRADE_WIDTH;
+			if (TradeWidthPercentage < 0.01)
+				TradeWidthPercentage = DEFAULT_TRADE_WIDTH;
 
-			if (_tradeHeightPercentage < 0.01)
-				_tradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
+			if (TradeHeightPercentage < 0.01)
+				TradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
 
 			Scribe_Collections.Look(ref _visibleColumns, "visibleColumns");
 			if (_visibleColumns != null)

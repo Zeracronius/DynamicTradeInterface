@@ -13,6 +13,7 @@ using Verse.Sound;
 
 namespace DynamicTradeInterface.UserInterface
 {
+	[HotSwappable]
 	internal class Dialog_TradeConfiguration : Window
 	{
 		public event EventHandler<bool>? OnClosed;
@@ -37,6 +38,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _enableBulkDurabilityTooltip;
 		string _rememberSortings;
 		string _rememberSortingsTooltip;
+		string _autoRefocus;
+		string _autoRefocusTooltip;
 		string _resetWidthsText;
 
 		float _headerHeight;
@@ -67,6 +70,8 @@ namespace DynamicTradeInterface.UserInterface
 			_resetWidthsText = string.Empty;
 			_enableBulkDurability = string.Empty;
 			_enableBulkDurabilityTooltip = string.Empty;
+			_autoRefocus = string.Empty;
+			_autoRefocusTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -91,6 +96,9 @@ namespace DynamicTradeInterface.UserInterface
 				_enableBulkDurability = "ConfigurationWindowEnableBulkDurability".Translate();;
 				_enableBulkDurabilityTooltip = "ConfigurationWindowEnableBulkDurabilityTooltip".Translate();
 
+
+				_autoRefocus = "ConfigurationWindowAutoRefocus".Translate();
+				_autoRefocusTooltip = "ConfigurationWindowAutoRefocusTooltip".Translate();
 
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
 
@@ -228,6 +236,15 @@ namespace DynamicTradeInterface.UserInterface
 			if (Mouse.IsOver(checkbox))
 				TooltipHandler.TipRegion(checkbox, _rememberSortingsTooltip);
 			_settings.RememberSortings = value;
+
+
+			checkbox.y = checkbox.yMax;
+			
+			value = _settings.AutoRefocus;
+			Widgets.CheckboxLabeled(checkbox, _autoRefocus, ref value);
+			if (Mouse.IsOver(checkbox))
+				TooltipHandler.TipRegion(checkbox, _autoRefocusTooltip);
+			_settings.AutoRefocus = value;
 
 			checkbox.y = checkbox.yMax;
 
