@@ -127,8 +127,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				Text.Anchor = TextAnchor.UpperLeft;
 				GUI.color = Color.white;
 
-				if (Mouse.IsOver(rect2))
-					TooltipHandler.TipRegion(rect2, _positiveBuysNegativeSells);
+				if (Mouse.IsOver(rect))
+					TooltipHandler.TipRegion(rect, _positiveBuysNegativeSells);
 
 				if (countToTransfer != 0)
 				{
