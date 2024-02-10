@@ -176,6 +176,8 @@ namespace DynamicTradeInterface.UserInterface
 			_currency = TradeSession.deal.CurrencyTradeable;
 			_traderFaction = TradeSession.trader.Faction;
 
+			// Assign default focus.
+			_focusedControl = "SearchBox";
 
 			RefreshData();
 
@@ -609,6 +611,7 @@ namespace DynamicTradeInterface.UserInterface
 			float clearButtonSize = Text.LineHeight;
 			Rect searchBox = new Rect(x, y, width - clearButtonSize - Table<ITableRow>.CELL_SPACING, clearButtonSize);
 
+			GUI.SetNextControlName("SearchBox");
 			string searchString = Widgets.TextField(searchBox, _searchText);
 			if (Widgets.ButtonText(new Rect(searchBox.xMax + Table<ITableRow>.CELL_SPACING, y, clearButtonSize, clearButtonSize), "X"))
 				searchString = "";
