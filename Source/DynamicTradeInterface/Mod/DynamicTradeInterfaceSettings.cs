@@ -65,14 +65,14 @@ namespace DynamicTradeInterface.Mod
 
 
 		public bool ProfilingEnabled;
-		public float TradeWidthPercentage;
-		public float TradeHeightPercentage;
+		public float TradeWidthPercentage = DEFAULT_TRADE_WIDTH;
+		public float TradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
 		public bool ExcludeUnwillingItems;
 		public bool GhostButtons;
 		public bool StackDurability;
 		public bool RememberSortings;
 		public bool TradeWindowLocked;
-		public bool AutoRefocus;
+		public bool AutoRefocus = true;
 
 
 		public List<ColumnSorting> StoredColonySorting
