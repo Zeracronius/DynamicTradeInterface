@@ -175,8 +175,6 @@ namespace DynamicTradeInterface.UserInterface
 
 			_currency = TradeSession.deal.CurrencyTradeable;
 			_traderFaction = TradeSession.trader.Faction;
-
-			// Assign default focus.
 			_focusedControl = "SearchBox";
 
 			RefreshData();
@@ -587,7 +585,7 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 
-			if (_settings.AutoRefocus)
+			if (_settings.AutoRefocus && Find.WindowStack.CurrentWindowGetsInput)
 			{
 				if (Event.current.type == EventType.Used)
 				{

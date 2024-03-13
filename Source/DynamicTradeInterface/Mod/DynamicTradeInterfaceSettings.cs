@@ -72,7 +72,7 @@ namespace DynamicTradeInterface.Mod
 		public bool StackDurability;
 		public bool RememberSortings;
 		public bool TradeWindowLocked;
-		public bool AutoRefocus = true;
+		public bool AutoRefocus = false;
 
 
 		public List<ColumnSorting> StoredColonySorting
@@ -98,7 +98,7 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref RememberSortings, nameof(RememberSortings), false);
 			Scribe_Values.Look(ref TradeWindowLocked, nameof(TradeWindowLocked), false);
 			Scribe_Values.Look(ref StackDurability, nameof(StackDurability), false);
-			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), true);
+			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), false);
 
 
 			if (TradeWidthPercentage < 0.01)
