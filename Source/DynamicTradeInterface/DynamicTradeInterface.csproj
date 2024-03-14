@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704">
+	<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4034-beta">
 	  <ExcludeAssets>runtime</ExcludeAssets>
 	</PackageReference>
-	<PackageReference Include="Lib.Harmony" Version="2.2.2">
+	<PackageReference Include="Lib.Harmony" Version="2.3.1.1">
 	  <ExcludeAssets>runtime</ExcludeAssets>
 	</PackageReference>
   </ItemGroup>
