@@ -24,13 +24,13 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.2.0
      
-    - name: Restore NuGet Packages
-      run: nuget restore $env:Solution_Name
+    # - name: Restore NuGet Packages
+    #   run: nuget restore $env:Solution_Name
       
     - name: Build
       run: | 
         "${{ env.Versions }}".Split(";") | ForEach {
-          msbuild $env:Solution_Name /p:Configuration=$_
+          msbuild $env:Solution_Name -t:restore,build /p:Configuration=$_
         }
 
     # Remove unnecesary directories
