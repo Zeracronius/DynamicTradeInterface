@@ -20,7 +20,7 @@ jobs:
     - name: Set configuration
       run: | 
         # if ($env:Branch -eq "refs/heads/master") {
-        echo "Configuration=1.4;1.5" >> $env:GITHUB_ENV
+        echo "Configuration=""1.4;1.5""" >> $env:GITHUB_ENV
         # } else {
         #   echo "Configuration=Debug" >> $env:GITHUB_ENV
         # }
