@@ -1,21 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>NET48</TargetFramework>
+		<TargetFramework>NET48</TargetFramework>
 		<langVersion>10.0</langVersion>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<OutputPath>..\..\1.4\Assemblies\</OutputPath>
-		<Configurations>Debug;Release;Hotswap</Configurations>
+		<Configurations>Debug;Hotswap;1.4;1.5</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-	<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4034-beta">
-	  <ExcludeAssets>runtime</ExcludeAssets>
-	</PackageReference>
-	<PackageReference Include="Lib.Harmony" Version="2.3.1.1">
-	  <ExcludeAssets>runtime</ExcludeAssets>
-	</PackageReference>
-  </ItemGroup>
+	<Choose>
+		<When Condition="'$(Configuration)'=='1.4'">
+			<PropertyGroup>
+				<OutputPath>..\..\1.4\Assemblies\</OutputPath>
+			</PropertyGroup>
+			<ItemGroup>
+				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704">
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+				<PackageReference Include="Lib.Harmony" Version="2.2.2">
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+			</ItemGroup>
+		</When>
+		<When Condition="'$(Configuration)'=='1.5'">
+			<PropertyGroup>
+				<OutputPath>..\..\1.5\Assemblies\</OutputPath>
+			</PropertyGroup>
+			<ItemGroup>
+				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4034-beta">
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+				<PackageReference Include="Lib.Harmony" Version="2.3.1.1">
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<OutputPath>..\..\1.4\Assemblies\</OutputPath>
+			</PropertyGroup>
+			<ItemGroup>
+				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704">
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+				<PackageReference Include="Lib.Harmony" Version="2.2.2">
+					<ExcludeAssets>runtime</ExcludeAssets>
+				</PackageReference>
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 </Project>
