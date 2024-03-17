@@ -156,7 +156,9 @@ namespace DynamicTradeInterface.UserInterface
 		public CaravanWidget(List<Tradeable> tradeables, Tradeable currency)
 		{
 			_tradeables = tradeables.ToList();
-			_tradeables.Add(currency);
+
+			if (currency != null)
+				_tradeables.Add(currency);
 
 			_visibilityExplanation = string.Empty;
 			_foragedFoodPerDayExplanation = string.Empty;
