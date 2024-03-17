@@ -63,18 +63,20 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			}
 
-			int postDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
-			switch (transactor)
+			if (TradeSession.giftMode == false)
 			{
-				case Transactor.Colony:
-					_colonyPostDeal = postDeal;
-					break;
+				int postDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(transactor);
+				switch (transactor)
+				{
+					case Transactor.Colony:
+						_colonyPostDeal = postDeal;
+						break;
 
-				case Transactor.Trader:
-					_traderPostDeal = postDeal;
-					break;
+					case Transactor.Trader:
+						_traderPostDeal = postDeal;
+						break;
+				}
 			}
-
 
 			foreach (var row in rows)
 				_editableCache[row] = new Cache()
@@ -105,24 +107,22 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			if (cached.WillTrade == false)
 				return;
 
-			if (_invalidatePostDeal && Event.current.type == EventType.Repaint)
-			{
-				_invalidatePostDeal = false;
-				_colonyPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Colony);
-				_traderPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Trader);
-			}
-
-
-			int currentAmountToTransfer = row.CountToTransfer;
-
 			bool canSellAny = true;
 			bool canBuyAny = true;
 
 			if (TradeSession.giftMode == false)
 			{
+				if (_invalidatePostDeal && Event.current.type == EventType.Repaint)
+				{
+					_invalidatePostDeal = false;
+					_colonyPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Colony);
+					_traderPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Trader);
+				}
+
 				canSellAny = cached.ColonySellPrice < _traderPostDeal;
 				canBuyAny = cached.ColonyBuyPrice < _colonyPostDeal;
 			}
+			int currentAmountToTransfer = row.CountToTransfer;
 
 			bool mouseNear = Mouse.IsOver(rect.ExpandedBy(rect.width / 2, rect.height * 2));
 			if (_settings?.GhostButtons == true && currentAmountToTransfer == 0 && mouseNear == false)
