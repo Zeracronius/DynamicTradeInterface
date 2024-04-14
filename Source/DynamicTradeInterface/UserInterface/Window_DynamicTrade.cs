@@ -662,7 +662,10 @@ namespace DynamicTradeInterface.UserInterface
 		private void LoadWares()
 		{
 			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables;
-			if (TradeSession.giftMode == false)
+
+			// Remove currency from tradable items when not in gifting mode.
+			// Always remove if currency is favor.
+			if (TradeSession.giftMode == false || TradeSession.TradeCurrency == TradeCurrency.Favor)
 				filteredWares = filteredWares.Where(x => x.IsCurrency == false);
 
 			if (TradeSession.trader.TraderKind.hideThingsNotWillingToTrade || _settings.ExcludeUnwillingItems)
@@ -694,8 +697,9 @@ namespace DynamicTradeInterface.UserInterface
 					Dialog_Trade.lastCurrencyFlashTime = 0;
 			}
 
+			bool isThing = currency.IsThing;
 			float curX = currencyRowRect.x;
-			if (currency.IsThing)
+			if (isThing)
 			{
 				Thing thing = currency.AnyThing;
 				if (thing != null)
@@ -724,6 +728,8 @@ namespace DynamicTradeInterface.UserInterface
 					}
 				}
 			}
+			else
+				currency.DrawIcon(new Rect(curX, currencyRowRect.y, 40, currencyRowRect.height));
 
 			float centerX = currencyRowRect.center.x;
 			currencyRowRect.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, 100, currencyRowRect.width / 2);
@@ -753,10 +759,9 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 
-
-
 			// Trader currency
-			Widgets.Label(right, currency.CountHeldBy(Transactor.Trader).ToStringCached());
+			if (isThing)
+				Widgets.Label(right, currency.CountHeldBy(Transactor.Trader).ToStringCached());
 
 			Text.Font = currentFont;
 			Text.Anchor = TextAnchor.UpperLeft;
