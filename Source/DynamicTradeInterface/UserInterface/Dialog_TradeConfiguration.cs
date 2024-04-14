@@ -5,6 +5,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -41,6 +42,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _autoRefocus;
 		string _autoRefocusTooltip;
 		string _resetWidthsText;
+		string _openAsDefault;
+		string _openAsDefaultTooltip;
 
 		float _headerHeight;
 
@@ -72,6 +75,8 @@ namespace DynamicTradeInterface.UserInterface
 			_enableBulkDurabilityTooltip = string.Empty;
 			_autoRefocus = string.Empty;
 			_autoRefocusTooltip = string.Empty;
+			_openAsDefault = string.Empty;
+			_openAsDefaultTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -95,6 +100,8 @@ namespace DynamicTradeInterface.UserInterface
 				_resetWidthsText = "ConfigurationWindowResetWidths".Translate();
 				_enableBulkDurability = "ConfigurationWindowEnableBulkDurability".Translate();;
 				_enableBulkDurabilityTooltip = "ConfigurationWindowEnableBulkDurabilityTooltip".Translate();
+				_openAsDefault = "ConfigurationWindowOpenAsDefault".Translate();
+				_openAsDefaultTooltip = "ConfigurationWindowOpenAsDefaultTooltip".Translate();
 
 
 				_autoRefocus = "ConfigurationWindowAutoRefocus".Translate();
@@ -200,53 +207,15 @@ namespace DynamicTradeInterface.UserInterface
 			Rect checkbox = new Rect(configurations).ContractedBy(GenUI.GapTiny, 0);
 			checkbox.height = optionEntry;
 
-			bool value = _settings.ProfilingEnabled;
-			Widgets.CheckboxLabeled(checkbox, _enableProfilingText, ref value);
-			_settings.ProfilingEnabled = value;
-
-			checkbox.y = checkbox.yMax;
-
-			value = _settings.ExcludeUnwillingItems;
-			Widgets.CheckboxLabeled(checkbox, _enableHideUnwilling, ref value);
-			if (Mouse.IsOver(checkbox))
-				TooltipHandler.TipRegion(checkbox, _enableHideUnwillingTooltip);
-			_settings.ExcludeUnwillingItems = value;
+			DrawCheckbox(ref checkbox, ref _settings.ProfilingEnabled, _enableProfilingText);
+			DrawCheckbox(ref checkbox, ref _settings.ExcludeUnwillingItems, _enableHideUnwilling, _enableHideUnwillingTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.GhostButtons, _enableGhostButtons, _enableGhostButtonsTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.StackDurability, _enableBulkDurability, _enableBulkDurabilityTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.RememberSortings, _rememberSortings, _rememberSortingsTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.AutoRefocus, _autoRefocus, _autoRefocusTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.OpenAsDefault, _openAsDefault, _openAsDefaultTooltip);
 
 
-			checkbox.y = checkbox.yMax;
-
-			value = _settings.GhostButtons;
-			Widgets.CheckboxLabeled(checkbox, _enableGhostButtons, ref value);
-			if (Mouse.IsOver(checkbox))
-				TooltipHandler.TipRegion(checkbox, _enableGhostButtonsTooltip);
-			_settings.GhostButtons = value;
-
-			checkbox.y = checkbox.yMax;
-
-			value = _settings.StackDurability;
-			Widgets.CheckboxLabeled(checkbox, _enableBulkDurability, ref value);
-			if (Mouse.IsOver(checkbox))
-				TooltipHandler.TipRegion(checkbox, _enableBulkDurabilityTooltip);
-			_settings.StackDurability = value;
-
-			checkbox.y = checkbox.yMax;
-
-			value = _settings.RememberSortings;
-			Widgets.CheckboxLabeled(checkbox, _rememberSortings, ref value);
-			if (Mouse.IsOver(checkbox))
-				TooltipHandler.TipRegion(checkbox, _rememberSortingsTooltip);
-			_settings.RememberSortings = value;
-
-
-			checkbox.y = checkbox.yMax;
-			
-			value = _settings.AutoRefocus;
-			Widgets.CheckboxLabeled(checkbox, _autoRefocus, ref value);
-			if (Mouse.IsOver(checkbox))
-				TooltipHandler.TipRegion(checkbox, _autoRefocusTooltip);
-			_settings.AutoRefocus = value;
-
-			checkbox.y = checkbox.yMax;
 
 			if (Widgets.ButtonText(checkbox, _resetWidthsText))
 				_settings.ClearColumnCustomization();
@@ -366,6 +335,16 @@ namespace DynamicTradeInterface.UserInterface
 				Close();
 				OnClosed?.Invoke(this, Accepted);
 			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void DrawCheckbox(ref Rect boundingBox, ref bool value, string label, string? tooltip = null)
+		{
+			Widgets.CheckboxLabeled(boundingBox, label, ref value);
+			if (tooltip != null && Mouse.IsOver(boundingBox))
+				TooltipHandler.TipRegion(boundingBox, tooltip);
+
+			boundingBox.y = boundingBox.yMax;
 		}
 	}
 }

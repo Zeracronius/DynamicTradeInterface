@@ -73,6 +73,7 @@ namespace DynamicTradeInterface.Mod
 		public bool RememberSortings;
 		public bool TradeWindowLocked;
 		public bool AutoRefocus = false;
+		public bool OpenAsDefault = true;
 
 
 		public List<ColumnSorting> StoredColonySorting
@@ -99,6 +100,8 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref TradeWindowLocked, nameof(TradeWindowLocked), false);
 			Scribe_Values.Look(ref StackDurability, nameof(StackDurability), false);
 			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), false);
+			Scribe_Values.Look(ref OpenAsDefault, nameof(OpenAsDefault), true);
+
 
 
 			if (TradeWidthPercentage < 0.01)
