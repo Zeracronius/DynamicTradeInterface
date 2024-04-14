@@ -16,7 +16,8 @@
 	<ConfigurationWindowEnableBulkDurabilityTooltip>Show averaged durability for stacked items in durability column.</ConfigurationWindowEnableBulkDurabilityTooltip>
 	<ConfigurationWindowAutoRefocus>Auto refocus</ConfigurationWindowAutoRefocus>
 	<ConfigurationWindowAutoRefocusTooltip>Attempts to retain focus on input field when unfocused by changing interface.</ConfigurationWindowAutoRefocusTooltip>
-
+	<ConfigurationWindowOpenAsDefault>Default trade window</ConfigurationWindowOpenAsDefault>
+	<ConfigurationWindowOpenAsDefaultTooltip>Use as default trade window. The non-default window can be opened by holding down Ctrl as the window opens.</ConfigurationWindowOpenAsDefaultTooltip>
 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>

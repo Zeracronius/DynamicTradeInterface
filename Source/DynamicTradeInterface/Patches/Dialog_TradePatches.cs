@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using DynamicTradeInterface.Mod;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,10 @@ namespace DynamicTradeInterface.Patches
 	{
 		static void Prefix(Dialog_Trade __instance, bool ___giftsOnly)
 		{
-			if (Event.current.control == false)
+			bool control = Event.current.control;
+			bool openDefault = DynamicTradeInterfaceMod.Settings.OpenAsDefault;
+			if ((openDefault && control == false) ||
+				(openDefault == false && control))
 			{
 				var dynamicTradeWindow = new UserInterface.Window_DynamicTrade(___giftsOnly);
 
