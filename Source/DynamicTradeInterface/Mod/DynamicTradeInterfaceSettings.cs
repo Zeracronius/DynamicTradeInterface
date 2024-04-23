@@ -33,6 +33,7 @@ namespace DynamicTradeInterface.Mod
 			}
 		}
 
+		public bool PauseOnTrade;
 
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
 		const float DEFAULT_TRADE_HEIGHT = 0.8f;
@@ -101,6 +102,8 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref StackDurability, nameof(StackDurability), false);
 			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), false);
 			Scribe_Values.Look(ref OpenAsDefault, nameof(OpenAsDefault), true);
+			Scribe_Values.Look(ref PauseOnTrade, nameof(PauseOnTrade), true);
+
 
 
 
