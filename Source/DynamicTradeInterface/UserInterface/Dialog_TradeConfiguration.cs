@@ -106,8 +106,8 @@ namespace DynamicTradeInterface.UserInterface
 				_enableBulkDurabilityTooltip = "ConfigurationWindowEnableBulkDurabilityTooltip".Translate();
 				_openAsDefault = "ConfigurationWindowOpenAsDefault".Translate();
 				_openAsDefaultTooltip = "ConfigurationWindowOpenAsDefaultTooltip".Translate();
-				_pauseOnTrade = "ConfigurationWindowPauseOnTrade".Translate();
-				_pauseOnTradeTooltip = "ConfigurationWindowPauseOnTradeTooltip".Translate();
+				_pauseOnTrade = "ConfigurationWindowPauseAfterTrade".Translate();
+				_pauseOnTradeTooltip = "ConfigurationWindowPauseAfterTradeTooltip".Translate();
 
 
 				_autoRefocus = "ConfigurationWindowAutoRefocus".Translate();
@@ -220,7 +220,7 @@ namespace DynamicTradeInterface.UserInterface
 			DrawCheckbox(ref checkbox, ref _settings.RememberSortings, _rememberSortings, _rememberSortingsTooltip);
 			DrawCheckbox(ref checkbox, ref _settings.AutoRefocus, _autoRefocus, _autoRefocusTooltip);
 			DrawCheckbox(ref checkbox, ref _settings.OpenAsDefault, _openAsDefault, _openAsDefaultTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.PauseOnTrade, _pauseOnTrade, _pauseOnTradeTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.PauseAfterTrade, _pauseOnTrade, _pauseOnTradeTooltip);
 
 
 

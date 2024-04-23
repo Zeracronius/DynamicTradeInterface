@@ -33,7 +33,6 @@ namespace DynamicTradeInterface.Mod
 			}
 		}
 
-		public bool PauseOnTrade;
 
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
 		const float DEFAULT_TRADE_HEIGHT = 0.8f;
@@ -75,6 +74,7 @@ namespace DynamicTradeInterface.Mod
 		public bool TradeWindowLocked;
 		public bool AutoRefocus = false;
 		public bool OpenAsDefault = true;
+		public bool PauseAfterTrade;
 
 
 		public List<ColumnSorting> StoredColonySorting
@@ -102,7 +102,7 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref StackDurability, nameof(StackDurability), false);
 			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), false);
 			Scribe_Values.Look(ref OpenAsDefault, nameof(OpenAsDefault), true);
-			Scribe_Values.Look(ref PauseOnTrade, nameof(PauseOnTrade), true);
+			Scribe_Values.Look(ref PauseAfterTrade, nameof(PauseAfterTrade), false);
 
 
 

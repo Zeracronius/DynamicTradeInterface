@@ -19,7 +19,7 @@ namespace DynamicTradeInterface.Patches
 			bool control = Event.current.control;
 			bool openDefault = DynamicTradeInterfaceMod.Settings.OpenAsDefault;
 
-			if (DynamicTradeInterfaceMod.Settings.PauseOnTrade)
+			if (DynamicTradeInterfaceMod.Settings.PauseAfterTrade)
 			{
 				Find.TickManager.Pause();
 			}

@@ -18,8 +18,8 @@
 	<ConfigurationWindowAutoRefocusTooltip>Attempts to retain focus on input field when unfocused by changing interface.</ConfigurationWindowAutoRefocusTooltip>
 	<ConfigurationWindowOpenAsDefault>Default trade window</ConfigurationWindowOpenAsDefault>
 	<ConfigurationWindowOpenAsDefaultTooltip>Use as default trade window. The non-default window can be opened by holding down Ctrl as the window opens.</ConfigurationWindowOpenAsDefaultTooltip>
-	<ConfigurationWindowPauseOnTrade>Pause on trade</ConfigurationWindowPauseOnTrade>
-	<ConfigurationWindowPauseOnTradeTooltip>Pause game when trade window is open.</ConfigurationWindowPauseOnTradeTooltip>
+	<ConfigurationWindowPauseAfterTrade>Sustained pause</ConfigurationWindowPauseAfterTrade>
+	<ConfigurationWindowPauseAfterTradeTooltip>Keeps the game paused after trade window is closed.</ConfigurationWindowPauseAfterTradeTooltip>
 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
