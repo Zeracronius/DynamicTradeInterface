@@ -44,6 +44,8 @@ namespace DynamicTradeInterface.UserInterface
 		string _resetWidthsText;
 		string _openAsDefault;
 		string _openAsDefaultTooltip;
+		string _pauseOnTradeTooltip;
+		string _pauseOnTrade;
 
 		float _headerHeight;
 
@@ -77,6 +79,8 @@ namespace DynamicTradeInterface.UserInterface
 			_autoRefocusTooltip = string.Empty;
 			_openAsDefault = string.Empty;
 			_openAsDefaultTooltip = string.Empty;
+			_pauseOnTrade = string.Empty;
+			_pauseOnTradeTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -102,6 +106,8 @@ namespace DynamicTradeInterface.UserInterface
 				_enableBulkDurabilityTooltip = "ConfigurationWindowEnableBulkDurabilityTooltip".Translate();
 				_openAsDefault = "ConfigurationWindowOpenAsDefault".Translate();
 				_openAsDefaultTooltip = "ConfigurationWindowOpenAsDefaultTooltip".Translate();
+				_pauseOnTrade = "ConfigurationWindowPauseAfterTrade".Translate();
+				_pauseOnTradeTooltip = "ConfigurationWindowPauseAfterTradeTooltip".Translate();
 
 
 				_autoRefocus = "ConfigurationWindowAutoRefocus".Translate();
@@ -214,6 +220,7 @@ namespace DynamicTradeInterface.UserInterface
 			DrawCheckbox(ref checkbox, ref _settings.RememberSortings, _rememberSortings, _rememberSortingsTooltip);
 			DrawCheckbox(ref checkbox, ref _settings.AutoRefocus, _autoRefocus, _autoRefocusTooltip);
 			DrawCheckbox(ref checkbox, ref _settings.OpenAsDefault, _openAsDefault, _openAsDefaultTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.PauseAfterTrade, _pauseOnTrade, _pauseOnTradeTooltip);
 
 
 
