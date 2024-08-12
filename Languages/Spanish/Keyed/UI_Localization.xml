@@ -1,0 +1,52 @@
+<LanguageData>
+	<DynamicTableControlSearchPlaceholder>Buscar...</DynamicTableControlSearchPlaceholder>
+ 
+	<ConfigurationWindowTitle>Configuración de la ventana de comercio</ConfigurationWindowTitle>
+	<ConfigurationWindowHideUnwilling>Excluir artículos no deseados</ConfigurationWindowHideUnwilling>
+	<ConfigurationWindowHideUnwillingTooltip>Excluir todos los artículos que el comerciante no está dispuesto a comprar.</ConfigurationWindowHideUnwillingTooltip>
+	<ConfigurationWindowSelectedColumns>Columnas seleccionadas</ConfigurationWindowSelectedColumns>
+	<ConfigurationWindowAvailableColumns>Columnas disponibles</ConfigurationWindowAvailableColumns>
+	<ConfigurationWindowEnableProfiling>Habilitar perfilado</ConfigurationWindowEnableProfiling>
+	<ConfigurationWindowEnableGhostButtons>Botones fantasma</ConfigurationWindowEnableGhostButtons>
+	<ConfigurationWindowEnableGhostButtonsTooltip>Mejora el rendimiento mostrando solo botones de comercio cerca del cursor.</ConfigurationWindowEnableGhostButtonsTooltip>
+	<ConfigurationWindowRememberSortings>Recordar ordenaciones</ConfigurationWindowRememberSortings>
+	<ConfigurationWindowRememberSortingsTooltip>Guardar las ordenaciones de columnas en las configuraciones del mod.</ConfigurationWindowRememberSortingsTooltip>
+	<ConfigurationWindowResetWidths>Restablecer anchos</ConfigurationWindowResetWidths>
+	<ConfigurationWindowEnableBulkDurability>Durabilidad apilada</ConfigurationWindowEnableBulkDurability>
+	<ConfigurationWindowEnableBulkDurabilityTooltip>Mostrar durabilidad promediada para elementos apilados en la columna de durabilidad.</ConfigurationWindowEnableBulkDurabilityTooltip>
+	<ConfigurationWindowAutoRefocus>Auto reenfoque</ConfigurationWindowAutoRefocus>
+	<ConfigurationWindowAutoRefocusTooltip>Intenta mantener el enfoque en el campo de entrada cuando está desenfocado cambiando la interfaz.</ConfigurationWindowAutoRefocusTooltip>
+    <ConfigurationWindowOpenAsDefault>Ventana de comercio predeterminada</ConfigurationWindowOpenAsDefault>
+    <ConfigurationWindowOpenAsDefaultTooltip>Usar como ventana de comercio predeterminada. La ventana no predeterminada se puede abrir manteniendo presionada la tecla Ctrl mientras se abre la ventana.</ConfigurationWindowOpenAsDefaultTooltip>
+	<ConfigurationWindowPauseAfterTrade>Pausar después de comerciar</ConfigurationWindowPauseAfterTrade>
+	<ConfigurationWindowPauseAfterTradeTooltip>Mantiene el juego en pausa después de cerrar la ventana de comercio.</ConfigurationWindowPauseAfterTradeTooltip>
+ 
+	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
+	<ConfigurationWindowColumnCaption>Título</ConfigurationWindowColumnCaption>
+	<ConfigurationWindowColumnAvgMs>Prom ms</ConfigurationWindowColumnAvgMs>
+	<ConfigurationWindowColumnMaxMs>Máx ms</ConfigurationWindowColumnMaxMs>
+ 
+	<DynamicTradeWindowUnwilling>No deseado</DynamicTradeWindowUnwilling>
+	<DynamicTradeWindowLocked>La ventana está bloqueada en su lugar.</DynamicTradeWindowLocked>
+	<DynamicTradeWindowUnlocked>La ventana se puede arrastrar.</DynamicTradeWindowUnlocked>
+ 
+	<DynamicTradeWindowGiftLess>Regalar {0} menos.</DynamicTradeWindowGiftLess>
+	<DynamicTradeWindowGiftNone>No regalar.</DynamicTradeWindowGiftNone>
+	<DynamicTradeWindowGiftMore>Regalar {0} más.</DynamicTradeWindowGiftMore>
+	<DynamicTradeWindowGiftAll>Regalar todo.</DynamicTradeWindowGiftAll>
+ 
+	<DynamicTradeWindowBuyMore>Comprar {0} más.</DynamicTradeWindowBuyMore>
+	<DynamicTradeWindowBuyAll>Comprar todo.</DynamicTradeWindowBuyAll>
+	<DynamicTradeWindowBuyAffordable>Comprar todo lo que pueda permitirme.</DynamicTradeWindowBuyAffordable>
+	<DynamicTradeWindowSellMore>Vender {0} más.</DynamicTradeWindowSellMore>
+	<DynamicTradeWindowSellAll>Vender todo.</DynamicTradeWindowSellAll>
+	<DynamicTradeWindowSellAffordable>Vender la cantidad que pueda permitirse el comerciante.</DynamicTradeWindowSellAffordable>
+ 
+	<DynamicTradeWindowUnaffordable>Inasequible.</DynamicTradeWindowUnaffordable>
+ 
+	<DynamicTradeWindowGenepackMissing>Faltante</DynamicTradeWindowGenepackMissing>
+	<DynamicTradeWindowGenepackIsolated>Aislado</DynamicTradeWindowGenepackIsolated>
+	<DynamicTradeWindowGenepackMixed>Mezclado</DynamicTradeWindowGenepackMixed>
+ 
+	<DynamicTradeWindowExtraIconsColumnTrained>Entrenado</DynamicTradeWindowExtraIconsColumnTrained>
+</LanguageData>
