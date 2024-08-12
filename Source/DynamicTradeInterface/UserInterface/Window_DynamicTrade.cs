@@ -263,7 +263,7 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void PostClose()
 		{
-			// Trigger PostOpen for each column in both tables.
+			// Trigger PostClosed for each column in both tables to allow them to clean up.
 			foreach (TradeColumnDef column in _columns)
 			{
 				column._postClosedCallback?.Invoke(_colonyTable.RowItems.Select(x => x.RowObject), Transactor.Colony);
@@ -385,7 +385,7 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
 				return;
-
+			
 			if (_frameCache != null)
 				_frameCache.Clear();
 
@@ -463,7 +463,7 @@ namespace DynamicTradeInterface.UserInterface
 				Text.Anchor = TextAnchor.LowerCenter;
 				Text.Font = GameFont.Small;
 				Widgets.Label(top, _traderHeaderDescription);
-
+				
 				Text.Anchor = TextAnchor.UpperLeft;
 				_traderTable.Draw(bottom);
 			}
