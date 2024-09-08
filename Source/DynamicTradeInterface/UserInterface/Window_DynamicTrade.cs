@@ -136,7 +136,7 @@ namespace DynamicTradeInterface.UserInterface
 			_resetIcon = Textures.ResetIcon;
 			_lockedIcon = Textures.LockedIcon;
 			_unlockedIcon = Textures.UnlockedIcon;
-
+			
 			resizeable = true;
 			draggable = _settings.TradeWindowLocked == false;
 			forcePause = true;
@@ -408,10 +408,12 @@ namespace DynamicTradeInterface.UserInterface
 			}
 
 
+			// Trade summary toggle button
+			Rect summaryButtonRect = new Rect(inRect.xMax - 30, inRect.y, 30, 30);
 
 			// Trade interface locked button.
 			Texture2D lockIcon = this.draggable ? _unlockedIcon : _lockedIcon;
-			Rect lockRect = new Rect(inRect.xMax - 30, inRect.y, 30, 30);
+			Rect lockRect = new Rect(inRect.xMax - GenUI.GapTiny - 60, inRect.y, 30, 30);
 			if (Widgets.ButtonImage(lockRect, lockIcon))
 			{
 				_settings.TradeWindowLocked = !_settings.TradeWindowLocked;
@@ -421,6 +423,26 @@ namespace DynamicTradeInterface.UserInterface
 			if (Mouse.IsOver(lockRect))
 				TooltipHandler.TipRegion(lockRect, this.draggable ? _unlockedTooltip : _lockedTooltip);
 
+
+			if (Widgets.ButtonImage(summaryButtonRect, _settings.ShowTradeSummary ? Textures.ArrowRight : Textures.ArrowLeft))
+			{
+				_settings.ShowTradeSummary = !_settings.ShowTradeSummary;
+				if (_settings.ShowTradeSummary)
+					inRect.width += _settings.TradeSummaryWidthPixels;
+				else
+					inRect.width -= _settings.TradeSummaryWidthPixels;
+			}
+
+			if (Mouse.IsOver(summaryButtonRect))
+				TooltipHandler.TipRegion(summaryButtonRect, _settings.ShowTradeSummary ? "PLACEHOLDER: Hide summary" : "PLACEHOLDER: Show summary");
+
+			if (_settings.ShowTradeSummary)
+			{
+				inRect.SplitVerticallyWithMargin(out inRect, out Rect summaryRect, out _, GenUI.GapTiny, null, _settings.TradeSummaryWidthPixels);
+				summaryRect.y += _headerHeight;
+				summaryRect.height -= _headerHeight;
+				TradeSummary.Draw(ref summaryRect);
+			}
 
 			float currencyLineHeight = 0;
 			if (_currency != null)
@@ -573,6 +595,7 @@ namespace DynamicTradeInterface.UserInterface
 				_traderTable.Refresh();
 				_caravanWidget?.SetDirty();
 				TradeSession.deal.UpdateCurrencyCount();
+				TradeSummary.Refresh(_tradeables);
 
 
 				if (TradeSession.giftMode)
@@ -648,6 +671,7 @@ namespace DynamicTradeInterface.UserInterface
 		private void RefreshData()
 		{
 			LoadWares();
+			TradeSummary.Refresh(_tradeables);
 
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);

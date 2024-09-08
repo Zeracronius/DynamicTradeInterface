@@ -23,6 +23,8 @@ namespace DynamicTradeInterface.Mod
 
 		
 		public static readonly Texture2D RideableIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Rideable");
-		public static readonly Texture2D SickIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Sick"); 
+		public static readonly Texture2D SickIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Sick");
+		public static readonly Texture2D ArrowLeft = ContentFinder<Texture2D>.Get("UI/widgets/ArrowLeft");
+		public static readonly Texture2D ArrowRight = ContentFinder<Texture2D>.Get("UI/widgets/ArrowRight");
 	}
 }

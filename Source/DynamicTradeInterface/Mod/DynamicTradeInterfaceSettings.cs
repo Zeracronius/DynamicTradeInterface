@@ -36,6 +36,7 @@ namespace DynamicTradeInterface.Mod
 
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
 		const float DEFAULT_TRADE_HEIGHT = 0.8f;
+		const int DEFAULT_TRADE_SUMMARY_WIDTH = 200;
 
 		Dictionary<TradeColumnDef, ColumnCustomization> _columnCustomization;
 		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;
@@ -75,6 +76,8 @@ namespace DynamicTradeInterface.Mod
 		public bool AutoRefocus = false;
 		public bool OpenAsDefault = true;
 		public bool PauseAfterTrade;
+		public bool ShowTradeSummary;
+		public int TradeSummaryWidthPixels = DEFAULT_TRADE_SUMMARY_WIDTH;
 
 
 		public List<ColumnSorting> StoredColonySorting
@@ -103,6 +106,8 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref AutoRefocus, nameof(AutoRefocus), false);
 			Scribe_Values.Look(ref OpenAsDefault, nameof(OpenAsDefault), true);
 			Scribe_Values.Look(ref PauseAfterTrade, nameof(PauseAfterTrade), false);
+			Scribe_Values.Look(ref ShowTradeSummary, nameof(ShowTradeSummary), false);
+			Scribe_Values.Look(ref TradeSummaryWidthPixels, nameof(TradeSummaryWidthPixels), DEFAULT_TRADE_SUMMARY_WIDTH); 
 
 
 
@@ -112,6 +117,9 @@ namespace DynamicTradeInterface.Mod
 
 			if (TradeHeightPercentage < 0.01)
 				TradeHeightPercentage = DEFAULT_TRADE_HEIGHT;
+
+			if (TradeSummaryWidthPixels < 20)
+				TradeSummaryWidthPixels = DEFAULT_TRADE_SUMMARY_WIDTH;
 
 			Scribe_Collections.Look(ref _visibleColumns, "visibleColumns");
 			if (_visibleColumns != null)
