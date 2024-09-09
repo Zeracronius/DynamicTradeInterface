@@ -33,6 +33,7 @@ namespace DynamicTradeInterface.UserInterface
 		Regex? _searchRegex;
 		bool _refresh;
 		bool _giftOnly;
+		bool _resizingSummary;
 
 		GameFont _rowFont;
 		GameFont _currencyFont;
@@ -57,6 +58,9 @@ namespace DynamicTradeInterface.UserInterface
 		string _tradeModeTip;
 		string _giftModeTip;
 		string _searchText;
+
+		string _summaryShowText;
+		string _summaryHideText;
 
 		string _focusedControl;
 
@@ -127,6 +131,8 @@ namespace DynamicTradeInterface.UserInterface
 			_lockedTooltip = string.Empty;
 			_unlockedTooltip = string.Empty;
 			_focusedControl = string.Empty;
+			_summaryShowText = string.Empty;
+			_summaryHideText = string.Empty;
 
 
 			_tradeModeIcon = Textures.TradeModeIcon;
@@ -208,6 +214,9 @@ namespace DynamicTradeInterface.UserInterface
 
 			_lockedTooltip = "DynamicTradeWindowLocked".Translate();
 			_unlockedTooltip = "DynamicTradeWindowUnlocked".Translate();
+
+			_summaryShowText = "DynamicTradeWindowSummaryShow".Translate();
+			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
@@ -425,16 +434,10 @@ namespace DynamicTradeInterface.UserInterface
 
 
 			if (Widgets.ButtonImage(summaryButtonRect, _settings.ShowTradeSummary ? Textures.ArrowRight : Textures.ArrowLeft))
-			{
 				_settings.ShowTradeSummary = !_settings.ShowTradeSummary;
-				if (_settings.ShowTradeSummary)
-					inRect.width += _settings.TradeSummaryWidthPixels;
-				else
-					inRect.width -= _settings.TradeSummaryWidthPixels;
-			}
 
 			if (Mouse.IsOver(summaryButtonRect))
-				TooltipHandler.TipRegion(summaryButtonRect, _settings.ShowTradeSummary ? "PLACEHOLDER: Hide summary" : "PLACEHOLDER: Show summary");
+				TooltipHandler.TipRegion(summaryButtonRect, _settings.ShowTradeSummary ? _summaryHideText : _summaryShowText);
 
 			if (_settings.ShowTradeSummary)
 			{
@@ -442,6 +445,27 @@ namespace DynamicTradeInterface.UserInterface
 				summaryRect.y += _headerHeight;
 				summaryRect.height -= _headerHeight;
 				TradeSummary.Draw(ref summaryRect);
+
+				Rect summaryDragBarRect = new Rect(inRect.xMax, summaryRect.y, summaryRect.x - inRect.xMax, inRect.height);
+				// Add column resize widget.
+				if (_resizingSummary)
+				{
+					_settings.TradeSummaryWidthPixels = Math.Max(DynamicTradeInterfaceSettings.DEFAULT_TRADE_SUMMARY_WIDTH, (int)(summaryRect.xMax - Event.current.mousePosition.x));
+
+					// End dragging event.
+					if (Event.current.rawType == EventType.MouseUp ||
+						Event.current.rawType == EventType.MouseLeaveWindow)
+						_resizingSummary = false;
+				}
+				else if (Mouse.IsOver(summaryDragBarRect))
+				{
+					Widgets.DrawHighlight(summaryDragBarRect);
+					if (Event.current.type == EventType.MouseDown)
+					{
+						_resizingSummary = true;
+						Event.current.Use();
+					}
+				}
 			}
 
 			float currencyLineHeight = 0;
@@ -671,6 +695,7 @@ namespace DynamicTradeInterface.UserInterface
 		private void RefreshData()
 		{
 			LoadWares();
+			_currency = TradeSession.deal.CurrencyTradeable;
 			TradeSummary.Refresh(_tradeables);
 
 			PopulateTable(_colonyTable, Transactor.Colony);

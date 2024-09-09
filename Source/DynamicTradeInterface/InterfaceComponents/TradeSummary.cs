@@ -13,15 +13,33 @@ namespace DynamicTradeInterface.InterfaceComponents
 {
 	internal static class TradeSummary
 	{
+		private class SummaryItem
+		{
+			public SummaryItem(Tradeable item, string count)
+			{
+				Thing = item.AnyThing;
+				Label = Thing.LabelCapNoCount;
+				Count = count;
+			}
+
+            public Thing Thing { get; }
+			public string Label { get; }
+			public string Count { get; }
+		}
+
+
+
+
 		private const float LINE_SPACING = 3;
-		static List<Tradeable> _tradeablesSelling;
-		static List<Tradeable> _tradeablesBuying;
-		static ListBox<Tradeable> _sellingListBox;
-		static ListBox<Tradeable> _buyingListBox;
+		static List<(Tradeable, float)> _buffer;
+		static List<SummaryItem> _tradeablesSelling;
+		static List<SummaryItem> _tradeablesBuying;
+		static ListBox<SummaryItem> _sellingListBox;
+		static ListBox<SummaryItem> _buyingListBox;
 
 		static string _giftingLabel;
-		static string _sellingLabel;
-		static string _buyingLabel;
+		static string _sellingLabelKey;
+		static string _buyingLabelKey;
 
 		static string _buyingSumLabel;
 		static string _sellingSumLabel;
@@ -29,15 +47,17 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 		static TradeSummary()
         {
-			_tradeablesSelling = new List<Tradeable>();
-			_sellingListBox = new ListBox<Tradeable>(_tradeablesSelling);
+			_tradeablesSelling = new List<SummaryItem>();
+			_sellingListBox = new ListBox<SummaryItem>(_tradeablesSelling);
 
-			_tradeablesBuying = new List<Tradeable>();
-			_buyingListBox = new ListBox<Tradeable>(_tradeablesBuying);
+			_tradeablesBuying = new List<SummaryItem>();
+			_buyingListBox = new ListBox<SummaryItem>(_tradeablesBuying);
 
-			_giftingLabel = "TradeHelperTitleGift".Translate();
-			_sellingLabel = "TradeHelperTitleSelling".Translate();
-			_buyingLabel = "TradeHelperTitleBuying".Translate();
+			_buffer = new List<(Tradeable, float)>();
+
+			_giftingLabel = "DynamicTradeWindowSummaryGifting".Translate();
+			_sellingLabelKey = "DynamicTradeWindowSummarySelling";
+			_buyingLabelKey = "DynamicTradeWindowSummaryBuying";
 
 			_buyingSumLabel = "";
 			_sellingSumLabel = "";
@@ -46,33 +66,46 @@ namespace DynamicTradeInterface.InterfaceComponents
 
         public static void Refresh(List<Tradeable> wares)
 		{
-			_tradeablesBuying.Clear();
-			_tradeablesBuying.AddRange(wares.Where(x => x.CountToTransfer > 0));
-
-			int sum = 0;
-			foreach (Tradeable trad in _tradeablesBuying)
-				sum += (int)Math.Abs(trad.GetPriceFor(TradeAction.PlayerBuys) * trad.CountToTransfer);
-
-			_buyingSumLabel = _buyingLabel + " (-" + sum.ToString() + " " + _currency + ")";
-
-
-			_tradeablesSelling.Clear();
-			_tradeablesSelling.AddRange(wares.Where(x => x.CountToTransfer < 0));
-
-			sum = 0;
-			foreach (Tradeable trad in _tradeablesSelling)
-				sum += (int)Math.Abs(trad.GetPriceFor(TradeAction.PlayerSells) * trad.CountToTransfer);
-
-			_sellingSumLabel = _sellingLabel + " (+" + sum.ToString() + " " + _currency + ")";
-
 			_currency = TradeSession.deal.CurrencyTradeable.LabelCap;
+
+			_tradeablesBuying.Clear();
+			_tradeablesSelling.Clear();
+
+			if (TradeSession.giftMode)
+			{
+				foreach (var item in wares.Where(x => x.CountToTransfer > 0).OrderByDescending(x => x.CountToTransfer))
+					_tradeablesBuying.Add(new SummaryItem(item, Math.Abs(item.CountToTransfer).ToString()));
+			}
+			else
+			{
+				float sum = 0;
+				float value = 0;
+				_buffer.Clear();
+				foreach (var item in wares.Where(x => x.CountToTransfer > 0))
+				{
+					value = item.GetPriceFor(TradeAction.PlayerBuys) * item.CountToTransfer * -1;
+					sum += value;
+					_buffer.Add((item, value));
+				}
+				_tradeablesBuying.AddRange(_buffer.OrderByDescending(x => Mathf.Abs(x.Item2)).Select(x => new SummaryItem(x.Item1, x.Item2.ToStringWithSign())));
+				_buyingSumLabel = _buyingLabelKey.Translate(Mathf.RoundToInt(sum).ToStringWithSign(), _currency);
+
+				sum = 0;
+				_buffer.Clear();
+				foreach (var item in wares.Where(x => x.CountToTransfer < 0))
+				{
+					value = item.GetPriceFor(TradeAction.PlayerSells) * item.CountToTransfer * -1;
+					sum += value;
+					_buffer.Add((item, value));
+				}
+				_tradeablesSelling.AddRange(_buffer.OrderByDescending(x => Mathf.Abs(x.Item2)).Select(x => new SummaryItem(x.Item1, x.Item2.ToStringWithSign())));
+				_sellingSumLabel = _sellingLabelKey.Translate(Mathf.RoundToInt(sum).ToStringWithSign(), _currency);
+			}
 		}
 
 		public static void Draw(ref Rect inRect)
 		{
-			// Tradehelper lists everything as one long list inside a combined scroll viewer.
-			// Instead scale up each Buy and Sell section until 50% before adding a scrollbar for each individually.
-			// Get scrollable list box from PM
+
 			// Further investigation into notification system, go with original intention of tooltip editor
 			// Tradehelper doesn't scale and overflows if more than 8 things are added.
 
@@ -128,21 +161,23 @@ namespace DynamicTradeInterface.InterfaceComponents
 			y += 28f;
 		}
 
-		private static void DrawItem(Rect rect, Tradeable item)
+		private static void DrawItem(Rect rect, SummaryItem item)
 		{
 			float x = rect.x;
 			float width = rect.width;
-			Thing thing = item.AnyThing;
 			Text.Anchor = TextAnchor.UpperLeft;
 
-			Widgets.ThingIcon(new Rect(x, rect.y, rect.height, rect.height), thing);
+			Widgets.ThingIcon(new Rect(x, rect.y, rect.height, rect.height), item.Thing);
 
-			width -= rect.height + 40;
+			// Allocate 20% of column to numbers
+			float counterWidth = rect.width * 0.2f; 
+
+			width -= rect.height + counterWidth;
 			x += rect.height + 6;
-			Widgets.Label(new Rect(x, rect.y + LINE_SPACING, width, rect.height), thing.LabelCapNoCount);
+			Widgets.Label(new Rect(x, rect.y + LINE_SPACING, width, rect.height), item.Label);
 
 			Text.Anchor = TextAnchor.UpperRight;
-			Widgets.Label(new Rect(rect.xMax - 40, rect.y + LINE_SPACING, 40, rect.height), Math.Abs(item.CountToTransfer).ToStringCached());
+			Widgets.Label(new Rect(rect.xMax - counterWidth, rect.y + LINE_SPACING, counterWidth, rect.height), item.Count);
 		}
 	}
 }

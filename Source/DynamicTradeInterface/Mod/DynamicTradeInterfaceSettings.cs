@@ -36,7 +36,7 @@ namespace DynamicTradeInterface.Mod
 
 		const float DEFAULT_TRADE_WIDTH = 0.75f;
 		const float DEFAULT_TRADE_HEIGHT = 0.8f;
-		const int DEFAULT_TRADE_SUMMARY_WIDTH = 200;
+		public const int DEFAULT_TRADE_SUMMARY_WIDTH = 200;
 
 		Dictionary<TradeColumnDef, ColumnCustomization> _columnCustomization;
 		Dictionary<TradeColumnDef, Queue<long>> _tradeColumnProfilings;

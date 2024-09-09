@@ -44,13 +44,15 @@
 
 	<DynamicTradeWindowUnaffordable>Unaffordable.</DynamicTradeWindowUnaffordable>
 
-
-
-
 	<DynamicTradeWindowGenepackMissing>Missing</DynamicTradeWindowGenepackMissing>
 	<DynamicTradeWindowGenepackIsolated>Isolated</DynamicTradeWindowGenepackIsolated>
 	<DynamicTradeWindowGenepackMixed>Mixed</DynamicTradeWindowGenepackMixed>
 
-
 	<DynamicTradeWindowExtraIconsColumnTrained>Trained</DynamicTradeWindowExtraIconsColumnTrained>
+
+	<DynamicTradeWindowSummaryShow>Show summary</DynamicTradeWindowSummaryShow>
+	<DynamicTradeWindowSummaryHide>Hide summary</DynamicTradeWindowSummaryHide>
+	<DynamicTradeWindowSummaryGifting>Gifting</DynamicTradeWindowSummaryGifting>
+	<DynamicTradeWindowSummaryBuying>Buying ({0} {1})</DynamicTradeWindowSummaryBuying>
+	<DynamicTradeWindowSummarySelling>Selling ({0} {1})</DynamicTradeWindowSummarySelling>
 </LanguageData>
