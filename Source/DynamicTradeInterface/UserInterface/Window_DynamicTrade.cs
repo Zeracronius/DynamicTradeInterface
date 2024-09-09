@@ -453,8 +453,7 @@ namespace DynamicTradeInterface.UserInterface
 					_settings.TradeSummaryWidthPixels = Math.Max(DynamicTradeInterfaceSettings.DEFAULT_TRADE_SUMMARY_WIDTH, (int)(summaryRect.xMax - Event.current.mousePosition.x));
 
 					// End dragging event.
-					if (Event.current.rawType == EventType.MouseUp ||
-						Event.current.rawType == EventType.MouseLeaveWindow)
+					if (Event.current.rawType == EventType.MouseUp)
 						_resizingSummary = false;
 				}
 				else if (Mouse.IsOver(summaryDragBarRect))

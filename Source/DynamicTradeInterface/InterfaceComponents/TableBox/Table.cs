@@ -503,8 +503,12 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					}
 					else if (_resizingColumn == column)
 					{
-						columnHeader.xMax = Event.current.mousePosition.x;
-						_resizingColumn.Width = columnHeader.width;
+						float x = Event.current.mousePosition.x;
+						if (x - columnHeader.x > 5)
+						{
+							columnHeader.xMax = x;
+							_resizingColumn.Width = columnHeader.width;
+						}
 
 						// End dragging event.
 						if (Event.current.rawType == EventType.MouseUp)
