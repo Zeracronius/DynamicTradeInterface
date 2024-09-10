@@ -56,8 +56,23 @@ jobs:
       env:
         Branch: "${{ github.ref }}"
 
-    - name: Upload build artifacts
+    - name: release
+      if: ${{ env.Branch == 'master' }}
+      uses: softprops/action-gh-release@v2
+      env:
+        Branch: "${{ github.ref }}"
+      with:
+        generate_release_notes: true
+        files: ${{ github.workspace }}/**/*
+        name: ${{ env.ArtifactName }}
+        make_latest: true
+
+    - name: Upload build artifacts 
+      if: ${{ env.Branch != 'master' }}
       uses: actions/upload-artifact@main
+      env:
+        Branch: "${{ github.ref }}"
       with:
         name: ${{ env.ArtifactName }}
         path: ${{ github.workspace }}/**/*
+
