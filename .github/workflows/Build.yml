@@ -3,9 +3,11 @@ run-name: ${{ github.ref_name }}
 on: workflow_dispatch
 
 jobs:
-  build:
-    name: Compile
+  Compile:
     runs-on: windows-latest
+
+    outputs:
+      ReleaseName: ${{ steps.generate_name.outputs.ReleaseName }}
 
     env:
       Solution_Name: "Source/DynamicTradeInterface/DynamicTradeInterface.sln"
@@ -42,6 +44,7 @@ jobs:
         Remove-Item -Force -Recurse -ErrorAction SilentlyContinue "LICENSE.txt"
 
     - name: Generate artifact name
+      id: generate_name
       run: |
         $branch = ""
         if ("${{ env.Branch }}" -ne "refs/heads/master") {
@@ -51,24 +54,14 @@ jobs:
         {
             $branch = "Release"
         }
-        
-        echo ArtifactName="$env:Name-$($branch)-$(get-date -f MM-dd)" >> $env:GITHUB_ENV
-      env:
-        Branch: "${{ github.ref }}"
+        $name = "$env:Name-$($branch)-$(get-date -f MM-dd)"
 
-    - name: release
-      if: ${{ env.Branch == 'refs/heads/master' }}
-      uses: softprops/action-gh-release@v2
+        echo "ReleaseName=$name" >> $env:GITHUB_OUTPUT
+        echo ArtifactName=$name >> $env:GITHUB_ENV
       env:
         Branch: "${{ github.ref }}"
-      with:
-        generate_release_notes: true
-        files: ${{ github.workspace }}/**/*
-        name: ${{ env.ArtifactName }}
-        make_latest: true
 
     - name: Upload build artifacts 
-      if: ${{ env.Branch != 'refs/heads/master' }}
       uses: actions/upload-artifact@main
       env:
         Branch: "${{ github.ref }}"
@@ -76,3 +69,24 @@ jobs:
         name: ${{ env.ArtifactName }}
         path: ${{ github.workspace }}/**/*
 
+  Release:
+      if: github.event_name != 'pull_request' # && github.ref == 'refs/heads/master'
+      needs: [Compile]
+      runs-on: ubuntu-24.04
+      steps:
+        - name: Checkout
+          uses: actions/checkout@main
+
+        - name: Download Artifact
+          id: download-artifact
+          uses: actions/download-artifact@v4
+          with:
+            path: artifacts
+
+        - name: 'Create Release'
+          shell: bash
+          run: |
+            zip -r ${{ needs.Compile.outputs.ReleaseName }}.zip artifacts/${{ needs.Compile.outputs.ReleaseName }}
+            gh release create --latest --generate-notes ${{ needs.Compile.outputs.ReleaseName }} '${{ needs.Compile.outputs.ReleaseName }}.zip'
+          env:
+            GH_TOKEN: ${{ github.token }}
