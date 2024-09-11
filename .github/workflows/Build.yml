@@ -70,7 +70,7 @@ jobs:
         path: ${{ github.workspace }}/**/*
 
   Release:
-      if: github.event_name != 'pull_request' # && github.ref == 'refs/heads/master'
+      if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
       needs: [Compile]
       runs-on: ubuntu-24.04
       steps:
