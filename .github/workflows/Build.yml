@@ -45,14 +45,14 @@ jobs:
       run: |
         $branch = ""
         if ("${{ env.Branch }}" -ne "refs/heads/master") {
-            $branch = $env:Branch.replace("refs/heads/", "") + "_"
+            $branch = $env:Branch.replace("refs/heads/", "")
         }
         else
         {
             $branch = "Release"
         }
         
-        echo ArtifactName="$env:Name-$branch_$(get-date -f MM-dd)" >> $env:GITHUB_ENV
+        echo ArtifactName="$env:Name-$($branch)-$(get-date -f MM-dd)" >> $env:GITHUB_ENV
       env:
         Branch: "${{ github.ref }}"
 
