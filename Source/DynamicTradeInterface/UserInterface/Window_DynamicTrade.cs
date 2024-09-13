@@ -48,6 +48,7 @@ namespace DynamicTradeInterface.UserInterface
 		string _resetButtonText;
 		string _acceptButtonText;
 		string _offerGiftsText;
+		string _giftButtonTooltip;
 		string _acceptText;
 		string _cannotAffordText;
 
@@ -127,7 +128,7 @@ namespace DynamicTradeInterface.UserInterface
 			_giftModeTip = string.Empty;
 			_acceptText = string.Empty;
 			_searchText = string.Empty;
-
+			_giftButtonTooltip = string.Empty;
 			_lockedTooltip = string.Empty;
 			_unlockedTooltip = string.Empty;
 			_focusedControl = string.Empty;
@@ -186,6 +187,7 @@ namespace DynamicTradeInterface.UserInterface
 			RefreshData();
 
 			_colonyHeader = Faction.OfPlayer.Name;
+
 			string negotiatorName = TradeSession.playerNegotiator.Name.ToStringFull;
 			string negotiatorValue = TradeSession.playerNegotiator.GetStatValue(StatDefOf.TradePriceImprovement).ToStringPercent();
 			_colonyHeaderDescription = "NegotiatorTradeDialogInfo".Translate(negotiatorName, negotiatorValue);
@@ -193,34 +195,42 @@ namespace DynamicTradeInterface.UserInterface
 			_headerHeight = Text.LineHeightOf(GameFont.Medium) + Text.LineHeightOf(GameFont.Small);
 
 			_traderHeader = _traderFaction?.Name ?? TradeSession.trader.TraderName;
-			_traderHeaderDescription = TradeSession.trader.TraderKind.LabelCap;
+			if (_traderFaction != null)
+			{
+				_traderHeaderDescription = $"{_traderFaction.PlayerRelationKind} ({_traderFaction.PlayerGoodwill})";
+				_giftButtonTooltip = _traderHeader + ": " + _traderHeaderDescription;
+			}
+			else
+				_traderHeaderDescription = TradeSession.trader.TraderKind.LabelCap;
 
-				
+
 			_offerGiftsText = "OfferGifts".Translate();
 			_acceptText = "AcceptButton".Translate();
-
-			if (TradeSession.giftMode)
-				_acceptButtonText = $"{_offerGiftsText} (0)";
-			else
-				_acceptButtonText = _acceptText;
-
-
 			_resetButtonText = "ResetButton".Translate();
 			_cancelButtonText = "CancelButton".Translate();
 			_cannotAffordText = "MessageColonyCannotAfford".Translate();
 			_showSellableItemsDesc = "CommandShowSellableItemsDesc".Translate();
 			_tradeModeTip = "TradeModeTip".Translate();
 			_giftModeTip = "GiftModeTip".Translate(_traderFaction);
-
 			_lockedTooltip = "DynamicTradeWindowLocked".Translate();
 			_unlockedTooltip = "DynamicTradeWindowUnlocked".Translate();
-
 			_summaryShowText = "DynamicTradeWindowSummaryShow".Translate();
 			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
+			RefreshUI();
+		}
 
+		private void RefreshUI()
+		{
+			if (TradeSession.giftMode)
+			{
+				string goodwillChange = FactionGiftUtility.GetGoodwillChange(TradeSession.deal.AllTradeables, _traderFaction).ToStringWithSign();
+				_acceptButtonText = $"{_offerGiftsText} ({goodwillChange})";
+			}
+			else
+				_acceptButtonText = _acceptText;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * _settings.TradeWidthPercentage, UI.screenHeight * _settings.TradeHeightPercentage);
@@ -508,7 +518,7 @@ namespace DynamicTradeInterface.UserInterface
 				Text.Anchor = TextAnchor.LowerCenter;
 				Text.Font = GameFont.Small;
 				Widgets.Label(top, _traderHeaderDescription);
-				
+
 				Text.Anchor = TextAnchor.UpperLeft;
 				_traderTable.Draw(bottom);
 			}
@@ -526,6 +536,9 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				OnAccept();
 			}
+			if (TradeSession.giftMode && Mouse.IsOver(mainButtonRect))
+				TooltipHandler.TipRegion(mainButtonRect, _giftButtonTooltip);
+
 			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
 			GUI.color = normal;
 
@@ -619,15 +632,7 @@ namespace DynamicTradeInterface.UserInterface
 				_caravanWidget?.SetDirty();
 				TradeSession.deal.UpdateCurrencyCount();
 				TradeSummary.Refresh(_tradeables);
-
-
-				if (TradeSession.giftMode)
-				{
-					string goodwillChange = FactionGiftUtility.GetGoodwillChange(TradeSession.deal.AllTradeables, _traderFaction).ToStringWithSign();
-					_acceptButtonText = $"{_offerGiftsText} ({goodwillChange})";
-				}
-				else
-					_acceptButtonText = _acceptText;
+				RefreshUI();
 			}
 
 
