@@ -48,13 +48,9 @@ jobs:
       run: |
         $branch = ""
         if ("${{ env.Branch }}" -ne "refs/heads/master") {
-            $branch = $env:Branch.replace("refs/heads/", "")
+            $branch = $env:Branch.replace("refs/heads/", "") + "-"
         }
-        else
-        {
-            $branch = "Release"
-        }
-        $name = "$env:Name-$($branch)-$(get-date -f MM-dd)"
+        $name = "$env:Name-$($branch)$(get-date -f MM-dd)"
 
         echo "ReleaseName=$name" >> $env:GITHUB_OUTPUT
         echo ArtifactName=$name >> $env:GITHUB_ENV
@@ -86,7 +82,8 @@ jobs:
         - name: 'Create Release'
           shell: bash
           run: |
-            zip -r ${{ needs.Compile.outputs.ReleaseName }}.zip artifacts/${{ needs.Compile.outputs.ReleaseName }}
+            cd artifacts
+            zip -r ${{ needs.Compile.outputs.ReleaseName }}.zip ${{ needs.Compile.outputs.ReleaseName }}
             gh release create --latest --generate-notes ${{ needs.Compile.outputs.ReleaseName }} '${{ needs.Compile.outputs.ReleaseName }}.zip'
           env:
             GH_TOKEN: ${{ github.token }}
