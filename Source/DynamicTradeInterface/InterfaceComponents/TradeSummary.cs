@@ -66,8 +66,6 @@ namespace DynamicTradeInterface.InterfaceComponents
 
         public static void Refresh(List<Tradeable> wares)
 		{
-			_currency = TradeSession.deal.CurrencyTradeable.LabelCap;
-
 			_tradeablesBuying.Clear();
 			_tradeablesSelling.Clear();
 
@@ -78,6 +76,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 			}
 			else
 			{
+				_currency = TradeSession.deal.CurrencyTradeable.LabelCap;
 				float sum = 0;
 				float value = 0;
 				_buffer.Clear();
