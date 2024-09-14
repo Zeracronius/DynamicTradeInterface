@@ -714,7 +714,8 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void LoadWares()
 		{
-			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables;
+			IEnumerable<Tradeable> filteredWares = TradeSession.deal.AllTradeables
+				.Where(x => x.ThingDef != null);
 
 			// Remove currency from tradable items when not in gifting mode.
 			// Always remove if currency is favor.
