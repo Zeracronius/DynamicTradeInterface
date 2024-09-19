@@ -77,8 +77,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 
 		public GenepackDrawable(Genepack genepack)
 		{
-			List<GeneAssistant.GeneType>? types = genepack.GeneSet
-				?.GenesListForReading
+			List<GeneAssistant.GeneType>? types = genepack.GeneSet?.GenesListForReading?
 				.Select((gene) => _bankedGenes.TryGetValue(gene, GeneAssistant.GeneType.Missing))
 				.Distinct()
 				.ToList();
