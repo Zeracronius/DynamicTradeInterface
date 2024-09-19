@@ -55,11 +55,17 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		{
 			string joinAsText = (pawn.guest?.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
 			_pawn = pawn;
-			_intelligence = pawn.RaceProps.intelligence;
+			_intelligence = pawn.RaceProps?.intelligence ?? Intelligence.Animal;
 			_rideable = pawn.IsCaravanRideable();
-			_bonded = pawn.relations.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null;
-			_pregnant = pawn.health.hediffSet.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true);
-			_sick = pawn.health.hediffSet.AnyHediffMakesSickThought;
+			_bonded = pawn.relations?.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null;
+			
+			HediffSet? healthSet = pawn.health?.hediffSet;
+			if (healthSet != null)
+			{
+				_pregnant = healthSet.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true);
+				_sick = healthSet.AnyHediffMakesSickThought;
+			}
+
 			_isColonyMech = pawn.IsColonyMech;
 			_overseerPawn = pawn.GetOverseer();
 			_captive = TransferableUIUtility.TransferableIsCaptive(tradeable);
