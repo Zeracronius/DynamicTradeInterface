@@ -11,6 +11,8 @@
 		<When Condition="'$(Configuration)'=='1.4'">
 			<PropertyGroup>
 				<OutputPath>..\..\1.4\Assemblies\</OutputPath>
+				<Optimize>True</Optimize>
+				<DebugType>None</DebugType>
 			</PropertyGroup>
 			<ItemGroup>
 				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704">
@@ -24,6 +26,8 @@
 		<When Condition="'$(Configuration)'=='1.5'">
 			<PropertyGroup>
 				<OutputPath>..\..\1.5\Assemblies\</OutputPath>
+				<Optimize>True</Optimize>
+				<DebugType>None</DebugType>
 			</PropertyGroup>
 			<ItemGroup>
 				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.*">
