@@ -635,21 +635,24 @@ namespace DynamicTradeInterface.UserInterface
 				RefreshUI();
 			}
 
-
-			if (_settings.AutoRefocus && Find.WindowStack.CurrentWindowGetsInput)
+			if (_settings.AutoRefocus)
 			{
-				if (Event.current.type == EventType.Used)
+				WindowStack stack = Find.WindowStack;
+				if (stack.CurrentWindowGetsInput && stack.currentlyDrawnWindow == this)
 				{
-					_focusedControl = GUI.GetNameOfFocusedControl();
-				}
-				else if (String.IsNullOrEmpty(_focusedControl) == false)
-				{
-					GUI.FocusControl(_focusedControl);
-					TextEditor? te = GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl) as TextEditor;
-					if (te != null)
+					if (Event.current.type == EventType.Used)
 					{
-						te.SelectNone(); 
-						te.MoveTextEnd();
+						_focusedControl = GUI.GetNameOfFocusedControl();
+					}
+					else if (String.IsNullOrEmpty(_focusedControl) == false)
+					{
+						GUI.FocusControl(_focusedControl);
+						TextEditor? te = GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl) as TextEditor;
+						if (te != null)
+						{
+							te.SelectNone(); 
+							te.MoveTextEnd();
+						}
 					}
 				}
 			}
