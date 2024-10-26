@@ -44,9 +44,9 @@
 
 	<DynamicTradeWindowUnaffordable>Unaffordable.</DynamicTradeWindowUnaffordable>
 
-	<DynamicTradeWindowGenepackMissing>Missing</DynamicTradeWindowGenepackMissing>
-	<DynamicTradeWindowGenepackIsolated>Isolated</DynamicTradeWindowGenepackIsolated>
-	<DynamicTradeWindowGenepackMixed>Mixed</DynamicTradeWindowGenepackMixed>
+	<DynamicTradeWindowGenepackMissing>Genepack not owned.</DynamicTradeWindowGenepackMissing>
+	<DynamicTradeWindowGenepackIsolated>Genepack owned in isolated pack.</DynamicTradeWindowGenepackIsolated>
+	<DynamicTradeWindowGenepackMixed>Genepack owned in mixed pack.</DynamicTradeWindowGenepackMixed>
 
 	<DynamicTradeWindowExtraIconsColumnTrained>Trained</DynamicTradeWindowExtraIconsColumnTrained>
 
@@ -55,4 +55,11 @@
 	<DynamicTradeWindowSummaryGifting>Gifting</DynamicTradeWindowSummaryGifting>
 	<DynamicTradeWindowSummaryBuying>Buying ({0} {1})</DynamicTradeWindowSummaryBuying>
 	<DynamicTradeWindowSummarySelling>Selling ({0} {1})</DynamicTradeWindowSummarySelling>
+
+	<DynamicTradeWindowNotificationsTooltip>Notifications</DynamicTradeWindowNotificationsTooltip>
+	<DynamicTradeWindowNotificationsTitle>Notifications</DynamicTradeWindowNotificationsTitle>
+	<DynamicTradeWindowNotificationsScopeFilter>Matches, click to filter.</DynamicTradeWindowNotificationsScopeFilter>
+	<DynamicTradeWindowNotificationsEnable>Enable or disable notification.</DynamicTradeWindowNotificationsEnable>
+	<DynamicTradeWindowNotificationsAdd>Add new notification.</DynamicTradeWindowNotificationsAdd>
+	<DynamicTradeWindowNotificationsDelete>Delete notification.</DynamicTradeWindowNotificationsDelete>
 </LanguageData>

@@ -195,6 +195,9 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
+				return;
+
 			inRect.SplitHorizontallyWithMargin(out Rect header, out Rect body, out _, GenUI.GapTiny, topHeight: _headerHeight);
 
 			Text.Anchor = TextAnchor.UpperCenter;

@@ -20,8 +20,11 @@ namespace DynamicTradeInterface.Mod
 		public static readonly Texture2D LockedIcon = ContentFinder<Texture2D>.Get("Icons/Locked");
 		public static readonly Texture2D UnlockedIcon = ContentFinder<Texture2D>.Get("Icons/Unlocked");
 		public static readonly Texture2D TamenessIcon = ContentFinder<Texture2D>.Get("ui/icons/trainables/Tameness");
-
+		public static readonly Texture2D Plus = ContentFinder<Texture2D>.Get("ui/buttons/Plus");
+		public static readonly Texture2D Minus = ContentFinder<Texture2D>.Get("ui/buttons/Minus");
+		public static readonly Texture2D Inspect = ContentFinder<Texture2D>.Get("ui/buttons/devroot/OpenInspector");
 		
+
 		public static readonly Texture2D RideableIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Rideable");
 		public static readonly Texture2D SickIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Sick");
 		public static readonly Texture2D ArrowLeft = ContentFinder<Texture2D>.Get("UI/widgets/ArrowLeft");
