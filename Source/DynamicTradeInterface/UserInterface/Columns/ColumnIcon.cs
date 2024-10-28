@@ -17,7 +17,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				Thing thing = row.AnyThing;
 				if (thing != null && thing.def != null)
+				{
 					Widgets.ThingIcon(rect, thing);
+					if (Mouse.IsOver(rect))
+					{
+						//Widgets.DrawHighlight(rect);
+						if (Widgets.ButtonInvisible(rect))
+							Find.WindowStack.Add(new Dialog_InfoCard(thing));
+					}
+				}
 			}
 			else
 			{

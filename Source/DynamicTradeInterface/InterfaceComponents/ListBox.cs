@@ -15,7 +15,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 	{
 		private Vector2 _scrollPosition = new Vector2(0, 0);
 		private List<T> _collection;
-		private const float ROW_SPACING = 3;
+		public float RowSpacing { get; set; } = 3;
 
 		public ListBox(List<T> collection)
 		{
@@ -36,9 +36,10 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 			Text.Font = GameFont.Tiny;
 
-			float width = inRect.width - GenUI.ScrollBarWidth - ROW_SPACING;
-			Rect rowRect = new Rect(0, 0, width, Text.LineHeight + ROW_SPACING);
-			Rect listbox = new Rect(0, 0, width, (_collection.Count + 1) * rowRect.height);
+			float width = inRect.width - GenUI.ScrollBarWidth - GenUI.GapTiny;
+			Rect rowRect = new Rect(0, 0, width, Text.LineHeight + GenUI.GapTiny);
+			float spacedRowHeight = rowRect.height + RowSpacing;
+			Rect listbox = new Rect(0, 0, width, (_collection.Count + 1) * spacedRowHeight);
 
 			try
 			{
@@ -48,15 +49,14 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 				T currentRow;
 				// Get index of first row visible in scrollbox
-				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
-				int rowCount = _collection.Count;
-				for (; currentIndex < rowCount; currentIndex++)
+				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / spacedRowHeight);
+				for (; currentIndex < _collection.Count; currentIndex++)
 				{
 					currentRow = _collection[currentIndex];
 
 					callback?.Invoke(rowRect, currentRow);
 
-					rowRect.y += rowRect.height;
+					rowRect.y += spacedRowHeight;
 
 					// Break if next row starts outside bottom of scrollbox + 1 row to ensure smooth scrolling - though this should possibly not be needed for IMGUI.
 					if (rowRect.y > inRect.height + _scrollPosition.y)

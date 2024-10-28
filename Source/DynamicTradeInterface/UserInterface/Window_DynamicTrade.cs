@@ -4,6 +4,7 @@ using DynamicTradeInterface.Defs;
 using DynamicTradeInterface.InterfaceComponents;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
 using DynamicTradeInterface.Mod;
+using DynamicTradeInterface.Patches;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -30,6 +31,7 @@ namespace DynamicTradeInterface.UserInterface
 		Tradeable? _currency;
 		List<Tradeable> _tradeables;
 		CaravanWidget? _caravanWidget;
+		InterfaceComponents.Notifications _notifications;
 		Regex? _searchRegex;
 		bool _refresh;
 		bool _giftOnly;
@@ -64,6 +66,7 @@ namespace DynamicTradeInterface.UserInterface
 		string _summaryHideText;
 
 		string _focusedControl;
+		string _notificationsTooltip;
 
 		Texture2D _tradeModeIcon;
 		Texture2D _showSellableItemsIcon;
@@ -90,6 +93,7 @@ namespace DynamicTradeInterface.UserInterface
 			_rowFont = GameFont.Small;
 			_currencyFont = GameFont.Medium;
 			_giftOnly = giftOnly;
+			_notifications = new InterfaceComponents.Notifications(GameSettings.Notifications);
 
 			_colonyTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
@@ -134,7 +138,7 @@ namespace DynamicTradeInterface.UserInterface
 			_focusedControl = string.Empty;
 			_summaryShowText = string.Empty;
 			_summaryHideText = string.Empty;
-
+			_notificationsTooltip = string.Empty;
 
 			_tradeModeIcon = Textures.TradeModeIcon;
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
@@ -216,6 +220,7 @@ namespace DynamicTradeInterface.UserInterface
 			_unlockedTooltip = "DynamicTradeWindowUnlocked".Translate();
 			_summaryShowText = "DynamicTradeWindowSummaryShow".Translate();
 			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
+			_notificationsTooltip = "DynamicTradeWindowNotificationsTooltip".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
@@ -402,6 +407,7 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			Text.Font = GameFont.Small;
 			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
 				return;
 			
@@ -419,20 +425,25 @@ namespace DynamicTradeInterface.UserInterface
 			DragSelect.Reset();
 
 			// Trade interface configuration button.
-			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, 30, 30), Textures.SettingsIcon))
+			if (Widgets.ButtonImage(new Rect(inRect.x, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE), Textures.SettingsIcon))
 			{
 				var settingsMenu = new Dialog_TradeConfiguration();
 				settingsMenu.OnClosed += SettingsMenu_OnClosed;
 				Find.WindowStack.Add(settingsMenu);
 			}
 
-
 			// Trade summary toggle button
-			Rect summaryButtonRect = new Rect(inRect.xMax - 30, inRect.y, 30, 30);
+			Rect summaryButtonRect = new Rect(inRect.xMax - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
+
+			if (Widgets.ButtonImage(summaryButtonRect, _settings.ShowTradeSummary ? Textures.ArrowRight : Textures.ArrowLeft))
+				_settings.ShowTradeSummary = !_settings.ShowTradeSummary;
+
+			if (Mouse.IsOver(summaryButtonRect))
+				TooltipHandler.TipRegion(summaryButtonRect, _settings.ShowTradeSummary ? _summaryHideText : _summaryShowText);
 
 			// Trade interface locked button.
 			Texture2D lockIcon = this.draggable ? _unlockedIcon : _lockedIcon;
-			Rect lockRect = new Rect(inRect.xMax - GenUI.GapTiny - 60, inRect.y, 30, 30);
+			Rect lockRect = new Rect(summaryButtonRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
 			if (Widgets.ButtonImage(lockRect, lockIcon))
 			{
 				_settings.TradeWindowLocked = !_settings.TradeWindowLocked;
@@ -443,12 +454,43 @@ namespace DynamicTradeInterface.UserInterface
 				TooltipHandler.TipRegion(lockRect, this.draggable ? _unlockedTooltip : _lockedTooltip);
 
 
-			if (Widgets.ButtonImage(summaryButtonRect, _settings.ShowTradeSummary ? Textures.ArrowRight : Textures.ArrowLeft))
-				_settings.ShowTradeSummary = !_settings.ShowTradeSummary;
+			// Trade notifications button.
+			Rect notificationRect = new Rect(lockRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
+			
+			
+			if (_notifications.TotalHits > 0)
+			{
+				Text.Font = GameFont.Medium;
+				Text.Anchor = TextAnchor.MiddleCenter;
+				Color normalColor = GUI.color;
+				GUI.color = Color.red;
+				Widgets.Label(notificationRect, _notifications.TotalHitsText);
+				GUI.color = normalColor;
+				Text.Anchor = TextAnchor.UpperLeft;
+				Text.Font = GameFont.Small;
 
-			if (Mouse.IsOver(summaryButtonRect))
-				TooltipHandler.TipRegion(summaryButtonRect, _settings.ShowTradeSummary ? _summaryHideText : _summaryShowText);
+				if (Mouse.IsOver(notificationRect))
+				{
+					Widgets.DrawHighlight(notificationRect);
+					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
+				}
 
+				if (Widgets.ButtonInvisible(notificationRect))
+					ShowNotifications();
+			}
+			else
+			{
+				if (Widgets.ButtonImage(notificationRect, Textures.Inspect)) 
+					ShowNotifications();
+
+				if (Mouse.IsOver(notificationRect))
+					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
+			}
+
+
+
+
+			// Trade summary
 			if (_settings.ShowTradeSummary)
 			{
 				inRect.SplitVerticallyWithMargin(out inRect, out Rect summaryRect, out _, GenUI.GapTiny, null, _settings.TradeSummaryWidthPixels);
@@ -635,21 +677,25 @@ namespace DynamicTradeInterface.UserInterface
 				RefreshUI();
 			}
 
-
-			if (_settings.AutoRefocus && Find.WindowStack.CurrentWindowGetsInput)
+			if (_settings.AutoRefocus)
 			{
-				if (Event.current.type == EventType.Used)
+				WindowStack stack = Find.WindowStack;
+				if (stack.CurrentWindowGetsInput && stack.currentlyDrawnWindow == this)
 				{
-					_focusedControl = GUI.GetNameOfFocusedControl();
-				}
-				else if (String.IsNullOrEmpty(_focusedControl) == false)
-				{
-					GUI.FocusControl(_focusedControl);
-					TextEditor? te = GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl) as TextEditor;
-					if (te != null)
+					string currentControl = GUI.GetNameOfFocusedControl();
+					if (Event.current.type == EventType.Used)
 					{
-						te.SelectNone(); 
-						te.MoveTextEnd();
+						_focusedControl = currentControl;
+					}
+					else if (String.IsNullOrEmpty(_focusedControl) == false && _focusedControl != currentControl)
+					{
+						GUI.FocusControl(_focusedControl);
+						TextEditor? te = GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl) as TextEditor;
+						if (te != null)
+						{
+							te.SelectNone(); 
+							te.MoveTextEnd();
+						}
 					}
 				}
 			}
@@ -674,7 +720,12 @@ namespace DynamicTradeInterface.UserInterface
 			if (_searchText == searchString || _searchText != null && _searchText.Equals(searchString))
 				return;
 
-			_searchText = searchString.ToLower();
+			ApplyFilter(searchString);
+		}
+
+		private void ApplyFilter(string filterText)
+		{
+			_searchText = filterText.ToLower();
 			try
 			{
 				// Try parse as regex. Option?
@@ -710,6 +761,8 @@ namespace DynamicTradeInterface.UserInterface
 				LoadSortings(_colonyTable, _settings.StoredColonySorting);
 				LoadSortings(_traderTable, _settings.StoredTraderSorting);
 			}
+
+			_notifications?.Load(_traderTable.RowItems);
 		}
 
 		private void LoadWares()
@@ -819,6 +872,11 @@ namespace DynamicTradeInterface.UserInterface
 
 			Text.Font = currentFont;
 			Text.Anchor = TextAnchor.UpperLeft;
+		}
+
+		private void ShowNotifications()
+		{
+			Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
 		}
 
 		private void ConfirmTrade()
