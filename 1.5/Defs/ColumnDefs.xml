@@ -49,6 +49,7 @@
 		<label>available</label>
 		<description>Quantity available for buying or selling.</description>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:Draw</callbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:PostOpen</postOpenCallbackHandler>
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuantity:OrderbyValue</orderValueCallbackHandler>
 		<defaultWidth>75</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>

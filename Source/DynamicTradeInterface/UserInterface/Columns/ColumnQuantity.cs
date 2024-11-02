@@ -11,9 +11,74 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal static class ColumnQuantity
 	{
+		private static Dictionary<Tradeable, (string, string?)> _cacheTrader = new Dictionary<Tradeable, (string, string?)>();
+		private static Dictionary<Tradeable, (string, string?)> _cacheColony = new Dictionary<Tradeable, (string, string?)>();
+
+		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
+		{
+			Dictionary<Tradeable, (string, string?)> cache;
+			switch (transactor)
+			{
+				case Transactor.Colony:
+					cache = _cacheColony;
+					break;
+
+				case Transactor.Trader:
+					cache = _cacheTrader;
+					break;
+				
+				default:
+					return;
+			}
+
+			cache.Clear();
+			foreach (Tradeable row in rows)
+			{
+				int availableForTrading = row.CountHeldBy(transactor);
+
+				Thing thing = row.AnyThing;
+				if (thing != null && transactor == Transactor.Colony)
+				{
+					Map? map = TradeSession.playerNegotiator?.Map;
+					if (map != null)
+					{
+						int thingsOnMap = map.listerThings.ThingsOfDef(thing.def)?.Sum(x => x.stackCount) ?? 0;
+
+						// If more Things are available for trading than currently shown under Available, then show in parenthesis with tooltip.
+						if (thingsOnMap != availableForTrading)
+						{
+							cache[row] = ($"{availableForTrading} ({thingsOnMap})", $"{availableForTrading} available for trading.{Environment.NewLine}{thingsOnMap} total on map.");
+							continue;
+						}
+					}
+				}
+
+				// If execution gets this far, then default.
+				cache[row] = ($"{availableForTrading}", null);
+			}
+		}
+
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
-			Widgets.Label(rect, row.CountHeldBy(transactor).ToStringCached());
+			Dictionary<Tradeable, (string, string?)> cache;
+			switch (transactor)
+			{
+				case Transactor.Colony:
+					cache = _cacheColony;
+					break;
+
+				case Transactor.Trader:
+					cache = _cacheTrader;
+					break;
+
+				default:
+					return;
+			}
+
+
+			float y = rect.y;
+			if (cache.TryGetValue(row, out (string, string?) value))
+				Widgets.Label(rect, ref y, value.Item1, tip: value.Item2);
 		}
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
