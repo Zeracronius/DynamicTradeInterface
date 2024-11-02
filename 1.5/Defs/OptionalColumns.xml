@@ -27,7 +27,7 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCounterLabelDef</defName>
-		<label>counter box</label>
+		<label>trading</label>
 		<description>A faster read-only version of the counter box where the current quantity bought or sold is shown.</description>
 		<showCaption>false</showCaption>
 		<defaultVisible>false</defaultVisible>

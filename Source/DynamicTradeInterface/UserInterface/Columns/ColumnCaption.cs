@@ -94,9 +94,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			if (Mouse.IsOver(labelRect))
 			{
+				Thing thing = row.AnyThing;
+
+				if (thing != null && Widgets.ButtonInvisible(rect))
+					Find.WindowStack.Add(new Dialog_InfoCard(thing));
+
 				TooltipHandler.TipRegion(labelRect, () =>
 				{
-					Thing thing = row.AnyThing;
 					if (thing != null)
 					{
 						string tipDescription = row.TipDescription;

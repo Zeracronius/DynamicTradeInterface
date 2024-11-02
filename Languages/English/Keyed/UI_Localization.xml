@@ -56,9 +56,9 @@
 	<DynamicTradeWindowSummaryBuying>Buying ({0} {1})</DynamicTradeWindowSummaryBuying>
 	<DynamicTradeWindowSummarySelling>Selling ({0} {1})</DynamicTradeWindowSummarySelling>
 
-	<DynamicTradeWindowNotificationsTooltip>Notifications</DynamicTradeWindowNotificationsTooltip>
+	<DynamicTradeWindowNotificationsTooltip>Notifications\nRight-click to filter.</DynamicTradeWindowNotificationsTooltip>
 	<DynamicTradeWindowNotificationsTitle>Notifications</DynamicTradeWindowNotificationsTitle>
-	<DynamicTradeWindowNotificationsScopeFilter>Matches, click to filter.</DynamicTradeWindowNotificationsScopeFilter>
+	<DynamicTradeWindowNotificationsScopeFilter>Hits, click to show.</DynamicTradeWindowNotificationsScopeFilter>
 	<DynamicTradeWindowNotificationsEnable>Enable or disable notification.</DynamicTradeWindowNotificationsEnable>
 	<DynamicTradeWindowNotificationsAdd>Add new notification.</DynamicTradeWindowNotificationsAdd>
 	<DynamicTradeWindowNotificationsDelete>Delete notification.</DynamicTradeWindowNotificationsDelete>
