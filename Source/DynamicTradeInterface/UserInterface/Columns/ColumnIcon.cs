@@ -21,7 +21,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					Widgets.ThingIcon(rect, thing);
 					if (Mouse.IsOver(rect))
 					{
-						//Widgets.DrawHighlight(rect);
+						TooltipHandler.TipRegionByKey(rect, "DefInfoTip");
 						if (Widgets.ButtonInvisible(rect))
 							Find.WindowStack.Add(new Dialog_InfoCard(thing));
 					}
