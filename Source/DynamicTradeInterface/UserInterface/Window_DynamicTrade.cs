@@ -480,8 +480,10 @@ namespace DynamicTradeInterface.UserInterface
 			}
 			else
 			{
-				if (Widgets.ButtonImage(notificationRect, Textures.Inspect)) 
+				if (Widgets.ButtonImage(notificationRect, Textures.Inspect))
+				{
 					ShowNotifications();
+				}
 
 				if (Mouse.IsOver(notificationRect))
 					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
@@ -876,7 +878,13 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void ShowNotifications()
 		{
-			Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
+			if (Event.current.shift || Event.current.button == 1)
+			{
+				// Apply combined notification regex on rightclick
+				ApplyFilter(_notifications.GetCombinedRegEx());
+			}
+			else
+				Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
 		}
 
 		private void ConfirmTrade()

@@ -27,6 +27,23 @@ namespace DynamicTradeInterface.InterfaceComponents
 			TotalHits = 0;
 		}
 
+		public string GetCombinedRegEx()
+		{
+			string combinedRegEx = string.Empty;
+			foreach (var item in _entries)
+			{
+				if (item.Active)
+				{
+					if (combinedRegEx.Length > 0)
+						combinedRegEx += "|";
+
+					combinedRegEx += $"({item.RegExText})";
+				}
+			}
+
+			return combinedRegEx;
+		}
+
 		public string this[NotificationEntry entry]
 		{
 			get

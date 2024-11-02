@@ -35,6 +35,7 @@ namespace DynamicTradeInterface.UserInterface
 			_initialPosition = initialPosition;
 			_applyFilterCallback = applyFilterCallback;
 			_notifications = notifications;
+			soundClose = null;
 		}
 
 		public override void PreOpen()
