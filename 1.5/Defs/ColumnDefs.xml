@@ -67,7 +67,7 @@
 
 	<DynamicTradeInterface.Defs.TradeColumnDef>
 		<defName>colTradeCounterDef</defName>
-		<label>counter box</label>
+		<label>trading</label>
 		<description>Numeric box where the current quantity bought or sold is shown and can be entered manually.</description>
 		<showCaption>false</showCaption>
 		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCounter:Draw</callbackHandler>
