@@ -36,21 +36,29 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			{
 				int availableForTrading = row.CountHeldBy(transactor);
 
-				if (transactor == Transactor.Colony)
+				if (transactor == Transactor.Colony && Mod.DynamicTradeInterfaceMod.Settings.ShowAvailableOnMap)
 				{
 					Thing thing = row.AnyThing;
 					if (thing?.def != null)
 					{
 						Map? map = TradeSession.playerNegotiator?.Map;
-						if (map != null)
+						if (map != null && map.listerThings != null)
 						{
-							int thingsOnMap = map.listerThings?.ThingsOfDef(thing.def)?.Sum(x => x.stackCount) ?? 0;
+							List<Thing> things = map.listerThings.ThingsOfDef(thing.def);
 
-							// If more Things are available for trading than currently shown under Available, then show in parenthesis with tooltip.
-							if (thingsOnMap != availableForTrading)
+							int count = things?.Count ?? 0;
+							if (count > 0)
 							{
-								cache[row] = ($"{availableForTrading} ({thingsOnMap})", $"{availableForTrading} available for trading.{Environment.NewLine}{thingsOnMap} total on map.");
-								continue;
+								int thingsOnMap = 0;
+								for (int i = 0; i < count; i++)
+									thingsOnMap += things![i].stackCount;
+
+								// If more Things are available for trading than currently shown under Available, then show in parenthesis with tooltip.
+								if (thingsOnMap != availableForTrading)
+								{
+									cache[row] = ($"{availableForTrading} ({thingsOnMap})", $"{availableForTrading} available for trading.{Environment.NewLine}{thingsOnMap} total on map.");
+									continue;
+								}
 							}
 						}
 					}

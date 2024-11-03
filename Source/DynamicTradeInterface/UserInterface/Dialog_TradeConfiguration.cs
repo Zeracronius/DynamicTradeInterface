@@ -27,25 +27,27 @@ namespace DynamicTradeInterface.UserInterface
 		Mod.DynamicTradeInterfaceSettings _settings;
 		HashSet<TradeColumnDef> _validColumnDefs;
 		List<TradeColumnDef> _visibleColumns;
-		string _cancelButtonText;
-		string _acceptButtonText;
-		string _windowTitle;
-		string _enableProfilingText;
-		string _enableHideUnwilling;
-		string _enableHideUnwillingTooltip;
-		string _enableGhostButtons;
-		string _enableGhostButtonsTooltip;
-		string _enableBulkDurability;
-		string _enableBulkDurabilityTooltip;
-		string _rememberSortings;
-		string _rememberSortingsTooltip;
-		string _autoRefocus;
-		string _autoRefocusTooltip;
-		string _resetWidthsText;
-		string _openAsDefault;
-		string _openAsDefaultTooltip;
-		string _pauseOnTradeTooltip;
-		string _pauseOnTrade;
+		string? _cancelButtonText;
+		string? _acceptButtonText;
+		string? _windowTitle;
+		string? _enableProfilingText;
+		string? _enableHideUnwilling;
+		string? _enableHideUnwillingTooltip;
+		string? _enableGhostButtons;
+		string? _enableGhostButtonsTooltip;
+		string? _enableBulkDurability;
+		string? _enableBulkDurabilityTooltip;
+		string? _rememberSortings;
+		string? _rememberSortingsTooltip;
+		string? _autoRefocus;
+		string? _autoRefocusTooltip;
+		string? _resetWidthsText;
+		string? _openAsDefault;
+		string? _openAsDefaultTooltip;
+		string? _pauseOnTradeTooltip;
+		string? _pauseOnTrade;
+		string? _showAvailable;
+		string? _showAvailableTooltip;
 
 		float _headerHeight;
 
@@ -61,26 +63,6 @@ namespace DynamicTradeInterface.UserInterface
 			draggable = true;
 			forcePause = true;
 			absorbInputAroundWindow = true;
-
-			_acceptButtonText = string.Empty;
-			_cancelButtonText = string.Empty;
-			_windowTitle = string.Empty;
-			_enableProfilingText = string.Empty;
-			_enableHideUnwilling = string.Empty;
-			_enableHideUnwillingTooltip = string.Empty;
-			_enableGhostButtons = string.Empty;
-			_enableGhostButtonsTooltip = string.Empty;
-			_rememberSortings = string.Empty;
-			_rememberSortingsTooltip = string.Empty;
-			_resetWidthsText = string.Empty;
-			_enableBulkDurability = string.Empty;
-			_enableBulkDurabilityTooltip = string.Empty;
-			_autoRefocus = string.Empty;
-			_autoRefocusTooltip = string.Empty;
-			_openAsDefault = string.Empty;
-			_openAsDefaultTooltip = string.Empty;
-			_pauseOnTrade = string.Empty;
-			_pauseOnTradeTooltip = string.Empty;
 		}
 
 		public override Vector2 InitialSize => new Vector2(UI.screenWidth * 0.5f, UI.screenHeight * 0.8f);
@@ -108,6 +90,9 @@ namespace DynamicTradeInterface.UserInterface
 				_openAsDefaultTooltip = "ConfigurationWindowOpenAsDefaultTooltip".Translate();
 				_pauseOnTrade = "ConfigurationWindowPauseAfterTrade".Translate();
 				_pauseOnTradeTooltip = "ConfigurationWindowPauseAfterTradeTooltip".Translate();
+
+				_showAvailable = "ConfigurationWindowShowAvailableOnMap".Translate();
+				_showAvailableTooltip = "ConfigurationWindowShowAvailableOnMapTooltip".Translate();
 
 
 				_autoRefocus = "ConfigurationWindowAutoRefocus".Translate();
@@ -224,6 +209,7 @@ namespace DynamicTradeInterface.UserInterface
 			DrawCheckbox(ref checkbox, ref _settings.AutoRefocus, _autoRefocus, _autoRefocusTooltip);
 			DrawCheckbox(ref checkbox, ref _settings.OpenAsDefault, _openAsDefault, _openAsDefaultTooltip);
 			DrawCheckbox(ref checkbox, ref _settings.PauseAfterTrade, _pauseOnTrade, _pauseOnTradeTooltip);
+			DrawCheckbox(ref checkbox, ref _settings.ShowAvailableOnMap, _showAvailable, _showAvailableTooltip);
 
 
 
@@ -348,7 +334,7 @@ namespace DynamicTradeInterface.UserInterface
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void DrawCheckbox(ref Rect boundingBox, ref bool value, string label, string? tooltip = null)
+		private void DrawCheckbox(ref Rect boundingBox, ref bool value, string? label = "", string? tooltip = null)
 		{
 			Widgets.CheckboxLabeled(boundingBox, label, ref value);
 			if (tooltip != null && Mouse.IsOver(boundingBox))
