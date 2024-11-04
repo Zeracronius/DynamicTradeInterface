@@ -1,5 +1,4 @@
-﻿using DynamicTradeInterface.Defs;
-using DynamicTradeInterface.UserInterface;
+﻿using DynamicTradeInterface.UserInterface;
 using HarmonyLib;
 using RimWorld;
 using System.Reflection;

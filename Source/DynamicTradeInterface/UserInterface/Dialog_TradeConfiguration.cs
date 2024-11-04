@@ -1,6 +1,8 @@
 ﻿using DynamicTradeInterface.Attributes;
 using DynamicTradeInterface.Defs;
+using DynamicTradeInterface.InterfaceComponents;
 using DynamicTradeInterface.InterfaceComponents.TableBox;
+using DynamicTradeInterface.InterfaceComponents.TreeBox;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -30,26 +32,10 @@ namespace DynamicTradeInterface.UserInterface
 		string? _cancelButtonText;
 		string? _acceptButtonText;
 		string? _windowTitle;
-		string? _enableProfilingText;
-		string? _enableHideUnwilling;
-		string? _enableHideUnwillingTooltip;
-		string? _enableGhostButtons;
-		string? _enableGhostButtonsTooltip;
-		string? _enableBulkDurability;
-		string? _enableBulkDurabilityTooltip;
-		string? _rememberSortings;
-		string? _rememberSortingsTooltip;
-		string? _autoRefocus;
-		string? _autoRefocusTooltip;
-		string? _resetWidthsText;
-		string? _openAsDefault;
-		string? _openAsDefaultTooltip;
-		string? _pauseOnTradeTooltip;
-		string? _pauseOnTrade;
-		string? _showAvailable;
-		string? _showAvailableTooltip;
 
 		float _headerHeight;
+
+		FilterTreeBox? _optionsBox;
 
 		public bool Accepted { get; private set; }
 
@@ -76,27 +62,47 @@ namespace DynamicTradeInterface.UserInterface
 				_acceptButtonText = "AcceptButton".Translate();
 				_cancelButtonText = "CancelButton".Translate();
 				_windowTitle = "ConfigurationWindowTitle".Translate();
-				_enableProfilingText = "ConfigurationWindowEnableProfiling".Translate();
-				_enableHideUnwilling = "ConfigurationWindowHideUnwilling".Translate();
-				_enableHideUnwillingTooltip = "ConfigurationWindowHideUnwillingTooltip".Translate();
-				_enableGhostButtons = "ConfigurationWindowEnableGhostButtons".Translate();
-				_enableGhostButtonsTooltip = "ConfigurationWindowEnableGhostButtonsTooltip".Translate();
-				_rememberSortings = "ConfigurationWindowRememberSortings".Translate();
-				_rememberSortingsTooltip = "ConfigurationWindowRememberSortingsTooltip".Translate();
-				_resetWidthsText = "ConfigurationWindowResetWidths".Translate();
-				_enableBulkDurability = "ConfigurationWindowEnableBulkDurability".Translate();;
-				_enableBulkDurabilityTooltip = "ConfigurationWindowEnableBulkDurabilityTooltip".Translate();
-				_openAsDefault = "ConfigurationWindowOpenAsDefault".Translate();
-				_openAsDefaultTooltip = "ConfigurationWindowOpenAsDefaultTooltip".Translate();
-				_pauseOnTrade = "ConfigurationWindowPauseAfterTrade".Translate();
-				_pauseOnTradeTooltip = "ConfigurationWindowPauseAfterTradeTooltip".Translate();
 
-				_showAvailable = "ConfigurationWindowShowAvailableOnMap".Translate();
-				_showAvailableTooltip = "ConfigurationWindowShowAvailableOnMapTooltip".Translate();
+				List<TreeNode_FilterBox> options = new List<TreeNode_FilterBox>
+				{
+					new TreeNode_FilterBox("ConfigurationWindowEnableProfiling".Translate(), null,
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.ProfilingEnabled, x.height)),
 
+					new TreeNode_FilterBox("ConfigurationWindowHideUnwilling".Translate(), "ConfigurationWindowHideUnwillingTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.ExcludeUnwillingItems, x.height)),
 
-				_autoRefocus = "ConfigurationWindowAutoRefocus".Translate();
-				_autoRefocusTooltip = "ConfigurationWindowAutoRefocusTooltip".Translate();
+					new TreeNode_FilterBox("ConfigurationWindowEnableGhostButtons".Translate(), "ConfigurationWindowEnableGhostButtonsTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.GhostButtons, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowEnableBulkDurability".Translate(), "ConfigurationWindowEnableBulkDurabilityTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.StackDurability, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowRememberSortings".Translate(), "ConfigurationWindowRememberSortingsTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.RememberSortings, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowAutoRefocus".Translate(), "ConfigurationWindowAutoRefocusTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.AutoRefocus, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowOpenAsDefault".Translate(), "ConfigurationWindowOpenAsDefaultTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.OpenAsDefault, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowPauseAfterTrade".Translate(), "ConfigurationWindowPauseAfterTradeTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.PauseAfterTrade, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowShowAvailableOnMap".Translate(), "ConfigurationWindowShowAvailableOnMapTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.ShowAvailableOnMap, x.height)),
+
+					new TreeNode_FilterBox("ConfigurationWindowResetWidths".Translate(), null,
+						(in Rect x) => {
+							if (Widgets.ButtonText(x, "ConfigurationWindowResetWidths".Translate()))
+								_settings.ClearColumnCustomization();
+						})
+					{
+						HideLabel = true,
+					},
+				};
+				_optionsBox = new FilterTreeBox(options);
+				_optionsBox.ValueColumnRatio = 0.2f;
 
 				_headerHeight = Text.LineHeightOf(GameFont.Medium) + GenUI.GapSmall;
 
@@ -193,29 +199,12 @@ namespace DynamicTradeInterface.UserInterface
 
 			body.SplitHorizontallyWithMargin(out body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: MAIN_BUTTON_SIZE.y + GenUI.GapTiny);
 
-			body.SplitVerticallyWithMargin(out body, out Rect configurations, out _, GenUI.GapTiny, rightWidth: 200);
+			body.SplitVerticallyWithMargin(out body, out Rect configurations, out _, GenUI.GapTiny, rightWidth: 250);
 
 			Text.Anchor = TextAnchor.UpperLeft;
 			float optionEntry = Text.LineHeightOf(GameFont.Small) + GenUI.GapTiny;
 
-			Rect checkbox = new Rect(configurations).ContractedBy(GenUI.GapTiny, 0);
-			checkbox.height = optionEntry;
-
-			DrawCheckbox(ref checkbox, ref _settings.ProfilingEnabled, _enableProfilingText);
-			DrawCheckbox(ref checkbox, ref _settings.ExcludeUnwillingItems, _enableHideUnwilling, _enableHideUnwillingTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.GhostButtons, _enableGhostButtons, _enableGhostButtonsTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.StackDurability, _enableBulkDurability, _enableBulkDurabilityTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.RememberSortings, _rememberSortings, _rememberSortingsTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.AutoRefocus, _autoRefocus, _autoRefocusTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.OpenAsDefault, _openAsDefault, _openAsDefaultTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.PauseAfterTrade, _pauseOnTrade, _pauseOnTradeTooltip);
-			DrawCheckbox(ref checkbox, ref _settings.ShowAvailableOnMap, _showAvailable, _showAvailableTooltip);
-
-
-
-			if (Widgets.ButtonText(checkbox, _resetWidthsText))
-				_settings.ClearColumnCustomization();
-
+			_optionsBox?.Draw(configurations);
 
 
 			float margin = COLUMN_BUTTON_SIZE + GenUI.GapSmall;
