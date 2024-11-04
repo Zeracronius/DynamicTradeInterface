@@ -77,6 +77,7 @@ namespace DynamicTradeInterface.Mod
 		public bool OpenAsDefault = true;
 		public bool PauseAfterTrade;
 		public bool ShowTradeSummary;
+		public bool ShowAvailableOnMap;
 		public int TradeSummaryWidthPixels = DEFAULT_TRADE_SUMMARY_WIDTH;
 
 
@@ -107,7 +108,8 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref OpenAsDefault, nameof(OpenAsDefault), true);
 			Scribe_Values.Look(ref PauseAfterTrade, nameof(PauseAfterTrade), false);
 			Scribe_Values.Look(ref ShowTradeSummary, nameof(ShowTradeSummary), false);
-			Scribe_Values.Look(ref TradeSummaryWidthPixels, nameof(TradeSummaryWidthPixels), DEFAULT_TRADE_SUMMARY_WIDTH); 
+			Scribe_Values.Look(ref TradeSummaryWidthPixels, nameof(TradeSummaryWidthPixels), DEFAULT_TRADE_SUMMARY_WIDTH);
+			Scribe_Values.Look(ref ShowAvailableOnMap, nameof(ShowAvailableOnMap), true);
 
 
 

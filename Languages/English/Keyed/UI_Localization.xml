@@ -20,6 +20,8 @@
 	<ConfigurationWindowOpenAsDefaultTooltip>Use as default trade window. The non-default window can be opened by holding down Ctrl as the window opens.</ConfigurationWindowOpenAsDefaultTooltip>
 	<ConfigurationWindowPauseAfterTrade>Pause after trade</ConfigurationWindowPauseAfterTrade>
 	<ConfigurationWindowPauseAfterTradeTooltip>Keeps the game paused after trade window is closed.</ConfigurationWindowPauseAfterTradeTooltip>
+	<ConfigurationWindowShowAvailableOnMap>Show available on map.</ConfigurationWindowShowAvailableOnMap>
+	<ConfigurationWindowShowAvailableOnMapTooltip>Show total available on map if different from what is available for trade in Available column.</ConfigurationWindowShowAvailableOnMapTooltip>
 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>

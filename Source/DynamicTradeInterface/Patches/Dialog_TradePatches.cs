@@ -1,4 +1,5 @@
 ﻿using DynamicTradeInterface.Mod;
+using DynamicTradeInterface.UserInterface;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -27,7 +28,7 @@ namespace DynamicTradeInterface.Patches
 			if ((openDefault && control == false) ||
 				(openDefault == false && control))
 			{
-				var dynamicTradeWindow = new UserInterface.Window_DynamicTrade(___giftsOnly);
+				var dynamicTradeWindow = new Window_DynamicTrade(___giftsOnly);
 
 				WindowStack stack = Find.WindowStack;
 				if (stack.TryRemove(__instance, false))
