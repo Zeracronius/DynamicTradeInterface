@@ -480,7 +480,7 @@ namespace DynamicTradeInterface.UserInterface
 			}
 			else
 			{
-				if (Widgets.ButtonImage(notificationRect, Textures.Inspect))
+				if (Widgets.ButtonImage(notificationRect, Textures.ConfigurePresetsIcon))
 				{
 					ShowNotifications();
 				}

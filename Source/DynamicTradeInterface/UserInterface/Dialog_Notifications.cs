@@ -20,6 +20,7 @@ namespace DynamicTradeInterface.UserInterface
 		private string? _toggleNotificationTooltip;
 		private string? _addTooltip;
 		private string? _removeTooltip;
+		private string? _newRowText;
 		private ListBox<NotificationEntry>? _notificationListBox;
 		private Vector2 _initialPosition;
 		private Action<string>? _applyFilterCallback;
@@ -84,9 +85,6 @@ namespace DynamicTradeInterface.UserInterface
 			inRect = inRect.ContractedBy(GenUI.GapTiny);
 			inRect.SplitHorizontallyWithMargin(out Rect top, out Rect bottom, out _, GenUI.GapTiny, Constants.SQUARE_BUTTON_SIZE);
 
-			Rect newButtonRect = new Rect(top.x, top.y, top.height, top.height);
-			if (Widgets.ButtonImage(newButtonRect, Textures.Plus, tooltip: _addTooltip))
-				NewNotification();
 
 			//if (Mouse.IsOver(newButtonRect))
 			//	TooltipHandler.TipRegion(newButtonRect, _addTooltip);
@@ -94,9 +92,29 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperCenter;
 			Widgets.Label(top, _windowTitle);
 			Text.Anchor = TextAnchor.UpperLeft;
+			
+			bottom.SplitHorizontallyWithMargin(out Rect listRect, out Rect newRowRect, out _, GenUI.GapTiny, bottomHeight: Text.LineHeight);
 
+			float height = 0;
+			_notificationListBox?.Draw(listRect, out height, DrawNotificationLine);
 
-			_notificationListBox?.Draw(bottom, out _, DrawNotificationLine);
+			newRowRect.y = listRect.y + height + GenUI.GapTiny;
+			DrawNewRowLine(newRowRect);
+		}
+
+		private void DrawNewRowLine(Rect inRect)
+		{
+			inRect.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, GenUI.GapTiny, leftWidth: inRect.height);
+			if (Widgets.ButtonImage(left, Textures.Plus, tooltip: _addTooltip))
+			{
+				if (String.IsNullOrWhiteSpace(_newRowText) == false)
+				{
+					NewNotification(_newRowText!);
+					_newRowText = "";
+				}
+			}
+
+			_newRowText = Widgets.TextField(right, _newRowText);
 		}
 
 		private void DrawNotificationLine(Rect rect, NotificationEntry entry)
@@ -167,9 +185,9 @@ namespace DynamicTradeInterface.UserInterface
 				DeleteNotification(entry);
 		}
 
-		private void NewNotification()
+		private void NewNotification(string value)
 		{
-			GameSettings.Notifications.Add(new());
+			GameSettings.Notifications.Add(new(value));
 		}
 
 		private void ApplyFilter(NotificationEntry entry)
