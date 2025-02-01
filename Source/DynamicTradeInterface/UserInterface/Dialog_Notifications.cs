@@ -122,11 +122,23 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.Font = GameFont.Small;
 
-			// Left-most
 			float rowHeight = rect.height;
 
+			// Left-most
+			Rect checkboxRect = new Rect(rect.x, rect.y, rowHeight, rowHeight);
+
+			// Right of checkbox button
 			float width = _applyFilterCallback != null ? rowHeight : 0;
-			Rect inspectButtonRect = new Rect(rect.x, rect.y, width, rowHeight);
+			Rect inspectButtonRect = new Rect(checkboxRect.xMax + GenUI.GapTiny, rect.y, width, rowHeight);
+
+			// Right-most
+			Rect deleteRect = new Rect(rect.xMax - rowHeight, rect.y, rowHeight, rowHeight);
+
+			// Place between inspect and delete
+			Rect textboxRect = new Rect(inspectButtonRect.xMax + GenUI.GapTiny, rect.y, deleteRect.x - (inspectButtonRect.xMax + GenUI.GapTiny), rowHeight);
+
+			bool active = entry.Active;
+			Widgets.Checkbox(checkboxRect.x, checkboxRect.y, ref entry.Active);
 
 			if (_applyFilterCallback != null)
 			{
@@ -153,19 +165,6 @@ namespace DynamicTradeInterface.UserInterface
 						ApplyFilter(entry);
 				}
 			}
-
-			// Right of inspect button
-			Rect checkboxRect = new Rect(inspectButtonRect.xMax + GenUI.GapTiny, rect.y, rowHeight, rowHeight);
-
-			// Right-most
-			Rect deleteRect = new Rect(rect.xMax - rowHeight, rect.y, rowHeight, rowHeight);
-
-			// Place between checkbox and delete
-			Rect textboxRect = new Rect(checkboxRect.xMax + GenUI.GapTiny, rect.y, deleteRect.x - (checkboxRect.xMax + GenUI.GapTiny), rowHeight);
-
-
-			bool active = entry.Active;
-			Widgets.Checkbox(checkboxRect.x, checkboxRect.y, ref entry.Active);
 
 			if (Mouse.IsOver(checkboxRect))
 				TooltipHandler.TipRegion(checkboxRect, _toggleNotificationTooltip);
