@@ -435,7 +435,7 @@ namespace DynamicTradeInterface.UserInterface
 			// Trade summary toggle button
 			Rect summaryButtonRect = new Rect(inRect.xMax - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
 
-			if (Widgets.ButtonImage(summaryButtonRect, _settings.ShowTradeSummary ? Textures.ArrowRight : Textures.ArrowLeft))
+			if (Widgets.ButtonImage(summaryButtonRect, Textures.Summary))
 				_settings.ShowTradeSummary = !_settings.ShowTradeSummary;
 
 			if (Mouse.IsOver(summaryButtonRect))
@@ -455,11 +455,19 @@ namespace DynamicTradeInterface.UserInterface
 
 
 			// Trade notifications button.
-			Rect notificationRect = new Rect(lockRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
-			
-			
+			Rect presetFiltersRect = new Rect(lockRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
+
+			Rect notificationRect = new Rect(presetFiltersRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
+
+			if (Widgets.ButtonImage(presetFiltersRect, Textures.ConfigurePresetsIcon, tooltip: _notificationsTooltip))
+				ShowPresetFiltersWindow();
+
+
 			if (_notifications.TotalHits > 0)
 			{
+				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon, tooltip: ""))
+					ShowNotifications();
+
 				Text.Font = GameFont.Medium;
 				Text.Anchor = TextAnchor.MiddleCenter;
 				Color normalColor = GUI.color;
@@ -468,28 +476,11 @@ namespace DynamicTradeInterface.UserInterface
 				GUI.color = normalColor;
 				Text.Anchor = TextAnchor.UpperLeft;
 				Text.Font = GameFont.Small;
-
-				if (Mouse.IsOver(notificationRect))
-				{
-					Widgets.DrawHighlight(notificationRect);
-					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
-				}
-
-				if (Widgets.ButtonInvisible(notificationRect))
-					ShowNotifications();
 			}
 			else
 			{
-				if (Widgets.ButtonImage(notificationRect, Textures.ConfigurePresetsIcon))
-				{
-					ShowNotifications();
-				}
-
-				if (Mouse.IsOver(notificationRect))
-					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
+				Widgets.DrawTextureFitted(notificationRect, Textures.NotificationsEmptyIcon, 1.0f);
 			}
-
-
 
 
 			// Trade summary
@@ -878,13 +869,13 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void ShowNotifications()
 		{
-			if (Event.current.shift || Event.current.button == 1)
-			{
-				// Apply combined notification regex on rightclick
-				ApplyFilter(_notifications.GetCombinedRegEx());
-			}
-			else
-				Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
+			// Apply combined notification regex on rightclick
+			ApplyFilter(_notifications.GetCombinedRegEx());
+		}
+
+		private void ShowPresetFiltersWindow()
+		{
+			Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
 		}
 
 		private void ConfirmTrade()
