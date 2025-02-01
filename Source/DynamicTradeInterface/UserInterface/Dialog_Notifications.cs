@@ -184,7 +184,7 @@ namespace DynamicTradeInterface.UserInterface
 				_notifications.Refresh(entry);
 			}
 
-			if (Widgets.ButtonImage(deleteRect, Textures.Minus, tooltip: _removeTooltip))
+			if (Widgets.ButtonImage(deleteRect, Textures.Remove, tooltip: _removeTooltip))
 				DeleteNotification(entry);
 		}
 

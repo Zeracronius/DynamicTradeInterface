@@ -45,7 +45,6 @@ namespace DynamicTradeInterface.UserInterface
 		string _colonyHeaderDescription;
 		string _traderHeader;
 		string _traderHeaderDescription;
-
 		string _cancelButtonText;
 		string _resetButtonText;
 		string _acceptButtonText;
@@ -53,18 +52,15 @@ namespace DynamicTradeInterface.UserInterface
 		string _giftButtonTooltip;
 		string _acceptText;
 		string _cannotAffordText;
-
 		string _lockedTooltip;
 		string _unlockedTooltip;
-
+		string _saveTooltip;
 		string _showSellableItemsDesc;
 		string _tradeModeTip;
 		string _giftModeTip;
 		string _searchText;
-
 		string _summaryShowText;
 		string _summaryHideText;
-
 		string _focusedControl;
 		string _notificationsTooltip;
 
@@ -139,6 +135,7 @@ namespace DynamicTradeInterface.UserInterface
 			_summaryShowText = string.Empty;
 			_summaryHideText = string.Empty;
 			_notificationsTooltip = string.Empty;
+			_saveTooltip = string.Empty;
 
 			_tradeModeIcon = Textures.TradeModeIcon;
 			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
@@ -221,6 +218,7 @@ namespace DynamicTradeInterface.UserInterface
 			_summaryShowText = "DynamicTradeWindowSummaryShow".Translate();
 			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
 			_notificationsTooltip = "DynamicTradeWindowNotificationsTooltip".Translate();
+			_saveTooltip = "DynamicTradeWindowSaveAsPreset".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
@@ -724,24 +722,31 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void DrawSearchBox(float x, float y, float width, float height)
 		{
-			float clearButtonSize = Text.LineHeight;
-			Rect searchBox = new Rect(x, y, width - clearButtonSize - Table<ITableRow>.CELL_SPACING, clearButtonSize);
+			Rect saveButtonRect = new Rect(x, y, height, height);
+			Rect searchBox = new Rect(saveButtonRect.xMax + GenUI.GapTiny, y, width - height - GenUI.GapTiny, height);
+
+			if (Widgets.ButtonImage(saveButtonRect, Textures.Save, tooltip: _saveTooltip))
+				SaveFilterAsPreset();
 
 			GUI.SetNextControlName("SearchBox");
 			string searchString = Widgets.TextField(searchBox, _searchText);
-			if (Widgets.ButtonText(new Rect(searchBox.xMax + Table<ITableRow>.CELL_SPACING, y, clearButtonSize, clearButtonSize), "X"))
+			if (Widgets.ButtonText(new Rect(searchBox.xMax + GenUI.GapTiny, y, height, height), "X"))
 				searchString = "";
 
 
 			if (searchString == string.Empty)
 				Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + 5, searchBox.y, _colonyTable.SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), _colonyTable.SEARCH_PLACEHOLDER);
 
-
-
-			if (_searchText == searchString || _searchText != null && _searchText.Equals(searchString))
+			if (_searchText == searchString || (_searchText != null && _searchText.Equals(searchString)))
 				return;
 
 			ApplyFilter(searchString);
+		}
+
+		private void SaveFilterAsPreset()
+		{
+			GameSettings.Notifications.Add(new(_searchText));
+			_searchText = string.Empty;
 		}
 
 		private void ApplyFilter(string filterText)

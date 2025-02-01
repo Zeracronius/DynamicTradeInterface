@@ -37,6 +37,8 @@
 	<DynamicTradeWindowGiftMore>Gift {0} more.</DynamicTradeWindowGiftMore>
 	<DynamicTradeWindowGiftAll>Gift all.</DynamicTradeWindowGiftAll>
 
+	<DynamicTradeWindowSaveAsPreset></DynamicTradeWindowSaveAsPreset>
+
 	<DynamicTradeWindowBuyMore>Buy {0} more.</DynamicTradeWindowBuyMore>
 	<DynamicTradeWindowBuyAll>Buy all.</DynamicTradeWindowBuyAll>
 	<DynamicTradeWindowBuyAffordable>Buy affordable.</DynamicTradeWindowBuyAffordable>
