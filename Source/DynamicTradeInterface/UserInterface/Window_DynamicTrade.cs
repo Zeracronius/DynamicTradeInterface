@@ -468,7 +468,11 @@ namespace DynamicTradeInterface.UserInterface
 				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon, tooltip: ""))
 					ShowNotifications();
 
-				Text.Font = GameFont.Medium;
+				GameFont fontSize = GameFont.Medium;
+				if (_notifications.TotalHits > 9)
+					fontSize = GameFont.Small;
+
+				Text.Font = fontSize;
 				Text.Anchor = TextAnchor.MiddleCenter;
 				Color normalColor = GUI.color;
 				GUI.color = Color.red;

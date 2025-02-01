@@ -138,7 +138,7 @@ namespace DynamicTradeInterface.UserInterface
 			Rect textboxRect = new Rect(inspectButtonRect.xMax + GenUI.GapTiny, rect.y, deleteRect.x - (inspectButtonRect.xMax + GenUI.GapTiny), rowHeight);
 
 			bool active = entry.Active;
-			Widgets.Checkbox(checkboxRect.x, checkboxRect.y, ref entry.Active);
+			Widgets.Checkbox(checkboxRect.x, checkboxRect.y, ref entry.Active, checkboxRect.height, texChecked: Textures.CheckboxOn, texUnchecked: Textures.CheckboxOff);
 
 			if (_applyFilterCallback != null)
 			{

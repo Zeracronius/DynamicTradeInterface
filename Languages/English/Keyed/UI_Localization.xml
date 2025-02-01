@@ -61,7 +61,7 @@
 	<DynamicTradeWindowNotificationsTooltip>Filter presets</DynamicTradeWindowNotificationsTooltip>
 	<DynamicTradeWindowNotificationsTitle>Filter presets</DynamicTradeWindowNotificationsTitle>
 	<DynamicTradeWindowNotificationsScopeFilter>Matches, click to filter.</DynamicTradeWindowNotificationsScopeFilter>
-	<DynamicTradeWindowNotificationsEnable>Notify matches.</DynamicTradeWindowNotificationsEnable>
-	<DynamicTradeWindowNotificationsAdd>Add new filter.</DynamicTradeWindowNotificationsAdd>
-	<DynamicTradeWindowNotificationsDelete>Delete filter.</DynamicTradeWindowNotificationsDelete>
+	<DynamicTradeWindowNotificationsEnable>Enable notifications.</DynamicTradeWindowNotificationsEnable>
+	<DynamicTradeWindowNotificationsAdd>Add new preset.</DynamicTradeWindowNotificationsAdd>
+	<DynamicTradeWindowNotificationsDelete>Delete preset.</DynamicTradeWindowNotificationsDelete>
 </LanguageData>
