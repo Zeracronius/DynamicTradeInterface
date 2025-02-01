@@ -550,8 +550,10 @@ namespace DynamicTradeInterface.UserInterface
 			else
 				left = right = body;
 
+			DrawSearchBox(body.x, body.y + _headerHeight + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+
 			// Colony
-			if (drawColonyColumn)
+			if (giftMode || drawColonyColumn)
 			{
 				left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
 
@@ -564,14 +566,10 @@ namespace DynamicTradeInterface.UserInterface
 				Widgets.Label(top, _colonyHeaderDescription);
 
 				Text.Anchor = TextAnchor.UpperLeft;
-
 				_colonyTable.Draw(bottom);
 			}
 
-			DrawSearchBox(body.x, body.y + _headerHeight + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
-
-
-			if (giftMode == false || drawTraderColumn)
+			if (giftMode == false && drawTraderColumn)
 			{
 				// Trader
 				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
@@ -588,7 +586,7 @@ namespace DynamicTradeInterface.UserInterface
 				_traderTable.Draw(bottom);
 			}
 
-			if (_currency != null && TradeSession.giftMode == false)
+			if (_currency != null && giftMode == false)
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
 
 
@@ -601,7 +599,7 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				OnAccept();
 			}
-			if (TradeSession.giftMode && Mouse.IsOver(mainButtonRect))
+			if (giftMode && Mouse.IsOver(mainButtonRect))
 				TooltipHandler.TipRegion(mainButtonRect, _giftButtonTooltip);
 
 			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
@@ -644,7 +642,7 @@ namespace DynamicTradeInterface.UserInterface
 			if (_traderFaction != null && _giftOnly == false && _traderFaction.def.permanentEnemy == false)
 			{
 				Rect rect7 = new Rect(showSellableRect.x - y - 4f, showSellableRect.y, y, y);
-				if (TradeSession.giftMode)
+				if (giftMode)
 				{
 					if (Widgets.ButtonImageWithBG(rect7, _tradeModeIcon, new Vector2(32f, 32f)))
 					{
