@@ -144,7 +144,11 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				if (entry.Active)
 				{
-					Text.Font = GameFont.Medium;
+					GameFont fontSize = GameFont.Medium;
+					if (_notifications.TotalHits > 9)
+						fontSize = GameFont.Small;
+
+					Text.Font = fontSize;
 					Text.Anchor = TextAnchor.MiddleCenter;
 					Widgets.Label(inspectButtonRect, _notifications[entry]);
 					Text.Anchor = TextAnchor.UpperLeft;

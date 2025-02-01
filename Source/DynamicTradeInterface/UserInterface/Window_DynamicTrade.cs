@@ -407,6 +407,9 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			bool drawColonyColumn = true;
+			bool drawTraderColumn = true;
+
 			Text.Font = GameFont.Small;
 			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
 				return;
@@ -524,28 +527,51 @@ namespace DynamicTradeInterface.UserInterface
 			Rect left, right;
 			Rect top, bottom;
 
+			float? leftWidth = null;
+			float? rightWidth = null;
+			if (drawColonyColumn && drawTraderColumn)
+			{
+				// If both columns are drawn, half-size
+				leftWidth = inRect.width / 2;
+			}
+			else if (drawColonyColumn)
+			{
+				// Maximize left side
+				leftWidth = inRect.width;
+			}
+			else if (drawTraderColumn)
+			{
+				// Maximize right side
+				rightWidth = inRect.width;
+			}
+
 			if (giftMode == false)
-				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
+				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, leftWidth, rightWidth);
 			else
 				left = right = body;
 
 			// Colony
-			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
+			if (drawColonyColumn)
+			{
+				left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
 
-			Text.Anchor = TextAnchor.UpperCenter;
-			Text.Font = GameFont.Medium;
-			Widgets.Label(top, _colonyHeader);
+				Text.Anchor = TextAnchor.UpperCenter;
+				Text.Font = GameFont.Medium;
+				Widgets.Label(top, _colonyHeader);
 
-			Text.Anchor = TextAnchor.LowerCenter;
-			Text.Font = GameFont.Small;
-			Widgets.Label(top, _colonyHeaderDescription);
+				Text.Anchor = TextAnchor.LowerCenter;
+				Text.Font = GameFont.Small;
+				Widgets.Label(top, _colonyHeaderDescription);
 
-			Text.Anchor = TextAnchor.UpperLeft;
-			DrawSearchBox(top.x, top.yMax + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+				Text.Anchor = TextAnchor.UpperLeft;
 
-			_colonyTable.Draw(bottom);
+				_colonyTable.Draw(bottom);
+			}
 
-			if (giftMode == false)
+			DrawSearchBox(body.x, body.y + _headerHeight + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+
+
+			if (giftMode == false || drawTraderColumn)
 			{
 				// Trader
 				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
