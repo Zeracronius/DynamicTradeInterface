@@ -23,6 +23,7 @@ namespace DynamicTradeInterface.Notifications
         public NotificationEntry(string value)
         {
 			SetText(value);
+			Active = true;
         }
 
         public void SetText(string text)

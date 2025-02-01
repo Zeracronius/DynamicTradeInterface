@@ -37,7 +37,8 @@
 	<DynamicTradeWindowGiftMore>Gift {0} more.</DynamicTradeWindowGiftMore>
 	<DynamicTradeWindowGiftAll>Gift all.</DynamicTradeWindowGiftAll>
 
-	<DynamicTradeWindowSaveAsPreset></DynamicTradeWindowSaveAsPreset>
+	<DynamicTradeWindowSaveAsPreset>Save filter as preset.</DynamicTradeWindowSaveAsPreset>
+	<DynamicTradeWindowNotificationBell>Found matches, click to filter.</DynamicTradeWindowNotificationBell>
 
 	<DynamicTradeWindowBuyMore>Buy {0} more.</DynamicTradeWindowBuyMore>
 	<DynamicTradeWindowBuyAll>Buy all.</DynamicTradeWindowBuyAll>

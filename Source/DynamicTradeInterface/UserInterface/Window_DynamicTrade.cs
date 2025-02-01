@@ -70,6 +70,7 @@ namespace DynamicTradeInterface.UserInterface
 		string _summaryHideText = string.Empty;
 		string _focusedControl = string.Empty;
 		string _notificationsTooltip = string.Empty;
+		string _notificationsBellTooltip = string.Empty;
 
 		public Window_DynamicTrade(bool giftOnly = false)
 		{
@@ -176,6 +177,7 @@ namespace DynamicTradeInterface.UserInterface
 			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
 			_notificationsTooltip = "DynamicTradeWindowNotificationsTooltip".Translate();
 			_saveTooltip = "DynamicTradeWindowSaveAsPreset".Translate();
+			_notificationsBellTooltip = "DynamicTradeWindowNotificationBell".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
@@ -423,7 +425,7 @@ namespace DynamicTradeInterface.UserInterface
 
 			if (_notifications.TotalHits > 0)
 			{
-				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon, tooltip: ""))
+				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon, tooltip: _notificationsBellTooltip))
 					ShowNotifications();
 
 				GameFont fontSize = GameFont.Medium;
@@ -680,7 +682,8 @@ namespace DynamicTradeInterface.UserInterface
 		private void DrawSearchBox(float x, float y, float width, float height)
 		{
 			Rect saveButtonRect = new Rect(x, y, height, height);
-			Rect searchBox = new Rect(saveButtonRect.xMax + GenUI.GapTiny, y, width - height - GenUI.GapTiny, height);
+			float buttonSize = height + GenUI.GapTiny;
+			Rect searchBox = new Rect(saveButtonRect.xMax + GenUI.GapTiny, y, width - (buttonSize * 2), height);
 
 			if (Widgets.ButtonImage(saveButtonRect, Textures.Save, tooltip: _saveTooltip))
 				SaveFilterAsPreset();
@@ -702,8 +705,12 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void SaveFilterAsPreset()
 		{
-			GameSettings.Notifications.Add(new(_searchText));
-			_searchText = string.Empty;
+			if (string.IsNullOrWhiteSpace(_searchText) == false)
+			{
+				GameSettings.Notifications.Add(new(_searchText));
+				_searchText = string.Empty;
+				// ShowPresetFiltersWindow();
+			}
 		}
 
 		private void ApplyFilter(string filterText)
