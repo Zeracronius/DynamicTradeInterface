@@ -37,6 +37,9 @@
 	<DynamicTradeWindowGiftMore>Gift {0} more.</DynamicTradeWindowGiftMore>
 	<DynamicTradeWindowGiftAll>Gift all.</DynamicTradeWindowGiftAll>
 
+	<DynamicTradeWindowSaveAsPreset>Save filter as preset.</DynamicTradeWindowSaveAsPreset>
+	<DynamicTradeWindowNotificationBell>Found matches, click to show.</DynamicTradeWindowNotificationBell>
+
 	<DynamicTradeWindowBuyMore>Buy {0} more.</DynamicTradeWindowBuyMore>
 	<DynamicTradeWindowBuyAll>Buy all.</DynamicTradeWindowBuyAll>
 	<DynamicTradeWindowBuyAffordable>Buy affordable.</DynamicTradeWindowBuyAffordable>
@@ -58,10 +61,10 @@
 	<DynamicTradeWindowSummaryBuying>Buying ({0} {1})</DynamicTradeWindowSummaryBuying>
 	<DynamicTradeWindowSummarySelling>Selling ({0} {1})</DynamicTradeWindowSummarySelling>
 
-	<DynamicTradeWindowNotificationsTooltip>Notifications\nRight-click to filter.</DynamicTradeWindowNotificationsTooltip>
-	<DynamicTradeWindowNotificationsTitle>Notifications</DynamicTradeWindowNotificationsTitle>
-	<DynamicTradeWindowNotificationsScopeFilter>Hits, click to show.</DynamicTradeWindowNotificationsScopeFilter>
-	<DynamicTradeWindowNotificationsEnable>Enable or disable notification.</DynamicTradeWindowNotificationsEnable>
-	<DynamicTradeWindowNotificationsAdd>Add new notification.</DynamicTradeWindowNotificationsAdd>
-	<DynamicTradeWindowNotificationsDelete>Delete notification.</DynamicTradeWindowNotificationsDelete>
+	<DynamicTradeWindowNotificationsTooltip>Filter presets</DynamicTradeWindowNotificationsTooltip>
+	<DynamicTradeWindowNotificationsTitle>Filter presets</DynamicTradeWindowNotificationsTitle>
+	<DynamicTradeWindowNotificationsScopeFilter>Click to apply filter.</DynamicTradeWindowNotificationsScopeFilter>
+	<DynamicTradeWindowNotificationsEnable>Enable notifications.</DynamicTradeWindowNotificationsEnable>
+	<DynamicTradeWindowNotificationsAdd>Add new preset.</DynamicTradeWindowNotificationsAdd>
+	<DynamicTradeWindowNotificationsDelete>Delete preset.</DynamicTradeWindowNotificationsDelete>
 </LanguageData>

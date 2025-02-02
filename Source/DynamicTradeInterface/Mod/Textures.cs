@@ -21,13 +21,18 @@ namespace DynamicTradeInterface.Mod
 		public static readonly Texture2D UnlockedIcon = ContentFinder<Texture2D>.Get("Icons/Unlocked");
 		public static readonly Texture2D TamenessIcon = ContentFinder<Texture2D>.Get("ui/icons/trainables/Tameness");
 		public static readonly Texture2D Plus = ContentFinder<Texture2D>.Get("ui/buttons/Plus");
-		public static readonly Texture2D Minus = ContentFinder<Texture2D>.Get("ui/buttons/Minus");
+		public static readonly Texture2D Remove = ContentFinder<Texture2D>.Get("Icons/Remove");
 		public static readonly Texture2D Inspect = ContentFinder<Texture2D>.Get("ui/buttons/devroot/OpenInspector");
-		
-
+		public static readonly Texture2D ConfigurePresetsIcon = ContentFinder<Texture2D>.Get("Icons/Filter_presets");
+		public static readonly Texture2D NotificationsEmptyIcon = ContentFinder<Texture2D>.Get("Icons/Notification_empty");
+		public static readonly Texture2D NotificationsIcon = ContentFinder<Texture2D>.Get("Icons/Notification_present");
 		public static readonly Texture2D RideableIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Rideable");
 		public static readonly Texture2D SickIcon = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Sick");
 		public static readonly Texture2D ArrowLeft = ContentFinder<Texture2D>.Get("UI/widgets/ArrowLeft");
 		public static readonly Texture2D ArrowRight = ContentFinder<Texture2D>.Get("UI/widgets/ArrowRight");
+		public static readonly Texture2D Summary = ContentFinder<Texture2D>.Get("Icons/Show_summary");
+		public static readonly Texture2D CheckboxOff = ContentFinder<Texture2D>.Get("Icons/Checkbox_off");
+		public static readonly Texture2D CheckboxOn = ContentFinder<Texture2D>.Get("Icons/Checkbox_on");
+		public static readonly Texture2D Save = ContentFinder<Texture2D>.Get("Icons/Save");
 	}
 }

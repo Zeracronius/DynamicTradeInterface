@@ -51,7 +51,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 							{
 								int thingsOnMap = 0;
 								for (int i = 0; i < count; i++)
-									thingsOnMap += things![i].stackCount;
+								{
+									Thing stack = things![i];
+
+									// Count only if stack is visible to player.
+									if (stack.Fogged() == false)
+										thingsOnMap += stack.stackCount;
+								}
 
 								// If more Things are available for trading than currently shown under Available, then show in parenthesis with tooltip.
 								if (thingsOnMap != availableForTrading)

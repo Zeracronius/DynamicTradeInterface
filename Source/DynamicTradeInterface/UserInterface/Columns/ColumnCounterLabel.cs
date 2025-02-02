@@ -36,24 +36,18 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					CanSellToSlavery = new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo(),
 				};
 
-			if (transactor == Transactor.Colony)
-			{
-				_dynamicTradeUnwilling = "DynamicTradeWindowUnwilling".Translate();
-				_positiveBuysNegativeSells = "PositiveBuysNegativeSells".Translate();
-				_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name);
-			}
+			_dynamicTradeUnwilling = "DynamicTradeWindowUnwilling".Translate();
+			_positiveBuysNegativeSells = "PositiveBuysNegativeSells".Translate();
+			_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name);
 		}
 
 
 		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
-			if (transactor == Transactor.Colony)
-			{
-				_editableCache.Clear();
-				_dynamicTradeUnwilling = null;
-				_positiveBuysNegativeSells = null;
-				_negotiatorWillNotTradeSlavesTip = null;
-			}
+			_editableCache.Clear();
+			_dynamicTradeUnwilling = null;
+			_positiveBuysNegativeSells = null;
+			_negotiatorWillNotTradeSlavesTip = null;
 		}
 
 

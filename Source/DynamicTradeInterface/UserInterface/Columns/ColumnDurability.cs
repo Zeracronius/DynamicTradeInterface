@@ -82,11 +82,8 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
-			if (transactor == Transactor.Colony)
-			{
-				_traderRows.Clear();
-				_colonyRows.Clear();
-			}
+			_traderRows.Clear();
+			_colonyRows.Clear();
 		}
 
 

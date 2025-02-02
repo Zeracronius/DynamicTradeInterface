@@ -15,7 +15,18 @@ namespace DynamicTradeInterface.Notifications
 
 		public Regex? Regex { get; private set; }
 
-		public void SetText(string text)
+        public NotificationEntry()
+        {
+            
+        }
+
+        public NotificationEntry(string value)
+        {
+			SetText(value);
+			Active = true;
+        }
+
+        public void SetText(string text)
 		{
 			try
 			{

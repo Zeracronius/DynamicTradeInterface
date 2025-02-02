@@ -20,6 +20,7 @@ namespace DynamicTradeInterface.UserInterface
 		private string? _toggleNotificationTooltip;
 		private string? _addTooltip;
 		private string? _removeTooltip;
+		private string? _newRowText;
 		private ListBox<NotificationEntry>? _notificationListBox;
 		private Vector2 _initialPosition;
 		private Action<string>? _applyFilterCallback;
@@ -84,9 +85,6 @@ namespace DynamicTradeInterface.UserInterface
 			inRect = inRect.ContractedBy(GenUI.GapTiny);
 			inRect.SplitHorizontallyWithMargin(out Rect top, out Rect bottom, out _, GenUI.GapTiny, Constants.SQUARE_BUTTON_SIZE);
 
-			Rect newButtonRect = new Rect(top.x, top.y, top.height, top.height);
-			if (Widgets.ButtonImage(newButtonRect, Textures.Plus, tooltip: _addTooltip))
-				NewNotification();
 
 			//if (Mouse.IsOver(newButtonRect))
 			//	TooltipHandler.TipRegion(newButtonRect, _addTooltip);
@@ -94,9 +92,29 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperCenter;
 			Widgets.Label(top, _windowTitle);
 			Text.Anchor = TextAnchor.UpperLeft;
+			
+			bottom.SplitHorizontallyWithMargin(out Rect listRect, out Rect newRowRect, out _, GenUI.GapTiny, bottomHeight: Text.LineHeight);
 
+			float height = 0;
+			_notificationListBox?.Draw(listRect, out height, DrawNotificationLine);
 
-			_notificationListBox?.Draw(bottom, out _, DrawNotificationLine);
+			newRowRect.y = listRect.y + height + GenUI.GapTiny;
+			DrawNewRowLine(newRowRect);
+		}
+
+		private void DrawNewRowLine(Rect inRect)
+		{
+			inRect.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, GenUI.GapTiny, leftWidth: inRect.height);
+			if (Widgets.ButtonImage(left, Textures.Plus, tooltip: _addTooltip))
+			{
+				if (String.IsNullOrWhiteSpace(_newRowText) == false)
+				{
+					NewNotification(_newRowText!);
+					_newRowText = "";
+				}
+			}
+
+			_newRowText = Widgets.TextField(right, _newRowText);
 		}
 
 		private void DrawNotificationLine(Rect rect, NotificationEntry entry)
@@ -104,17 +122,33 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperLeft;
 			Text.Font = GameFont.Small;
 
-			// Left-most
 			float rowHeight = rect.height;
 
+			// Left-most
+			Rect checkboxRect = new Rect(rect.x, rect.y, rowHeight, rowHeight);
+
+			// Right of checkbox button
 			float width = _applyFilterCallback != null ? rowHeight : 0;
-			Rect inspectButtonRect = new Rect(rect.x, rect.y, width, rowHeight);
+			Rect inspectButtonRect = new Rect(checkboxRect.xMax + GenUI.GapTiny, rect.y, width, rowHeight);
+
+			// Right-most
+			Rect deleteRect = new Rect(rect.xMax - rowHeight, rect.y, rowHeight, rowHeight);
+
+			// Place between inspect and delete
+			Rect textboxRect = new Rect(inspectButtonRect.xMax + GenUI.GapTiny, rect.y, deleteRect.x - (inspectButtonRect.xMax + GenUI.GapTiny), rowHeight);
+
+			bool active = entry.Active;
+			Widgets.Checkbox(checkboxRect.x, checkboxRect.y, ref entry.Active, checkboxRect.height, texChecked: Textures.CheckboxOn, texUnchecked: Textures.CheckboxOff);
 
 			if (_applyFilterCallback != null)
 			{
 				if (entry.Active)
 				{
-					Text.Font = GameFont.Medium;
+					GameFont fontSize = GameFont.Medium;
+					if (_notifications.TotalHits > 9)
+						fontSize = GameFont.Small;
+
+					Text.Font = fontSize;
 					Text.Anchor = TextAnchor.MiddleCenter;
 					Widgets.Label(inspectButtonRect, _notifications[entry]);
 					Text.Anchor = TextAnchor.UpperLeft;
@@ -136,19 +170,6 @@ namespace DynamicTradeInterface.UserInterface
 				}
 			}
 
-			// Right of inspect button
-			Rect checkboxRect = new Rect(inspectButtonRect.xMax + GenUI.GapTiny, rect.y, rowHeight, rowHeight);
-
-			// Right-most
-			Rect deleteRect = new Rect(rect.xMax - rowHeight, rect.y, rowHeight, rowHeight);
-
-			// Place between checkbox and delete
-			Rect textboxRect = new Rect(checkboxRect.xMax + GenUI.GapTiny, rect.y, deleteRect.x - (checkboxRect.xMax + GenUI.GapTiny), rowHeight);
-
-
-			bool active = entry.Active;
-			Widgets.Checkbox(checkboxRect.x, checkboxRect.y, ref entry.Active);
-
 			if (Mouse.IsOver(checkboxRect))
 				TooltipHandler.TipRegion(checkboxRect, _toggleNotificationTooltip);
 
@@ -163,13 +184,13 @@ namespace DynamicTradeInterface.UserInterface
 				_notifications.Refresh(entry);
 			}
 
-			if (Widgets.ButtonImage(deleteRect, Textures.Minus, tooltip: _removeTooltip))
+			if (Widgets.ButtonImage(deleteRect, Textures.Remove, tooltip: _removeTooltip))
 				DeleteNotification(entry);
 		}
 
-		private void NewNotification()
+		private void NewNotification(string value)
 		{
-			GameSettings.Notifications.Add(new());
+			GameSettings.Notifications.Add(new(value));
 		}
 
 		private void ApplyFilter(NotificationEntry entry)

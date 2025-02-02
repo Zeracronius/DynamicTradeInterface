@@ -36,57 +36,41 @@ namespace DynamicTradeInterface.UserInterface
 		bool _refresh;
 		bool _giftOnly;
 		bool _resizingSummary;
-
 		GameFont _rowFont;
 		GameFont _currencyFont;
-
 		float _headerHeight;
-		string _colonyHeader;
-		string _colonyHeaderDescription;
-		string _traderHeader;
-		string _traderHeaderDescription;
-
-		string _cancelButtonText;
-		string _resetButtonText;
-		string _acceptButtonText;
-		string _offerGiftsText;
-		string _giftButtonTooltip;
-		string _acceptText;
-		string _cannotAffordText;
-
-		string _lockedTooltip;
-		string _unlockedTooltip;
-
-		string _showSellableItemsDesc;
-		string _tradeModeTip;
-		string _giftModeTip;
-		string _searchText;
-
-		string _summaryShowText;
-		string _summaryHideText;
-
-		string _focusedControl;
-		string _notificationsTooltip;
-
-		Texture2D _tradeModeIcon;
-		Texture2D _showSellableItemsIcon;
-		Texture2D _giftModeIcon;
-		Texture2D _arrowIcon;
-		Texture2D _resetIcon;
-		Texture2D _lockedIcon;
-		Texture2D _unlockedIcon;
-
-		Dictionary<TradeColumnDef, long>? _frameCache;
-
-
 		Faction? _traderFaction;
-
 		IEnumerable<TradeColumnDef> _columns;
+		Queue<string> _confirmations;
 
 		// Profiling
+		Dictionary<TradeColumnDef, long>? _frameCache;
 		Stopwatch _stopWatch;
 
-		private Queue<string> _confirmations;
+
+		string _colonyHeader = string.Empty;
+		string _colonyHeaderDescription = string.Empty;
+		string _traderHeader = string.Empty;
+		string _traderHeaderDescription = string.Empty;
+		string _cancelButtonText = string.Empty;
+		string _resetButtonText = string.Empty;
+		string _acceptButtonText = string.Empty;
+		string _offerGiftsText = string.Empty;
+		string _giftButtonTooltip = string.Empty;
+		string _acceptText = string.Empty;
+		string _cannotAffordText = string.Empty;
+		string _lockedTooltip = string.Empty;
+		string _unlockedTooltip = string.Empty;
+		string _saveTooltip = string.Empty;
+		string _showSellableItemsDesc = string.Empty;
+		string _tradeModeTip = string.Empty;
+		string _giftModeTip = string.Empty;
+		string _searchText = string.Empty;
+		string _summaryShowText = string.Empty;
+		string _summaryHideText = string.Empty;
+		string _focusedControl = string.Empty;
+		string _notificationsTooltip = string.Empty;
+		string _notificationsBellTooltip = string.Empty;
 
 		public Window_DynamicTrade(bool giftOnly = false)
 		{
@@ -118,36 +102,7 @@ namespace DynamicTradeInterface.UserInterface
 			_stopWatch = new Stopwatch();
 			_columns = _settings.GetVisibleTradeColumns();
 			_refresh = false;
-			_colonyHeader = string.Empty;
-			_colonyHeaderDescription = string.Empty;
-			_traderHeader = string.Empty;
-			_traderHeaderDescription = string.Empty;
-			_cancelButtonText = string.Empty;
-			_resetButtonText = string.Empty;
-			_acceptButtonText = string.Empty;
-			_offerGiftsText = string.Empty;
-			_cannotAffordText = string.Empty;
-			_showSellableItemsDesc = string.Empty;
-			_tradeModeTip = string.Empty;
-			_giftModeTip = string.Empty;
-			_acceptText = string.Empty;
-			_searchText = string.Empty;
-			_giftButtonTooltip = string.Empty;
-			_lockedTooltip = string.Empty;
-			_unlockedTooltip = string.Empty;
-			_focusedControl = string.Empty;
-			_summaryShowText = string.Empty;
-			_summaryHideText = string.Empty;
-			_notificationsTooltip = string.Empty;
-
-			_tradeModeIcon = Textures.TradeModeIcon;
-			_showSellableItemsIcon = Textures.ShowSellableItemsIcon;
-			_giftModeIcon = Textures.GiftModeIcon;
-			_arrowIcon = Textures.TradeArrow;
-			_resetIcon = Textures.ResetIcon;
-			_lockedIcon = Textures.LockedIcon;
-			_unlockedIcon = Textures.UnlockedIcon;
-			
+						
 			resizeable = true;
 			draggable = _settings.TradeWindowLocked == false;
 			forcePause = true;
@@ -221,6 +176,8 @@ namespace DynamicTradeInterface.UserInterface
 			_summaryShowText = "DynamicTradeWindowSummaryShow".Translate();
 			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
 			_notificationsTooltip = "DynamicTradeWindowNotificationsTooltip".Translate();
+			_saveTooltip = "DynamicTradeWindowSaveAsPreset".Translate();
+			_notificationsBellTooltip = "DynamicTradeWindowNotificationBell".Translate();
 
 			_caravanWidget = new CaravanWidget(_tradeables, _currency);
 			_caravanWidget.Initialize();
@@ -407,6 +364,9 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			bool drawColonyColumn = true;
+			bool drawTraderColumn = true;
+
 			Text.Font = GameFont.Small;
 			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
 				return;
@@ -435,14 +395,14 @@ namespace DynamicTradeInterface.UserInterface
 			// Trade summary toggle button
 			Rect summaryButtonRect = new Rect(inRect.xMax - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
 
-			if (Widgets.ButtonImage(summaryButtonRect, _settings.ShowTradeSummary ? Textures.ArrowRight : Textures.ArrowLeft))
+			if (Widgets.ButtonImage(summaryButtonRect, Textures.Summary))
 				_settings.ShowTradeSummary = !_settings.ShowTradeSummary;
 
 			if (Mouse.IsOver(summaryButtonRect))
 				TooltipHandler.TipRegion(summaryButtonRect, _settings.ShowTradeSummary ? _summaryHideText : _summaryShowText);
 
 			// Trade interface locked button.
-			Texture2D lockIcon = this.draggable ? _unlockedIcon : _lockedIcon;
+			Texture2D lockIcon = this.draggable ? Textures.UnlockedIcon : Textures.LockedIcon;
 			Rect lockRect = new Rect(summaryButtonRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
 			if (Widgets.ButtonImage(lockRect, lockIcon))
 			{
@@ -455,12 +415,24 @@ namespace DynamicTradeInterface.UserInterface
 
 
 			// Trade notifications button.
-			Rect notificationRect = new Rect(lockRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
-			
-			
+			Rect presetFiltersRect = new Rect(lockRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
+
+			Rect notificationRect = new Rect(presetFiltersRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
+
+			if (Widgets.ButtonImage(presetFiltersRect, Textures.ConfigurePresetsIcon, tooltip: _notificationsTooltip))
+				ShowPresetFiltersWindow();
+
+
 			if (_notifications.TotalHits > 0)
 			{
-				Text.Font = GameFont.Medium;
+				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon, tooltip: _notificationsBellTooltip))
+					ShowNotifications();
+
+				GameFont fontSize = GameFont.Medium;
+				if (_notifications.TotalHits > 9)
+					fontSize = GameFont.Small;
+
+				Text.Font = fontSize;
 				Text.Anchor = TextAnchor.MiddleCenter;
 				Color normalColor = GUI.color;
 				GUI.color = Color.red;
@@ -468,28 +440,11 @@ namespace DynamicTradeInterface.UserInterface
 				GUI.color = normalColor;
 				Text.Anchor = TextAnchor.UpperLeft;
 				Text.Font = GameFont.Small;
-
-				if (Mouse.IsOver(notificationRect))
-				{
-					Widgets.DrawHighlight(notificationRect);
-					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
-				}
-
-				if (Widgets.ButtonInvisible(notificationRect))
-					ShowNotifications();
 			}
 			else
 			{
-				if (Widgets.ButtonImage(notificationRect, Textures.Inspect))
-				{
-					ShowNotifications();
-				}
-
-				if (Mouse.IsOver(notificationRect))
-					TooltipHandler.TipRegion(notificationRect, _notificationsTooltip);
+				Widgets.DrawTextureFitted(notificationRect, Textures.NotificationsEmptyIcon, 1.0f);
 			}
-
-
 
 
 			// Trade summary
@@ -529,28 +484,49 @@ namespace DynamicTradeInterface.UserInterface
 			Rect left, right;
 			Rect top, bottom;
 
+			float? leftWidth = null;
+			float? rightWidth = null;
+			if (drawColonyColumn && drawTraderColumn)
+			{
+				// If both columns are drawn, half-size
+				leftWidth = inRect.width / 2;
+			}
+			else if (drawColonyColumn)
+			{
+				// Maximize left side
+				leftWidth = inRect.width;
+			}
+			else if (drawTraderColumn)
+			{
+				// Maximize right side
+				rightWidth = inRect.width;
+			}
+
 			if (giftMode == false)
-				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, inRect.width / 2);
+				body.SplitVerticallyWithMargin(out left, out right, out _, GenUI.GapTiny, leftWidth, rightWidth);
 			else
 				left = right = body;
 
+			DrawSearchBox(body.x, body.y + _headerHeight + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+
 			// Colony
-			left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
+			if (giftMode || drawColonyColumn)
+			{
+				left.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
 
-			Text.Anchor = TextAnchor.UpperCenter;
-			Text.Font = GameFont.Medium;
-			Widgets.Label(top, _colonyHeader);
+				Text.Anchor = TextAnchor.UpperCenter;
+				Text.Font = GameFont.Medium;
+				Widgets.Label(top, _colonyHeader);
 
-			Text.Anchor = TextAnchor.LowerCenter;
-			Text.Font = GameFont.Small;
-			Widgets.Label(top, _colonyHeaderDescription);
+				Text.Anchor = TextAnchor.LowerCenter;
+				Text.Font = GameFont.Small;
+				Widgets.Label(top, _colonyHeaderDescription);
 
-			Text.Anchor = TextAnchor.UpperLeft;
-			DrawSearchBox(top.x, top.yMax + GenUI.GapTiny, body.width, (int)Text.LineHeightOf(GameFont.Small));
+				Text.Anchor = TextAnchor.UpperLeft;
+				_colonyTable.Draw(bottom);
+			}
 
-			_colonyTable.Draw(bottom);
-
-			if (giftMode == false)
+			if (giftMode == false && drawTraderColumn)
 			{
 				// Trader
 				right.SplitHorizontallyWithMargin(out top, out bottom, out _, GenUI.GapSmall + Text.LineHeightOf(GameFont.Small), _headerHeight);
@@ -567,7 +543,7 @@ namespace DynamicTradeInterface.UserInterface
 				_traderTable.Draw(bottom);
 			}
 
-			if (_currency != null && TradeSession.giftMode == false)
+			if (_currency != null && giftMode == false)
 				DrawCurrencyRow(new Rect(footer.x, footer.y, footer.width, currencyLineHeight), _currency);
 
 
@@ -580,7 +556,7 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				OnAccept();
 			}
-			if (TradeSession.giftMode && Mouse.IsOver(mainButtonRect))
+			if (giftMode && Mouse.IsOver(mainButtonRect))
 				TooltipHandler.TipRegion(mainButtonRect, _giftButtonTooltip);
 
 			mainButtonRect.x += mainButtonRect.width + GenUI.GapTiny;
@@ -589,7 +565,7 @@ namespace DynamicTradeInterface.UserInterface
 			// Reset
 			Rect resetButtonRect = new Rect(mainButtonRect.x, mainButtonRect.y, mainButtonRect.height, mainButtonRect.height);
 			float textureSize = mainButtonRect.height - GenUI.GapSmall - GenUI.GapTiny;
-			if (Widgets.ButtonImageWithBG(resetButtonRect, _resetIcon, new Vector2(textureSize, textureSize)))
+			if (Widgets.ButtonImageWithBG(resetButtonRect, Textures.ResetIcon, new Vector2(textureSize, textureSize)))
 			{
 				SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 				ResetTrade();
@@ -612,20 +588,20 @@ namespace DynamicTradeInterface.UserInterface
 			// Show sellable items
 			float y = _mainButtonSize.y;
 			Rect showSellableRect = new Rect(footer.width - y, mainButtonRect.y, y, y);
-			if (Widgets.ButtonImageWithBG(showSellableRect, _showSellableItemsIcon, _showSellableItemsIconSize))
+			if (Widgets.ButtonImageWithBG(showSellableRect, Textures.ShowSellableItemsIcon, _showSellableItemsIconSize))
 			{
 				Find.WindowStack.Add(new Dialog_SellableItems(TradeSession.trader));
 			}
-			TooltipHandler.TipRegionByKey(showSellableRect, _showSellableItemsDesc);
+			TooltipHandler.TipRegion(showSellableRect, _showSellableItemsDesc);
 
 
 			// Gift/Trade mode toggle
 			if (_traderFaction != null && _giftOnly == false && _traderFaction.def.permanentEnemy == false)
 			{
 				Rect rect7 = new Rect(showSellableRect.x - y - 4f, showSellableRect.y, y, y);
-				if (TradeSession.giftMode)
+				if (giftMode)
 				{
-					if (Widgets.ButtonImageWithBG(rect7, _tradeModeIcon, new Vector2(32f, 32f)))
+					if (Widgets.ButtonImageWithBG(rect7, Textures.TradeModeIcon, new Vector2(32f, 32f)))
 					{
 						TradeSession.giftMode = false;
 						TradeSession.deal.Reset();
@@ -637,7 +613,7 @@ namespace DynamicTradeInterface.UserInterface
 				}
 				else
 				{
-					if (Widgets.ButtonImageWithBG(rect7, _giftModeIcon, new Vector2(32f, 32f)))
+					if (Widgets.ButtonImageWithBG(rect7, Textures.GiftModeIcon, new Vector2(32f, 32f)))
 					{
 						TradeSession.giftMode = true;
 						TradeSession.deal.Reset();
@@ -705,24 +681,36 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void DrawSearchBox(float x, float y, float width, float height)
 		{
-			float clearButtonSize = Text.LineHeight;
-			Rect searchBox = new Rect(x, y, width - clearButtonSize - Table<ITableRow>.CELL_SPACING, clearButtonSize);
+			Rect saveButtonRect = new Rect(x, y, height, height);
+			float buttonSize = height + GenUI.GapTiny;
+			Rect searchBox = new Rect(saveButtonRect.xMax + GenUI.GapTiny, y, width - (buttonSize * 2), height);
+
+			if (Widgets.ButtonImage(saveButtonRect, Textures.Save, tooltip: _saveTooltip))
+				SaveFilterAsPreset();
 
 			GUI.SetNextControlName("SearchBox");
 			string searchString = Widgets.TextField(searchBox, _searchText);
-			if (Widgets.ButtonText(new Rect(searchBox.xMax + Table<ITableRow>.CELL_SPACING, y, clearButtonSize, clearButtonSize), "X"))
+			if (Widgets.ButtonText(new Rect(searchBox.xMax + GenUI.GapTiny, y, height, height), "X"))
 				searchString = "";
 
 
 			if (searchString == string.Empty)
 				Widgets.NoneLabelCenteredVertically(new Rect(searchBox.x + 5, searchBox.y, _colonyTable.SEARCH_PLACEHOLDER_SIZE, Text.LineHeight), _colonyTable.SEARCH_PLACEHOLDER);
 
-
-
-			if (_searchText == searchString || _searchText != null && _searchText.Equals(searchString))
+			if (_searchText == searchString || (_searchText != null && _searchText.Equals(searchString)))
 				return;
 
 			ApplyFilter(searchString);
+		}
+
+		private void SaveFilterAsPreset()
+		{
+			if (string.IsNullOrWhiteSpace(_searchText) == false)
+			{
+				GameSettings.Notifications.Add(new(_searchText));
+				_searchText = string.Empty;
+				// ShowPresetFiltersWindow();
+			}
 		}
 
 		private void ApplyFilter(string filterText)
@@ -857,14 +845,15 @@ namespace DynamicTradeInterface.UserInterface
 			// Arrow
 			if (countToTransfer != 0)
 			{
-				Rect position = new Rect(currencyLabelRect.x + currencyLabelRect.width / 2f - (float)(_arrowIcon.width / 2), currencyLabelRect.y + currencyLabelRect.height / 2f - (float)(_arrowIcon.height / 2), _arrowIcon.width, _arrowIcon.height);
+				Texture arrowIcon = Textures.TradeArrow;
+				Rect position = new Rect(currencyLabelRect.x + currencyLabelRect.width / 2f - (float)(arrowIcon.width / 2), currencyLabelRect.y + currencyLabelRect.height / 2f - (float)(arrowIcon.height / 2), arrowIcon.width, arrowIcon.height);
 				TransferablePositiveCountDirection positiveDirection = currency.PositiveCountDirection;
 				if ((positiveDirection == TransferablePositiveCountDirection.Source && countToTransfer > 0) || (positiveDirection == TransferablePositiveCountDirection.Destination && countToTransfer < 0))
 				{
 					position.x += position.width;
 					position.width *= -1f;
 				}
-				GUI.DrawTexture(position, _arrowIcon);
+				GUI.DrawTexture(position, arrowIcon);
 			}
 
 
@@ -878,13 +867,13 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void ShowNotifications()
 		{
-			if (Event.current.shift || Event.current.button == 1)
-			{
-				// Apply combined notification regex on rightclick
-				ApplyFilter(_notifications.GetCombinedRegEx());
-			}
-			else
-				Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
+			// Apply combined notification regex on rightclick
+			ApplyFilter(_notifications.GetCombinedRegEx());
+		}
+
+		private void ShowPresetFiltersWindow()
+		{
+			Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
 		}
 
 		private void ConfirmTrade()

@@ -18,7 +18,14 @@ namespace DynamicTradeInterface.Patches
 		[HarmonyPatch(typeof(Game), "ExposeSmallComponents"), HarmonyPostfix]
 		private static void ExposeComponents()
 		{
-			Scribe_Collections.Look(ref Notifications, "DTI_Notifications", LookMode.Deep);
+			try
+			{
+				Scribe_Collections.Look(ref Notifications, "DTI_Notifications", LookMode.Deep);
+			}
+			catch (Exception e)
+			{
+				Log.Warning("[Dynamic Trade Interface] Unable to load saved filters presets: " + e.Message);
+			}
 
 			if (Notifications == null)
 				Notifications = new List<Notifications.NotificationEntry>();

@@ -40,28 +40,25 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
-			if (transactor == Transactor.Colony)
+			_settings = Mod.DynamicTradeInterfaceMod.Settings;
+			if (TradeSession.giftMode)
 			{
-				_settings = Mod.DynamicTradeInterfaceMod.Settings;
-				if (TradeSession.giftMode)
-				{
-					BuyKey = "DynamicTradeWindowGiftLess";
-					BuyAll = "DynamicTradeWindowGiftNone".Translate();
-					BuyKey = "DynamicTradeWindowGiftMore";
-					SellAll = "DynamicTradeWindowGiftAll".Translate();
-				}
-				else
-				{
-					BuyKey = "DynamicTradeWindowBuyMore";
-					BuyAll = "DynamicTradeWindowBuyAll".Translate();
-					BuyAffordable = "DynamicTradeWindowBuyAffordable".Translate();
-					SellKey = "DynamicTradeWindowSellMore";
-					SellAll = "DynamicTradeWindowSellAll".Translate();
-					SellAffordable = "DynamicTradeWindowSellAffordable".Translate();
-					Unaffordable = "DynamicTradeWindowUnaffordable".Translate();
-				}
-
+				BuyKey = "DynamicTradeWindowGiftLess";
+				BuyAll = "DynamicTradeWindowGiftNone".Translate();
+				BuyKey = "DynamicTradeWindowGiftMore";
+				SellAll = "DynamicTradeWindowGiftAll".Translate();
 			}
+			else
+			{
+				BuyKey = "DynamicTradeWindowBuyMore";
+				BuyAll = "DynamicTradeWindowBuyAll".Translate();
+				BuyAffordable = "DynamicTradeWindowBuyAffordable".Translate();
+				SellKey = "DynamicTradeWindowSellMore";
+				SellAll = "DynamicTradeWindowSellAll".Translate();
+				SellAffordable = "DynamicTradeWindowSellAffordable".Translate();
+				Unaffordable = "DynamicTradeWindowUnaffordable".Translate();
+			}
+
 
 			if (TradeSession.giftMode == false)
 			{
