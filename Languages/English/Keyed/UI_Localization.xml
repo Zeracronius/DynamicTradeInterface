@@ -38,7 +38,7 @@
 	<DynamicTradeWindowGiftAll>Gift all.</DynamicTradeWindowGiftAll>
 
 	<DynamicTradeWindowSaveAsPreset>Save filter as preset.</DynamicTradeWindowSaveAsPreset>
-	<DynamicTradeWindowNotificationBell>Found matches, click to filter.</DynamicTradeWindowNotificationBell>
+	<DynamicTradeWindowNotificationBell>Found matches, click to show.</DynamicTradeWindowNotificationBell>
 
 	<DynamicTradeWindowBuyMore>Buy {0} more.</DynamicTradeWindowBuyMore>
 	<DynamicTradeWindowBuyAll>Buy all.</DynamicTradeWindowBuyAll>
@@ -63,7 +63,7 @@
 
 	<DynamicTradeWindowNotificationsTooltip>Filter presets</DynamicTradeWindowNotificationsTooltip>
 	<DynamicTradeWindowNotificationsTitle>Filter presets</DynamicTradeWindowNotificationsTitle>
-	<DynamicTradeWindowNotificationsScopeFilter>Matches, click to filter.</DynamicTradeWindowNotificationsScopeFilter>
+	<DynamicTradeWindowNotificationsScopeFilter>Click to apply filter.</DynamicTradeWindowNotificationsScopeFilter>
 	<DynamicTradeWindowNotificationsEnable>Enable notifications.</DynamicTradeWindowNotificationsEnable>
 	<DynamicTradeWindowNotificationsAdd>Add new preset.</DynamicTradeWindowNotificationsAdd>
 	<DynamicTradeWindowNotificationsDelete>Delete preset.</DynamicTradeWindowNotificationsDelete>
