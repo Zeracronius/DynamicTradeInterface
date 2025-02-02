@@ -592,7 +592,7 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				Find.WindowStack.Add(new Dialog_SellableItems(TradeSession.trader));
 			}
-			TooltipHandler.TipRegionByKey(showSellableRect, _showSellableItemsDesc);
+			TooltipHandler.TipRegion(showSellableRect, _showSellableItemsDesc);
 
 
 			// Gift/Trade mode toggle
