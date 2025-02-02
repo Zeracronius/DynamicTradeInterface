@@ -25,18 +25,39 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			foreach (var row in rows)
 			{
 				ThingDef? def = row.ThingDef;
-				if (def != null && def.thingCategories?.Count > 0)
+				if (def != null)
 				{
 					toolTipBuilder.Clear();
 					Cache cache = new Cache();
-					for (int i = 0; i < def.thingCategories.Count; i++)
+					string label = "";
+
+					Thing thing = row.AnyThing;
+					if (thing is Pawn pawn && def.race.intelligence == Intelligence.Humanlike)
 					{
-						ThingCategoryDef category = def.thingCategories[i];
-						if (i == 0)
-							cache.Label = category.LabelCap;
-						toolTipBuilder.AppendLine(category.LabelCap);
+						label = "Pawn";
+
+						XenotypeDef? xenotype = pawn.genes?.Xenotype;
+						if (xenotype != null)
+						{
+							label = xenotype.LabelCap;
+							toolTipBuilder.AppendLine(label);
+						}
+
+						toolTipBuilder.AppendLine("Pawn");
 					}
 
+					if (def.thingCategories?.Count > 0)
+					{
+						for (int i = 0; i < def.thingCategories.Count; i++)
+						{
+							ThingCategoryDef category = def.thingCategories[i];
+							if (i == 0 && label.Length == 0)
+								label = category.LabelCap;
+							toolTipBuilder.AppendLine(category.LabelCap);
+						}
+					}
+
+					cache.Label = label;
 					cache.Tooltip = toolTipBuilder.ToString();
 					_editableCache[row] = cache;
 				}
