@@ -717,7 +717,11 @@ namespace DynamicTradeInterface.UserInterface
 				// Only add if not already present.
 				List<Notifications.NotificationEntry> notifications = GameSettings.Notifications;
 				if (notifications.Any(x => x.RegExText == _searchText) == false)
-					notifications.Add(new(_searchText));
+				{
+					Notifications.NotificationEntry entry = new(_searchText);
+					notifications.Add(entry);
+					_notifications.Refresh(entry);
+				}
 			}
 		}
 
