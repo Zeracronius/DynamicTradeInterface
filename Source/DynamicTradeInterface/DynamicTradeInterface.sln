@@ -7,20 +7,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicTradeInterface", "Dy
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		1.4|Any CPU = 1.4|Any CPU
-		1.5|Any CPU = 1.5|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Hotswap|Any CPU = Hotswap|Any CPU
+		v1.4|Any CPU = v1.4|Any CPU
+		v1.5|Any CPU = v1.5|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAC797BC-4355-4364-9291-400B687AE849}.1.4|Any CPU.ActiveCfg = 1.4|Any CPU
-		{CAC797BC-4355-4364-9291-400B687AE849}.1.4|Any CPU.Build.0 = 1.4|Any CPU
-		{CAC797BC-4355-4364-9291-400B687AE849}.1.5|Any CPU.ActiveCfg = 1.5|Any CPU
-		{CAC797BC-4355-4364-9291-400B687AE849}.1.5|Any CPU.Build.0 = 1.5|Any CPU
 		{CAC797BC-4355-4364-9291-400B687AE849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CAC797BC-4355-4364-9291-400B687AE849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAC797BC-4355-4364-9291-400B687AE849}.Hotswap|Any CPU.ActiveCfg = Hotswap|Any CPU
 		{CAC797BC-4355-4364-9291-400B687AE849}.Hotswap|Any CPU.Build.0 = Hotswap|Any CPU
+		{CAC797BC-4355-4364-9291-400B687AE849}.v1.4|Any CPU.ActiveCfg = v1.4|Any CPU
+		{CAC797BC-4355-4364-9291-400B687AE849}.v1.4|Any CPU.Build.0 = v1.4|Any CPU
+		{CAC797BC-4355-4364-9291-400B687AE849}.v1.5|Any CPU.ActiveCfg = v1.5|Any CPU
+		{CAC797BC-4355-4364-9291-400B687AE849}.v1.5|Any CPU.Build.0 = v1.5|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,10 +5,10 @@
 		<langVersion>10.0</langVersion>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Configurations>Debug;Hotswap;1.4;1.5</Configurations>
+		<Configurations>Debug;Hotswap;v1.4;v1.5</Configurations>
   </PropertyGroup>
 	<Choose>
-		<When Condition="'$(Configuration)'=='1.4'">
+		<When Condition="'$(Configuration)'=='v1.4'">
 			<PropertyGroup>
 				<OutputPath>..\..\1.4\Assemblies\</OutputPath>
 				<Optimize>True</Optimize>
@@ -23,7 +23,7 @@
 				</PackageReference>
 			</ItemGroup>
 		</When>
-		<When Condition="'$(Configuration)'=='1.5'">
+		<When Condition="'$(Configuration)'=='v1.5'">
 			<PropertyGroup>
 				<OutputPath>..\..\1.5\Assemblies\</OutputPath>
 				<Optimize>True</Optimize>

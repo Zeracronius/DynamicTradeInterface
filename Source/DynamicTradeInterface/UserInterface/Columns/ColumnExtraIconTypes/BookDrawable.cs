@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
+#if V1_5
+
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
 	internal class BookDrawable : IDrawable
@@ -85,3 +87,5 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		}
 	}
 }
+
+#endif

@@ -95,7 +95,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			float y = rect.y;
 			if (cache.TryGetValue(row, out (string, string?) value))
-				Widgets.Label(rect, ref y, value.Item1, tip: value.Item2);
+				Widgets.Label(rect.x, ref y, rect.width, value.Item1, tip: value.Item2);
 		}
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)
