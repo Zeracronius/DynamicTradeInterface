@@ -707,9 +707,10 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			if (string.IsNullOrWhiteSpace(_searchText) == false)
 			{
-				GameSettings.Notifications.Add(new(_searchText));
-				_searchText = string.Empty;
-				// ShowPresetFiltersWindow();
+				// Only add if not already present.
+				List<Notifications.NotificationEntry> notifications = GameSettings.Notifications;
+				if (notifications.Any(x => x.RegExText == _searchText) == false)
+					notifications.Add(new(_searchText));
 			}
 		}
 
