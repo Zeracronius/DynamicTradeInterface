@@ -419,14 +419,15 @@ namespace DynamicTradeInterface.UserInterface
 
 			Rect notificationRect = new Rect(presetFiltersRect.x - GenUI.GapTiny - Constants.SQUARE_BUTTON_SIZE, inRect.y, Constants.SQUARE_BUTTON_SIZE, Constants.SQUARE_BUTTON_SIZE);
 
-			if (Widgets.ButtonImage(presetFiltersRect, Textures.ConfigurePresetsIcon, tooltip: _notificationsTooltip))
+			if (Widgets.ButtonImage(presetFiltersRect, Textures.ConfigurePresetsIcon))
 				ShowPresetFiltersWindow();
 
 
 			if (_notifications.TotalHits > 0)
 			{
-				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon, tooltip: _notificationsBellTooltip))
+				if (Widgets.ButtonImage(notificationRect, Textures.NotificationsIcon))
 					ShowNotifications();
+				
 
 				GameFont fontSize = GameFont.Medium;
 				if (_notifications.TotalHits > 9)
@@ -445,6 +446,9 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				Widgets.DrawTextureFitted(notificationRect, Textures.NotificationsEmptyIcon, 1.0f);
 			}
+
+			if (Mouse.IsOver(notificationRect))
+				TooltipHandler.TipRegion(notificationRect, _notificationsBellTooltip);
 
 
 			// Trade summary
@@ -685,8 +689,11 @@ namespace DynamicTradeInterface.UserInterface
 			float buttonSize = height + GenUI.GapTiny;
 			Rect searchBox = new Rect(saveButtonRect.xMax + GenUI.GapTiny, y, width - (buttonSize * 2), height);
 
-			if (Widgets.ButtonImage(saveButtonRect, Textures.Save, tooltip: _saveTooltip))
+			if (Widgets.ButtonImage(saveButtonRect, Textures.Save))
 				SaveFilterAsPreset();
+
+			if (Mouse.IsOver(saveButtonRect))
+				TooltipHandler.TipRegion(saveButtonRect, _saveTooltip);
 
 			GUI.SetNextControlName("SearchBox");
 			string searchString = Widgets.TextField(searchBox, _searchText);

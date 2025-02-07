@@ -105,7 +105,7 @@ namespace DynamicTradeInterface.UserInterface
 		private void DrawNewRowLine(Rect inRect)
 		{
 			inRect.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, GenUI.GapTiny, leftWidth: inRect.height);
-			if (Widgets.ButtonImage(left, Textures.Plus, tooltip: _addTooltip))
+			if (Widgets.ButtonImage(left, Textures.Plus))
 			{
 				if (String.IsNullOrWhiteSpace(_newRowText) == false)
 				{
@@ -113,6 +113,9 @@ namespace DynamicTradeInterface.UserInterface
 					_newRowText = "";
 				}
 			}
+
+			if (Mouse.IsOver(left))
+				TooltipHandler.TipRegion(left, _addTooltip);
 
 			_newRowText = Widgets.TextField(right, _newRowText);
 		}
@@ -165,7 +168,7 @@ namespace DynamicTradeInterface.UserInterface
 				}
 				else
 				{
-					if (Widgets.ButtonImage(inspectButtonRect, Textures.Inspect, tooltip: _filterToThisTooltip))
+					if (Widgets.ButtonImage(inspectButtonRect, Textures.Inspect))
 						ApplyFilter(entry);
 				}
 			}
@@ -184,8 +187,11 @@ namespace DynamicTradeInterface.UserInterface
 				_notifications.Refresh(entry);
 			}
 
-			if (Widgets.ButtonImage(deleteRect, Textures.Remove, tooltip: _removeTooltip))
+			if (Widgets.ButtonImage(deleteRect, Textures.Remove))
 				DeleteNotification(entry);
+
+			if (Mouse.IsOver(deleteRect))
+				TooltipHandler.TipRegion(deleteRect, _removeTooltip);
 		}
 
 		private void NewNotification(string value)

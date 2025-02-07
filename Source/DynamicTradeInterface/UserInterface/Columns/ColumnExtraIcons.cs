@@ -28,11 +28,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 						continue;
 					}
 
+#if V1_5
 					if (row.AnyThing is Book book)
 					{
 						_rowCache[row] = new BookDrawable(book);
 						continue;
 					}
+#endif
 
 					if (GeneAssistant.Active && row.AnyThing is Genepack genepack)
 					{
