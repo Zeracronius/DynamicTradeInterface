@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using DynamicTradeInterface.Mod;
+using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -53,8 +54,6 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 		private static Texture2D CreateTexture(Texture2D source, GeneType type)
 		{
-			var texture = CreateReadableBaseTexture(source);
-
 			Color32 blend = default;
 			switch (type)
 			{
@@ -69,43 +68,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 					break;
 			}
 
-			for (int mip = 0; mip < texture.mipmapCount; ++mip)
-			{
-				var pixels = texture.GetPixels32(mip)
-					.Select((c) => Color32.Lerp(c, blend, 0.5f))
-					.ToArray();
-				texture.SetPixels32(pixels, mip);
-			}
-			texture.Apply();
-
-			return texture;
-		}
-
-		private static Texture2D CreateReadableBaseTexture(Texture2D source)
-		{
-			// https://github.com/SmashPhil/SmashTools/blob/6d084a8aff0eb15128033af81e8b3c0a5f8a366f/SmashTools/SmashTools/Utility/Extensions/Game/Ext_Texture.cs#L72
-
-			var temp = RenderTexture.GetTemporary(
-				source.width,
-				source.height,
-				0,
-				RenderTextureFormat.Default,
-				RenderTextureReadWrite.Linear);
-			Graphics.Blit(source, temp);
-			var previous = RenderTexture.active;
-			RenderTexture.active = temp;
-
-			Texture2D result = new Texture2D(source.width, source.height) {
-				name = source.name
-			};
-
-			result.ReadPixels(new Rect(0, 0, temp.width, temp.height), 0, 0);
-			result.Apply();
-
-			RenderTexture.active = previous;
-			RenderTexture.ReleaseTemporary(temp);
-
-			return result;
+			return Textures.GenerateTexture(source, blend);
 		}
 	}
 }
