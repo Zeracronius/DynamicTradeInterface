@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-#if V1_4
+#if V1_5
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
