@@ -33,6 +33,9 @@ jobs:
       run: | 
         "${{ env.Versions }}".Split(";") | ForEach {
           msbuild $env:Solution_Name -t:restore,build /p:Configuration=$_
+          If ($LASTEXITCODE -ne 0) {
+            Exit $LASTEXITCODE
+          }
         }
 
     # Remove unnecesary directories
