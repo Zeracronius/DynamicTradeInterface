@@ -10,6 +10,15 @@ namespace DynamicTradeInterface.Mod
 {
 	internal class DynamicTradeInterfaceSettings : ModSettings
 	{
+		[Flags]
+		public enum TableType
+		{
+			None = 0,
+			Colony = 1,
+			Trader = 2,
+			Both = 3,
+		}
+
 		internal class ColumnCustomization : IExposable
 		{
 			public ColumnCustomization()
@@ -25,11 +34,14 @@ namespace DynamicTradeInterface.Mod
 
 			public float Width;
 			public bool ShowCaption;
+			public TableType TableType = TableType.Both;
+
 
 			public void ExposeData()
 			{
 				Scribe_Values.Look(ref Width, nameof(Width));
 				Scribe_Values.Look(ref ShowCaption, nameof(ShowCaption));
+				Scribe_Values.Look(ref TableType, nameof(TableType), TableType.Both);
 			}
 		}
 
