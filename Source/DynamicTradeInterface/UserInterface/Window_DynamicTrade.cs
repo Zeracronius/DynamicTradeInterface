@@ -833,14 +833,18 @@ namespace DynamicTradeInterface.UserInterface
 				Thing thing = currency.AnyThing;
 				if (thing != null)
 				{
-					Widgets.ThingIcon(new Rect(curX, currencyRowRect.y, 40, currencyRowRect.height), thing);
+					Rect iconRect = new Rect(curX, currencyRowRect.y, 40, currencyRowRect.height);
+					Widgets.ThingIcon(iconRect, thing);
+					if (Mouse.IsOver(iconRect))
+					{
+						TooltipHandler.TipRegionByKey(iconRect, "DefInfoTip");
+						if (Widgets.ButtonInvisible(iconRect))
+							Find.WindowStack.Add(new Dialog_InfoCard(thing));
+					}
 					curX += 40;
-					Widgets.InfoCardButton(curX, currencyRowRect.y, thing);
-					curX += 20;
 
 					Rect labelRect = new Rect(curX, currencyRowRect.y, 200, currencyRowRect.height);
 					Widgets.Label(labelRect, currency.LabelCap);
-
 					if (Mouse.IsOver(labelRect))
 					{
 						TooltipHandler.TipRegion(labelRect, () =>
@@ -854,6 +858,9 @@ namespace DynamicTradeInterface.UserInterface
 							}
 							return string.Empty;
 						}, currency.GetHashCode());
+
+						if (Widgets.ButtonInvisible(labelRect))
+							Find.WindowStack.Add(new Dialog_InfoCard(thing));
 					}
 				}
 			}
