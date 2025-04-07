@@ -15,6 +15,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		internal delegate void OrderByCallbackDelegate(ListFilter<T> rows, SortDirection sortDirection, TableColumn tableColumn, bool reset);
 
 		public event Action<TableColumn>? ColumnResized;
+		public event Action<Table<T>, TableColumn>? ColumnVisibilityChanged;
 
 		internal readonly string SEARCH_PLACEHOLDER = "DynamicTableControlSearchPlaceholder".Translate();
 		internal readonly float SEARCH_PLACEHOLDER_SIZE;
@@ -270,6 +271,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			for (int i = 0; i < _columns.Count; i++)
 			{
 				TableColumn column = _columns[i];
+				if (column.Visible == false) 
+					continue;
 
 				if (column.IsFixedWidth)
 					_fixedColumnWidth += column.Width;
@@ -321,7 +324,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 		public void Sort(TableColumn<T> column, SortDirection? direction = null, bool? reset = null)
 		{
-			if (column.Callback != null && column.OrderByCallback == null)
+			if (column.CanSort == false)
 				return;
 
 			SortDirection targetDirection;
@@ -444,6 +447,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 				for (int i = 0; i < columnCount; i++)
 				{
 					TableColumn<T> column = _columns[i];
+					if (column.Visible == false)
+						continue;
+
 					bool fixedWidth = column.IsFixedWidth;
 					if (fixedWidth)
 					{
@@ -452,7 +458,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					else
 						columnHeader.width = column.Width / _dynamicColumnWidth * leftoverWidth;
 
-					bool canOrder = _allowSorting && (column.Callback == null || column.OrderByCallback != null);
+					bool canOrder = _allowSorting && column.CanSort;
 					if (canOrder)
 						Widgets.DrawHighlightIfMouseover(columnHeader);
 
@@ -479,8 +485,16 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 						}
 					}
 
-					if (canOrder && Widgets.ButtonInvisible(columnHeader, true))
-						Sort(column);
+					if (Widgets.ButtonInvisible(columnHeader, true))
+					{
+						// If right-click then show context menu.
+						if (Event.current.button == 1)
+							ShowColumnContextMenu(column, canOrder);
+						else if (canOrder)
+							Sort(column);
+					}
+
+					
 
 					// Add column resize widget.
 					if (_resizingColumn == null)
@@ -550,6 +564,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 					{
 						Text.Font = _lineFont;
 						TableColumn<T> column = _columns[i];
+						if (column.Visible == false)
+							continue;
+
 						if (column.IsFixedWidth)
 						{
 							rowRect.width = column.Width;
@@ -612,6 +629,72 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			// Handle any potential event handlers when selection is modified.
 			if (selectionHasChanged && SelectionChanged != null)
 				SelectionChanged.Invoke(this, _selectedRows);
+		}
+
+
+
+		private void ShowColumnContextMenu(TableColumn<T> currentColumn, bool canOrder)
+		{
+			_columnSortCache.TryGetValue(currentColumn, out SortDirection currentSortDirection);
+			
+			List<FloatMenuOption> options = new List<FloatMenuOption>();
+			if (canOrder)
+			{
+				options.Add(new FloatMenuOption("DynamicTradeWindowColumnContextSortByAscending".TranslateSimple(), () => Sort(currentColumn, SortDirection.Ascending))
+				{
+					orderInPriority = 4,
+					Priority = MenuOptionPriority.DisabledOption,
+					Disabled = currentSortDirection == SortDirection.Ascending,
+				});
+
+				options.Add(new FloatMenuOption("DynamicTradeWindowColumnContextSortByDescending".TranslateSimple(), () => Sort(currentColumn, SortDirection.Descending))
+				{
+					orderInPriority = 3,
+					Priority = MenuOptionPriority.DisabledOption,
+					Disabled = currentSortDirection == SortDirection.Descending,
+				});
+			}
+
+			if (currentSortDirection != SortDirection.None)
+			{
+				options.Add(new FloatMenuOption("DynamicTradeWindowColumnContextClearSorting".TranslateSimple(), () => Sort(currentColumn, SortDirection.None))
+				{
+					orderInPriority = 2,
+					Priority = MenuOptionPriority.DisabledOption,
+				});
+			}
+
+			options.Add(new FloatMenuOption("DynamicTradeWindowColumnContextHideColumn".TranslateSimple(), () => ToggleColumn(currentColumn, false))
+			{
+				orderInPriority = 1,
+				Priority = MenuOptionPriority.DisabledOption,
+			});
+
+			var hiddenColumns = _columns.Where(x => x.Visible == false).ToList();
+			if (hiddenColumns.Count > 0)
+			{
+				options.Add(new FloatMenuOption("DynamicTradeWindowColumnContextShowHiddenColumns".TranslateSimple(), () => { }) 
+				{ 
+					Disabled = true,
+					orderInPriority = 0,
+				});
+
+				int priority = -1;
+				foreach (var tableColumn in hiddenColumns)
+					options.Add(new FloatMenuOption(tableColumn.Caption, () => ToggleColumn(tableColumn, true))
+					{
+						orderInPriority = priority--,
+						Priority = MenuOptionPriority.DisabledOption,
+					});
+			}
+			Find.WindowStack.Add(new FloatMenu(options));
+		}
+
+		public void ToggleColumn(TableColumn column, bool setVisible)
+		{
+			column.Visible = setVisible;
+			InvalidateColumnWidths();
+			ColumnVisibilityChanged?.Invoke(this, column);
 		}
 	}
 }

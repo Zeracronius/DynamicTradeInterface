@@ -1,5 +1,4 @@
 ﻿using System;
-using DynamicTradeInterface.Collections;
 using UnityEngine;
 
 namespace DynamicTradeInterface.InterfaceComponents.TableBox
@@ -42,6 +41,8 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// </value>
 		public bool IsFixedWidth { get; set; }
 
+		public bool Visible { get; set; }
+
 
 		public object? Tag { get; set; }
 
@@ -52,6 +53,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			IsFixedWidth = true;
 			ShowHeader = true;
 			Tooltip = tooltip ?? caption;
+			Visible = true;
 		}
 	}
 
@@ -61,6 +63,21 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 	{
 		public RowCallback<Rect, T>? Callback;
 		public Table<T>.OrderByCallbackDelegate? OrderByCallback;
+
+		/// <summary>
+		/// Gets a value indicating whether this column supports sorting.
+		/// </summary>
+		public bool CanSort
+		{
+			get
+			{
+				// If column is based on callback, then ordering must be a callback too.
+				if (Callback != null && OrderByCallback == null)
+					return false;
+
+				return true;
+			}
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TableColumn{T}"/> class.

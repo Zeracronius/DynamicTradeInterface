@@ -111,6 +111,9 @@ namespace DynamicTradeInterface.UserInterface
 
 			_colonyTable.ColumnResized += Table_ColumnResized;
 			_traderTable.ColumnResized += Table_ColumnResized;
+
+			_colonyTable.ColumnVisibilityChanged += Table_ColumnVisibilityChanged;
+			_traderTable.ColumnVisibilityChanged += Table_ColumnVisibilityChanged;
 		}
 
 		private void Table_ColumnResized(TableColumn column)
@@ -124,6 +127,21 @@ namespace DynamicTradeInterface.UserInterface
 
 			DynamicTradeInterfaceSettings.ColumnCustomization columnCustomization = _settings.CreateColumnCustomization(columnDef);
 			columnCustomization.Width = column.Width;
+		}
+
+		private void Table_ColumnVisibilityChanged(Table<TableRow<Tradeable>> sender, TableColumn column)
+		{
+			TradeColumnDef? columnDef = column.Tag as TradeColumnDef;
+			if (columnDef == null)
+				return;
+
+			DynamicTradeInterfaceSettings.TableType tableType = sender == _traderTable ? DynamicTradeInterfaceSettings.TableType.Trader : DynamicTradeInterfaceSettings.TableType.Colony;
+			DynamicTradeInterfaceSettings.ColumnCustomization columnCustomization = _settings.CreateColumnCustomization(columnDef);
+			if (column.Visible)
+				columnCustomization.TableType |= tableType;
+			else
+				columnCustomization.TableType &= ~tableType;
+
 		}
 
 		private bool ApplySearch(TableRow<Tradeable> row, string searchText)
@@ -271,11 +289,12 @@ namespace DynamicTradeInterface.UserInterface
 			else
 				_frameCache = null;
 
+			DynamicTradeInterfaceSettings.TableType type = transactor == Transactor.Colony ? DynamicTradeInterfaceSettings.TableType.Colony : DynamicTradeInterfaceSettings.TableType.Trader;
 			foreach (Defs.TradeColumnDef columnDef in _columns)
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, tooltip: columnDef.tooltip,
 						callback: (ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),
-						orderByCallback: (rows, ascending, column, reset) => OrderByColumn(rows, ascending, column, columnDef, transactor, reset));
+						orderByCallback: columnDef._orderValueCallback != null ? (rows, ascending, column, reset) => OrderByColumn(rows, ascending, column, columnDef, transactor, reset) : null);
 
 				column.InitialSortDirection = columnDef.initialSort;
 				if (column.Width <= 1f)
@@ -284,11 +303,12 @@ namespace DynamicTradeInterface.UserInterface
 				column.ShowHeader = columnDef.showCaption;
 				column.Tag = columnDef;
 
-				var customization = _settings.GetColumnCustomization(columnDef);
+				DynamicTradeInterfaceSettings.ColumnCustomization? customization = _settings.GetColumnCustomization(columnDef);
 				if (customization != null)
 				{
 					column.Width = customization.Width;
 					column.ShowHeader = customization.ShowCaption;
+					column.Visible = (customization.TableType & type) == type;
 				}
 			}
 
@@ -813,14 +833,18 @@ namespace DynamicTradeInterface.UserInterface
 				Thing thing = currency.AnyThing;
 				if (thing != null)
 				{
-					Widgets.ThingIcon(new Rect(curX, currencyRowRect.y, 40, currencyRowRect.height), thing);
+					Rect iconRect = new Rect(curX, currencyRowRect.y, 40, currencyRowRect.height);
+					Widgets.ThingIcon(iconRect, thing);
+					if (Mouse.IsOver(iconRect))
+					{
+						TooltipHandler.TipRegionByKey(iconRect, "DefInfoTip");
+						if (Widgets.ButtonInvisible(iconRect))
+							Find.WindowStack.Add(new Dialog_InfoCard(thing));
+					}
 					curX += 40;
-					Widgets.InfoCardButton(curX, currencyRowRect.y, thing);
-					curX += 20;
 
 					Rect labelRect = new Rect(curX, currencyRowRect.y, 200, currencyRowRect.height);
 					Widgets.Label(labelRect, currency.LabelCap);
-
 					if (Mouse.IsOver(labelRect))
 					{
 						TooltipHandler.TipRegion(labelRect, () =>
@@ -834,6 +858,9 @@ namespace DynamicTradeInterface.UserInterface
 							}
 							return string.Empty;
 						}, currency.GetHashCode());
+
+						if (Widgets.ButtonInvisible(labelRect))
+							Find.WindowStack.Add(new Dialog_InfoCard(thing));
 					}
 				}
 			}
