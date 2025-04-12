@@ -92,6 +92,9 @@ namespace DynamicTradeInterface.UserInterface
 					new TreeNode_FilterBox("ConfigurationWindowShowAvailableOnMap".Translate(), "ConfigurationWindowShowAvailableOnMapTooltip".Translate(),
 						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.ShowAvailableOnMap, x.height)),
 
+					new TreeNode_FilterBox("ConfigurationWindowAlternatingRowColors".Translate(), "ConfigurationWindowAlternatingRowColorsTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.AlternatingRowColor, x.height)),
+
 					new TreeNode_FilterBox("ConfigurationWindowResetWidths".Translate(), null,
 						(in Rect x) => {
 							if (Widgets.ButtonText(x, "ConfigurationWindowResetWidths".Translate()))

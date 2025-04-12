@@ -289,6 +289,8 @@ namespace DynamicTradeInterface.UserInterface
 			else
 				_frameCache = null;
 
+			table.AlternatingRowColors = _settings.AlternatingRowColor;
+
 			DynamicTradeInterfaceSettings.TableType type = transactor == Transactor.Colony ? DynamicTradeInterfaceSettings.TableType.Colony : DynamicTradeInterfaceSettings.TableType.Trader;
 			foreach (Defs.TradeColumnDef columnDef in _columns)
 			{

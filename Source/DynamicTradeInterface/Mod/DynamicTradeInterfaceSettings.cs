@@ -90,6 +90,7 @@ namespace DynamicTradeInterface.Mod
 		public bool PauseAfterTrade;
 		public bool ShowTradeSummary;
 		public bool ShowAvailableOnMap;
+		public bool AlternatingRowColor;
 		public int TradeSummaryWidthPixels = DEFAULT_TRADE_SUMMARY_WIDTH;
 
 
@@ -122,7 +123,7 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref ShowTradeSummary, nameof(ShowTradeSummary), false);
 			Scribe_Values.Look(ref TradeSummaryWidthPixels, nameof(TradeSummaryWidthPixels), DEFAULT_TRADE_SUMMARY_WIDTH);
 			Scribe_Values.Look(ref ShowAvailableOnMap, nameof(ShowAvailableOnMap), true);
-
+			Scribe_Values.Look(ref AlternatingRowColor, nameof(AlternatingRowColor), false);
 
 
 
