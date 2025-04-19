@@ -41,6 +41,15 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		private bool _canSelectRows;
 		private Dictionary<TableColumn<T>, SortDirection> _columnSortCache;
 
+		private bool _alternatingRowColors;
+
+		public bool AlternatingRowColors
+		{
+			get => _alternatingRowColors;
+			set => _alternatingRowColors = value;
+		}
+
+
 		private TableColumn<T>? _resizingColumn;
 
 		public IList<T> RowItems => _rows.Items;
@@ -586,6 +595,9 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 					rowRect.x = 0;
 					rowRect.width = tableWidth;
+
+					if (_alternatingRowColors && currentIndex % 2 == 1)
+						Widgets.DrawLightHighlight(rowRect);
 
 					// Hightlight entire row if selected.
 					if (_canSelectRows && _selectedRows.Contains(currentRow))

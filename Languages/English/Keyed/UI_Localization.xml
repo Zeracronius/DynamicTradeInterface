@@ -22,6 +22,8 @@
 	<ConfigurationWindowPauseAfterTradeTooltip>Keeps the game paused after trade window is closed.</ConfigurationWindowPauseAfterTradeTooltip>
 	<ConfigurationWindowShowAvailableOnMap>Show available on map.</ConfigurationWindowShowAvailableOnMap>
 	<ConfigurationWindowShowAvailableOnMapTooltip>Show total available on map if different from what is available for trade in Available column.</ConfigurationWindowShowAvailableOnMapTooltip>
+	<ConfigurationWindowAlternatingRowColors>Row colors.</ConfigurationWindowAlternatingRowColors>
+	<ConfigurationWindowAlternatingRowColorsTooltip>Enable to have a slightly alternating background color per row.</ConfigurationWindowAlternatingRowColorsTooltip>
 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
