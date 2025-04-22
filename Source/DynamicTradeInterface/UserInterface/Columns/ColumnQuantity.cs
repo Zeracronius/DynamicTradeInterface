@@ -39,7 +39,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (transactor == Transactor.Colony && Mod.DynamicTradeInterfaceMod.Settings.ShowAvailableOnMap)
 				{
 					Thing thing = row.AnyThing;
-					if (thing?.def != null)
+					if (thing?.def != null && thing is Pawn == false)
 					{
 						Map? map = TradeSession.playerNegotiator?.Map;
 						if (map != null && map.listerThings != null)
