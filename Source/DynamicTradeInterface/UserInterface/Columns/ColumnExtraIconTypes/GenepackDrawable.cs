@@ -10,7 +10,39 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class GenepackDrawable : IDrawable
+	internal static class GenepackDrawable
+	{
+
+		static Dictionary<Tradeable, GenepackDrawableRow> _drawableRows = new Dictionary<Tradeable, GenepackDrawableRow>();
+
+		public static bool Initialise(Tradeable item)
+		{
+			if (GeneAssistant.Active && item.AnyThing is Genepack genepack)
+			{
+				_drawableRows[item] = new GenepackDrawableRow(genepack);
+				return true;
+			}
+
+			return false;
+		}
+
+		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
+		{
+			if (_drawableRows.TryGetValue(item, out GenepackDrawableRow row))
+				row.Draw(ref rect);
+		}
+
+		public static string GetSearchString(Tradeable item)
+		{
+			if (_drawableRows.TryGetValue(item, out GenepackDrawableRow row))
+				return row.GetSearchString();
+
+			return "";
+		}
+	}
+
+
+	internal class GenepackDrawableRow
 	{
 		private static Dictionary<GeneDef, GeneAssistant.GeneType> _bankedGenes = new Dictionary<GeneDef, GeneAssistant.GeneType>();
 
@@ -75,7 +107,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				_bankedGenes.Clear();
 		}
 
-		public GenepackDrawable(Genepack genepack)
+		public GenepackDrawableRow(Genepack genepack)
 		{
 			List<GeneAssistant.GeneType>? types = genepack.GeneSet?.GenesListForReading?
 				.Select((gene) => _bankedGenes.TryGetValue(gene, GeneAssistant.GeneType.Missing))
@@ -104,7 +136,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			_icon = GeneAssistant.IconFor(_geneType);
 		}
 
-		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
+		public void Draw(ref Rect rect)
 		{
 			if (_icon != null)
 			{

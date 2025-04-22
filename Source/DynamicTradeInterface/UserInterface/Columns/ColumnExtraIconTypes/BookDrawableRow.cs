@@ -1,4 +1,5 @@
-﻿using DynamicTradeInterface.Mod;
+﻿using DynamicTradeInterface.InterfaceComponents;
+using DynamicTradeInterface.Mod;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -13,7 +14,39 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class BookDrawable : IDrawable
+	internal class BookDrawable
+	{
+		static Dictionary<Tradeable, BookDrawableRow> _drawableRows = new Dictionary<Tradeable, BookDrawableRow>();
+
+		public static bool Initialise(Tradeable item)
+		{
+			if (item.AnyThing is Book book)
+			{
+				_drawableRows[item] = new BookDrawableRow(book);
+				return true;
+			}
+
+			return false;
+		}
+
+		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
+		{
+			if (_drawableRows.TryGetValue(item, out BookDrawableRow row))
+				row.Draw(ref rect);
+		}
+
+		public static string GetSearchString(Tradeable item)
+		{
+			if (_drawableRows.TryGetValue(item, out BookDrawableRow row))
+				return row.GetSearchString();
+
+			return "";
+		}
+	}
+
+
+
+	internal class BookDrawableRow
 	{
 		Texture2D? _icon = null;
 		Color _iconColor = Color.white;
@@ -21,7 +54,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 
 		AccessTools.FieldRef<ReadingOutcomeDoerGainResearch, Dictionary<ResearchProjectDef, float>> researchValues = AccessTools.FieldRefAccess<ReadingOutcomeDoerGainResearch, Dictionary<ResearchProjectDef, float>>("values");
 
-		public BookDrawable(Book book)
+		public BookDrawableRow(Book book)
 		{
 			List<BookOutcomeDoer> doers = book.BookComp.Doers.ToList();
 			StringBuilder tooltipBuilder = new StringBuilder();
@@ -66,7 +99,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			_tooltip = tooltipBuilder.ToString();
 		}
 
-		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
+		public void Draw(ref Rect rect)
 		{
 			if (_icon != null)
 			{

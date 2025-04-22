@@ -1,0 +1,47 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+	<xs:element name="Defs">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="DynamicTradeInterface.Defs.MoreIconsDef" type="MoreIconsDef" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="SortDirection">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Ascending" />
+			<xs:enumeration value="Descending" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="MoreIconsDef">
+		<xs:all>
+			<xs:element name="defName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="drawCallbackHandler" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Colon-based method identifier string for the method called when icon is drawn.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="searchValueCallbackHandler" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Colon-based method identifier string for method to allow this icon to provide additional searchable strings.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="initialiseCallbackHandler" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Colon-based method identifier string for method to allow this icon to load and cache data.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:all>
+		<xs:anyAttribute processContents="skip"/>
+	</xs:complexType>
+</xs:schema>
+
+
+
+
+	

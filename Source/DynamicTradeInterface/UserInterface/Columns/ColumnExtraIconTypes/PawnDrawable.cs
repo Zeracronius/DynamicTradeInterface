@@ -30,8 +30,38 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		}
 	}
 
+	internal class PawnDrawable
+	{
+		static Dictionary<Tradeable, PawnDrawableRow> _drawableRows = new Dictionary<Tradeable, PawnDrawableRow>();
+
+		public static bool Initialise(Tradeable item)
+		{
+			if (item.AnyThing is Pawn pawn)
+			{
+				_drawableRows[item] = new PawnDrawableRow(item, pawn);
+				return true;
+			}
+			return false;
+		}
+
+		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
+		{
+			if (_drawableRows.TryGetValue(item, out PawnDrawableRow row))
+				row.Draw(ref rect);
+		}
+
+		public static string GetSearchString(Tradeable item)
+		{
+			if (_drawableRows.TryGetValue(item, out PawnDrawableRow row))
+				return row.GetSearchString();
+
+			return "";
+		}
+
+	}
+
 	[HotSwappable]
-	internal class PawnDrawable : IDrawable
+	internal class PawnDrawableRow
 	{
 		static PawnColumnLifeStageProxy _columnWorkerProxy = new PawnColumnLifeStageProxy();
 		static Func<Pawn_TrainingTracker, TrainableDef, int> _getStepsDelegate = AccessTools.MethodDelegate<Func<Pawn_TrainingTracker, TrainableDef, int>>("RimWorld.Pawn_TrainingTracker:GetSteps");
@@ -51,7 +81,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		private string _ageTooltip;
 		private string? _trainingTooltip;
 
-		public PawnDrawable(Tradeable tradeable, Pawn pawn)
+		public PawnDrawableRow(Tradeable tradeable, Pawn pawn)
 		{
 			string joinAsText = (pawn.guest?.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
 			_pawn = pawn;
@@ -109,7 +139,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				_trainingTooltip = tooltip.ToString();
 		}
 
-		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
+		public void Draw(ref Rect rect)
 		{
 			float curX = rect.xMax;
 

@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using DynamicTradeInterface.InterfaceComponents;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,50 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class TechprintDrawable : IDrawable
+
+	internal class TechprintDrawable
+	{
+		static Dictionary<Tradeable, TechprintDrawableRow> _drawableRows = new Dictionary<Tradeable, TechprintDrawableRow>();
+
+		public static bool Initialise(Tradeable item)
+		{
+			if (Techprints.Active)
+			{
+				var techComp = item.AnyThing.TryGetComp<CompTechprint>();
+				if (techComp != null)
+				{
+					_drawableRows[item] = new TechprintDrawableRow(techComp);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
+		{
+			if (_drawableRows.TryGetValue(item, out TechprintDrawableRow row))
+				row.Draw(ref rect);
+		}
+
+		public static string GetSearchString(Tradeable item)
+		{
+			if (_drawableRows.TryGetValue(item, out TechprintDrawableRow row))
+				return row.GetSearchString();
+
+			return "";
+		}
+	}
+
+
+
+	internal class TechprintDrawableRow
 	{
 		Texture? _icon;
 		string _tooltip;
 		string _searchTerm;
 
-		public TechprintDrawable(CompTechprint techprintComp)
+		public TechprintDrawableRow(CompTechprint techprintComp)
 		{
 			ResearchProjectDef project = techprintComp.Props.project;
 			_searchTerm = project.label;
@@ -38,7 +76,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			_tooltip = "ShowKnownTechprints.Tooltip".Translate(project.TechprintsApplied, project.TechprintCount, project.UnlockedDefs.Select(x => x.label).ToCommaList().CapitalizeFirst());
 		}
 
-		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
+		public void Draw(ref Rect rect)
 		{
 			if (_icon != null)
 			{

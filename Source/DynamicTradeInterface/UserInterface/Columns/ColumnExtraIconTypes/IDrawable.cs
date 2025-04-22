@@ -5,13 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
 	public interface IDrawable
 	{
-		void Draw(ref Rect rect, Transactor transactor, ref bool refresh);
+		bool Initialise(Tradeable item);
 
-		string GetSearchString();
+		void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh);
+
+		string GetSearchString(Tradeable item);
 	}
 }
