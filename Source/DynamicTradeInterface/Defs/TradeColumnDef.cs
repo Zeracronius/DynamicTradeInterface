@@ -1,4 +1,6 @@
 ﻿using DynamicTradeInterface.InterfaceComponents.TableBox;
+using DynamicTradeInterface.Mod;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -87,5 +89,55 @@ namespace DynamicTradeInterface.Defs
 				yield return "TradeColumnDef must have a callbackHandler defined.";
 		}
 
+
+		public bool ParseCallbacks()
+		{
+			if (string.IsNullOrWhiteSpace(callbackHandler) == false)
+			{
+				try
+				{
+					_callback = AccessTools.MethodDelegate<TradeColumnCallback>(callbackHandler);
+					if (_callback == null)
+						return false;
+				}
+				catch (Exception e)
+				{
+					Logging.Error($"Unable to locate draw callback '{callbackHandler}' for column {defName}.\nEnsure referenced method has following arguments: 'ref Rect, Tradeable, TradeAction'");
+					Logging.Error(e);
+					return false;
+				}
+			}
+
+			_searchValueCallback = ParseCallbackHandler<TradeColumnSearchValueCallback>(searchValueCallbackHandler,
+				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
+
+			_orderValueCallback = ParseCallbackHandler<TradeColumnOrderValueCallback>(orderValueCallbackHandler,
+				$"Unable to locate order value callback '{orderValueCallbackHandler}' for column {defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, IComparable>'");
+
+			_postOpenCallback = ParseCallbackHandler<TradeColumnEventCallback>(postOpenCallbackHandler,
+				$"Unable to locate post-open callback '{postOpenCallbackHandler}' for column {defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
+
+			_postClosedCallback = ParseCallbackHandler<TradeColumnEventCallback>(postClosedCallbackHandler,
+				$"Unable to locate post-closed callback '{postClosedCallbackHandler}' for column {defName}.\nEnsure referenced method has arguments matching 'IEnumerable<Tradeable> rows, Transactor transactor'");
+			return true;
+		}
+
+		private T? ParseCallbackHandler<T>(string? handler, string error) where T : Delegate
+		{
+			T? result = null;
+			if (string.IsNullOrWhiteSpace(handler) == false)
+			{
+				try
+				{
+					result = AccessTools.MethodDelegate<T>(handler);
+				}
+				catch (Exception e)
+				{
+					Logging.Error(error);
+					Logging.Error(e);
+				}
+			}
+			return result;
+		}
 	}
 }

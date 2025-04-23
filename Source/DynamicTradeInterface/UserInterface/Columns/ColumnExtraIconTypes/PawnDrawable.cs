@@ -31,253 +31,158 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 	}
 
 	[HotSwappable]
-	internal class PawnDrawable : IDrawable
+	internal static class PawnDrawable
 	{
 		static PawnColumnLifeStageProxy _columnWorkerProxy = new PawnColumnLifeStageProxy();
 		static Func<Pawn_TrainingTracker, TrainableDef, int> _getStepsDelegate = AccessTools.MethodDelegate<Func<Pawn_TrainingTracker, TrainableDef, int>>("RimWorld.Pawn_TrainingTracker:GetSteps");
 
-
-		private Pawn _pawn;
-		private Intelligence _intelligence;
-		private bool _rideable;
-		private bool _bonded;
-		private bool _pregnant;
-		private bool _sick;
-		private bool _isColonyMech;
-		private Pawn _overseerPawn;
-		private bool _captive;
-		private bool _traderHomeFaction;
-		private Texture2D _ageTexture;
-		private string _ageTooltip;
-		private string? _trainingTooltip;
-
-		public PawnDrawable(Tradeable tradeable, Pawn pawn)
+		public static IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
 		{
-			string joinAsText = (pawn.guest?.joinStatus == JoinStatus.JoinAsColonist ? "JoinsAsColonist" : "JoinsAsSlave").Translate();
-			_pawn = pawn;
-			_intelligence = pawn.RaceProps?.intelligence ?? Intelligence.Animal;
-			_rideable = pawn.IsCaravanRideable();
-			_bonded = pawn.relations?.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null;
-			
-			HediffSet? healthSet = pawn.health?.hediffSet;
-			if (healthSet != null)
+			if (tradeable.AnyThing is Pawn pawn)
 			{
-				_pregnant = healthSet.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true);
-				_sick = healthSet.AnyHediffMakesSickThought;
+				foreach (var item in DoAnimalIcons(pawn))
+					yield return (item.Item1, item.Item2, null);
+
+				foreach (var item in DoBiotechIcons(pawn))
+					yield return (item.Item1, item.Item2, null);
+
+				foreach (var item in DoIdeologyIcons(tradeable, pawn))
+					yield return (item.Item1, item.Item2, null);
 			}
 
-			_isColonyMech = pawn.IsColonyMech;
-			_overseerPawn = pawn.GetOverseer();
-			_captive = TransferableUIUtility.TransferableIsCaptive(tradeable);
-			_traderHomeFaction = pawn.HomeFaction == TradeSession.trader?.Faction;
+			yield break;
+		}
 
-			_ageTexture = _columnWorkerProxy.GetIcon(pawn);
-			_ageTooltip = _columnWorkerProxy.GetTooltip(pawn);
 
-			_trainingTooltip = null;
+		private static IEnumerable<(Texture, string?)> DoAnimalIcons(Pawn pawn)
+		{
+			Texture ageIcon = _columnWorkerProxy.GetIcon(pawn);
+			if (ageIcon != null)
+				yield return (ageIcon, _columnWorkerProxy.GetTooltip(pawn));
+
+			// Ridable
+			if (pawn.IsCaravanRideable())
+				yield return (Textures.RideableIcon, CaravanRideableUtility.GetIconTooltipText(pawn));
+
+			// Bonded
+			if (pawn.relations?.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null)
+				yield return (ContentFinder<Texture2D>.Get("UI/Icons/Animal/Bond"), TrainableUtility.GetIconTooltipText(pawn));
+
+			// Is pregnant
+			if (pawn.health?.hediffSet?.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true) == true)
+				yield return (ContentFinder<Texture2D>.Get("UI/Icons/Animal/Pregnant"), PawnColumnWorker_Pregnant.GetTooltipText(pawn));
+
+			// Is sick
+			if (pawn.health?.hediffSet?.AnyHediffMakesSickThought == true)
+			{
+				IEnumerable<string> entries = pawn.health.hediffSet.hediffs.Where(x => x.def.makesSickThought).Select(x => x.LabelCap);
+				yield return (Textures.SickIcon, "CaravanAnimalSick".Translate() + ":\n\n" + entries.ToLineList(" - "));
+			}
+
 			if (pawn.training != null)
 			{
-				GetTrainingInfo(pawn.training);
-			}
-		}
-
-		private void GetTrainingInfo(Pawn_TrainingTracker training)
-		{
-			StringBuilder tooltip = new StringBuilder();
-			List<TrainableDef> trainableDefs = TrainableUtility.TrainableDefsInListOrder;
-			for (int i = 0; i < trainableDefs.Count; i++)
-			{
-				var trainableDef = trainableDefs[i];
-				if (training.HasLearned(trainableDef))
+				string? tooltipText = null;
+				StringBuilder tooltip = new StringBuilder();
+				List<TrainableDef> trainableDefs = TrainableUtility.TrainableDefsInListOrder;
+				for (int i = 0; i < trainableDefs.Count; i++)
 				{
-					int steps = _getStepsDelegate(training, trainableDef);
-					if (trainableDef == TrainableDefOf.Tameness && steps == trainableDef.steps)
-						continue;
-
-					if (tooltip.Length == 0)
-						tooltip.AppendLine("DynamicTradeWindowExtraIconsColumnTrained".Translate() + ":");
-
-					tooltip.Append(trainableDef.LabelCap);
-					tooltip.Append(": ");
-
-					tooltip.Append(steps);
-					tooltip.Append(" / ");
-					tooltip.AppendLine(trainableDef.steps.ToString());
-				}
-			}
-			if (tooltip.Length > 0)
-				_trainingTooltip = tooltip.ToString();
-		}
-
-		public void Draw(ref Rect rect, Transactor transactor, ref bool refresh)
-		{
-			float curX = rect.xMax;
-
-			if (_intelligence == Intelligence.Animal)
-				DoAnimalIcons(ref rect, ref curX);
-
-			if (ModsConfig.BiotechActive)
-				DoBiotechIcons(ref rect, ref curX);
-
-			if (ModsConfig.IdeologyActive)
-				DoIdeologyIcons(ref rect, ref curX);
-		}
-
-		private void DoAnimalIcons(ref Rect rect, ref float curX)
-		{
-			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
-			iconRect.x -= iconRect.width;
-
-			if (_ageTexture != null)
-			{
-				if (Mouse.IsOver(iconRect))
-					TooltipHandler.TipRegion(iconRect, _ageTooltip);
-				GUI.DrawTexture(iconRect, _ageTexture);
-				iconRect.x -= iconRect.width;
-			}
-
-			if (_rideable)
-			{
-				GUI.DrawTexture(iconRect, Textures.RideableIcon);
-				if (Mouse.IsOver(iconRect))
-					TooltipHandler.TipRegion(iconRect, CaravanRideableUtility.GetIconTooltipText(_pawn));
-
-				iconRect.x -= iconRect.width;
-			}
-
-			if (_bonded)
-			{
-				TransferableUIUtility.DrawBondedIcon(_pawn, iconRect);
-				iconRect.x -= iconRect.width;
-			}
-
-			if (_pregnant)
-			{
-				TransferableUIUtility.DrawPregnancyIcon(_pawn, iconRect);
-				iconRect.x -= iconRect.width;
-			}
-
-			if (_sick)
-			{
-				if (Mouse.IsOver(iconRect))
-				{
-					IEnumerable<string> entries = _pawn.health.hediffSet.hediffs.Where(x => x.def.makesSickThought).Select(x => x.LabelCap);
-					TooltipHandler.TipRegion(iconRect, "CaravanAnimalSick".Translate() + ":\n\n" + entries.ToLineList(" - "));
-				}
-				GUI.DrawTexture(iconRect, Textures.SickIcon);
-				iconRect.x -= iconRect.width;
-			}
-
-			if (_trainingTooltip != null)
-			{
-				GUI.DrawTexture(iconRect, Textures.TamenessIcon);
-				if (Mouse.IsOver(iconRect))
-					TooltipHandler.TipRegion(iconRect, _trainingTooltip);
-
-				iconRect.x -= iconRect.width;
-			}
-
-			curX = iconRect.x;
-		}
-
-		private void DoBiotechIcons(ref Rect rect, ref float curX)
-		{
-			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
-			iconRect.x -= iconRect.width;
-
-			if (_isColonyMech)
-			{
-				if (_overseerPawn != null)
-				{
-					GUI.DrawTexture(rect, PortraitsCache.Get(_overseerPawn, new Vector2(rect.width, rect.height), Rot4.South));
-					if (Mouse.IsOver(rect))
+					var trainableDef = trainableDefs[i];
+					if (pawn.training.HasLearned(trainableDef))
 					{
-						Widgets.DrawHighlight(rect);
-						TooltipHandler.TipRegion(rect, "MechOverseer".Translate(_overseerPawn));
+						int steps = _getStepsDelegate(pawn.training, trainableDef);
+						if (trainableDef == TrainableDefOf.Tameness && steps == trainableDef.steps)
+							continue;
+
+						if (tooltip.Length == 0)
+							tooltip.AppendLine("DynamicTradeWindowExtraIconsColumnTrained".Translate() + ":");
+
+						tooltip.Append(trainableDef.LabelCap);
+						tooltip.Append(": ");
+
+						tooltip.Append(steps);
+						tooltip.Append(" / ");
+						tooltip.AppendLine(trainableDef.steps.ToString());
 					}
-					iconRect.x -= iconRect.width;
 				}
+				if (tooltip.Length > 0)
+					tooltipText = tooltip.ToString();
+
+				yield return (Textures.TamenessIcon, tooltipText);
+			}
+		}
+
+		private static IEnumerable<(Texture, string)> DoBiotechIcons(Pawn pawn)
+		{
+			if (pawn.IsColonyMech)
+			{
+				Pawn overseerPawn = pawn.GetOverseer();
+				if (overseerPawn != null)
+					yield return (PortraitsCache.Get(overseerPawn, new Vector2(36, 36), Rot4.South), "MechOverseer".Translate(overseerPawn));
 			}
 
-			XenotypeDef? xeno = _pawn.genes?.Xenotype;
+			XenotypeDef? xeno = pawn.genes?.Xenotype;
 			if (xeno != null && xeno != XenotypeDefOf.Baseliner)
-			{
-				Widgets.DrawTextureFitted(iconRect, xeno.Icon, 1);
-				if (Mouse.IsOver(iconRect))
-					TooltipHandler.TipRegion(iconRect, xeno.LabelCap);
-
-				iconRect.x -= iconRect.width;
-			}
-
-			curX = iconRect.x;
+				yield return (xeno.Icon, xeno.LabelCap);
 		}
 
-		private void DoIdeologyIcons(ref Rect rect, ref float curX)
+		private static IEnumerable<(Texture, string)> DoIdeologyIcons(Tradeable tradeable, Pawn pawn)
 		{
-			if (_pawn.guest == null)
-				return;
+			if (pawn.guest == null)
+				yield break;
 
-			Rect iconRect = new Rect(curX, rect.y, rect.height, rect.height).ContractedBy(1);
-
-			if (_captive)
+			if (TransferableUIUtility.TransferableIsCaptive(tradeable))
 			{
-				if (_traderHomeFaction)
-				{
-					GUI.DrawTexture(iconRect, GuestUtility.RansomIcon);
-					if (Mouse.IsOver(iconRect))
-						TooltipHandler.TipRegion(rect, "SellingAsRansom".Translate());
-				}
+				if (pawn.HomeFaction == TradeSession.trader?.Faction)
+					yield return (GuestUtility.RansomIcon, "SellingAsRansom".Translate());
 				else
-				{
-					GUI.DrawTexture(iconRect, GuestUtility.SlaveIcon);
-					if (Mouse.IsOver(iconRect))
-						TooltipHandler.TipRegion(iconRect, "SellingAsSlave".Translate());
-				}
-				iconRect.x -= iconRect.width;
+					yield return (GuestUtility.SlaveIcon, "SellingAsSlave".Translate());
 			}
 		}
 
-		public string GetSearchString()
+		public static string GetSearchString(Tradeable tradeable)
 		{
+			if (tradeable.AnyThing is Pawn pawn == false)
+				return "";
+
 			StringBuilder result = new StringBuilder();
 
-			if (_ageTexture != null)
+			if (_columnWorkerProxy.GetIcon(pawn) != null)
 			{
-				result.Append(_pawn.ageTracker.CurLifeStage.label);
+				result.Append(pawn.ageTracker.CurLifeStage.label);
 				result.Append(' ');
 			}
 
-			if (_rideable)
+			if (pawn.IsCaravanRideable())
 			{
-				result.Append(CaravanRideableUtility.GetIconTooltipText(_pawn));
+				result.Append(CaravanRideableUtility.GetIconTooltipText(pawn));
 				result.Append(' ');
 			}
 
-			if (_bonded)
+			if (pawn.relations?.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null)
 			{
 				result.Append("AnimalBonded".Translate().Trim());
 				result.Append(' ');
 			}
 
-			if (_pregnant)
+			if (pawn.health?.hediffSet?.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true) == true)
 			{
 				result.Append("AnimalPregnant".Translate().Trim());
 				result.Append(' ');
 			}
 
-			if (_sick)
+			if (pawn.health?.hediffSet?.AnyHediffMakesSickThought == true)
 			{
 				result.Append("CaravanAnimalSick".Translate().Trim());
 				result.Append(' ');
 			}
 
-			if (_trainingTooltip != null)
+			if (pawn.training != null)
 			{
 				result.Append("DynamicTradeWindowExtraIconsColumnTrained".Translate());
 				result.Append(' ');
 			}
 
-			XenotypeDef? xeno = _pawn.genes?.Xenotype;
+			XenotypeDef? xeno = pawn.genes?.Xenotype;
 			if (xeno != null && xeno != XenotypeDefOf.Baseliner)
 			{
 				result.Append(xeno.label);

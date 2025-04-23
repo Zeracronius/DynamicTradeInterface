@@ -1,4 +1,5 @@
-﻿using DynamicTradeInterface.InterfaceComponents;
+﻿using DynamicTradeInterface.Defs;
+using DynamicTradeInterface.InterfaceComponents;
 using DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes;
 using RimWorld;
 using System;
@@ -11,46 +12,26 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal class ColumnExtraIcons
 	{
-		private static Dictionary<Tradeable, IDrawable> _rowCache = new Dictionary<Tradeable, IDrawable>();
+		private static Dictionary<Tradeable, List<(Texture, string?, Color?)>> _rowCache = new Dictionary<Tradeable, List<(Texture, string?, Color?)>>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
-				GenepackDrawable.PostOpen(rows, transactor);
+				GenepackDrawableRow.PostOpen(rows, transactor);
 
 			foreach (var row in rows)
 			{
 				if (!_rowCache.ContainsKey(row))
 				{
-					if (row.AnyThing is Pawn pawn)
+					List<(Texture, string?, Color?)> icons = new List<(Texture, string?, Color?)>();
+					foreach (MoreIconsDef iconDef in DefDatabase<MoreIconsDef>.AllDefsListForReading)
 					{
-						_rowCache[row] = new PawnDrawable(row, pawn);
-						continue;
-					}
-
-#if V1_5
-					if (row.AnyThing is Book book)
-					{
-						_rowCache[row] = new BookDrawable(book);
-						continue;
-					}
-#endif
-
-					if (GeneAssistant.Active && row.AnyThing is Genepack genepack)
-					{
-						_rowCache[row] = new GenepackDrawable(genepack);
-						continue;
-					}
-
-					if (Techprints.Active)
-					{
-						var techComp = row.AnyThing.TryGetComp<CompTechprint>();
-						if (techComp != null)
+						foreach (var item in iconDef.GetIcons(row))
 						{
-							_rowCache[row] = new TechprintDrawable(techComp);
-							continue;
+							icons.Add(item);
 						}
 					}
+					_rowCache[row] = icons;
 				}
 			}
 		}
@@ -58,22 +39,36 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
-				GenepackDrawable.PostClosed(rows, transactor);
+				GenepackDrawableRow.PostClosed(rows, transactor);
 			_rowCache.Clear();
 		}
 
 		public static void Draw(ref Rect rect, Tradeable row, Transactor transactor, ref bool refresh)
 		{
 			if (_rowCache.TryGetValue(row, out var cache))
-				cache.Draw(ref rect, transactor, ref refresh);
+			{
+				Rect iconBoundary = new Rect(rect.xMax - rect.height, rect.y, rect.height, rect.height);
+				foreach ((Texture, string?, Color?) drawable in cache)
+				{
+					Rect iconRect = iconBoundary.ContractedBy(1);
+					GUI.DrawTexture(iconRect, drawable.Item1, ScaleMode.ScaleToFit, true, 1, color: drawable.Item3 ?? Color.white, 0, 0);
+					if (Mouse.IsOver(iconRect))
+					{
+						Widgets.DrawHighlight(iconRect);
+						TooltipHandler.TipRegion(iconRect, drawable.Item2);
+					}
+					iconBoundary.x -= iconBoundary.width;
+				}
+			}
 		}
 
 
 		public static string SearchValue(Tradeable row, Transactor transactor)
 		{
-			if (_rowCache.TryGetValue(row, out IDrawable? cache))
-				return cache.GetSearchString();
-
+			if (_rowCache.TryGetValue(row, out var cache))
+			{
+				return string.Join(" ", DefDatabase<MoreIconsDef>.AllDefsListForReading.Select(x => x.GetSearchString(row)));
+			}
 			return string.Empty;
 		}
 	}
