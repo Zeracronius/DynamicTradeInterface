@@ -9,39 +9,34 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static DynamicTradeInterface.Defs.TradeColumnDef;
 
 namespace DynamicTradeInterface.Defs
 {
-	internal class MoreIconsDef : Def, IDrawable
+	internal class MoreIconsDef : Def
 	{
-		internal delegate void MoreIconsDrawCallback(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh);
+		internal delegate IEnumerable<(Texture, string?, Color?)> MoreIconsGetIconsCallback(Tradeable tradeable);
 		internal delegate string MoreIconsSearchValueCallback(Tradeable item);
-		internal delegate bool MoreIconsInitialiseCallback(Tradeable item);
 
-		internal MoreIconsDrawCallback? _drawCallback;
 		internal MoreIconsSearchValueCallback? _searchValueCallback;
-		internal MoreIconsInitialiseCallback? _initialiseOpenCallback;
+		internal MoreIconsGetIconsCallback? _getIconsCallback;
 
 		/// <summary>
-		/// Colon-based method identifier string for the method called when icon is drawn.
+		/// Colon-based method identifier string for the method called when retreiving icons.
 		/// </summary> 
-		public string? drawCallbackHandler = null;
+		public string? getIconsCallbackHandler = null;
 
 		/// <summary>
 		/// Colon-based method identifier string for method to allow this icon to provide additional searchable strings.
 		/// </summary> 
 		public string? searchValueCallbackHandler = null;
 
-		/// <summary>
-		/// Colon-based method identifier string for method to allow this icon to load and cache data.
-		/// </summary>
-		public string? initialiseCallbackHandler = null;
-
-		public void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
+		public IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
 		{
-			if (_drawCallback != null)
-				_drawCallback(ref rect, item, transactor, ref refresh);
+			if (_getIconsCallback == null)
+				yield break;
+
+			foreach (var item in _getIconsCallback(tradeable))
+				yield return item;
 		}
 
 		public string GetSearchString(Tradeable item)
@@ -52,25 +47,13 @@ namespace DynamicTradeInterface.Defs
 			return "";
 		}
 
-		public bool Initialise(Tradeable item)
-		{
-			if (_initialiseOpenCallback != null)
-				return _initialiseOpenCallback(item);
-
-			return false;
-		}
-
-
 		public void ParseCallbacks()
 		{
-			_drawCallback = ParseCallbackHandler<MoreIconsDrawCallback>(drawCallbackHandler,
-				$"Unable to locate draw callback '{drawCallbackHandler}' for IconDef {defName}.\nEnsure referenced method has arguments matching 'ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh''");
+			_getIconsCallback = ParseCallbackHandler<MoreIconsGetIconsCallback>(getIconsCallbackHandler,
+				$"Unable to locate draw callback '{getIconsCallbackHandler}' for IconDef {defName}.\nEnsure referenced method has arguments matching 'Tradeable' and a return type of 'IEnumerable<(Texture, string?, Color?)>'");
 
 			_searchValueCallback = ParseCallbackHandler<MoreIconsSearchValueCallback>(searchValueCallbackHandler,
-				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method has arguments matching 'Tradeable item' and a return type of 'string'");
-
-			_initialiseOpenCallback = ParseCallbackHandler<MoreIconsInitialiseCallback>(initialiseCallbackHandler,
-				$"Unable to locate initialise callback '{initialiseCallbackHandler}' for column {defName}.\nEnsure referenced method has arguments matching 'Tradeable item' returning a bool on whether it is relevant or not.");
+				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method has arguments matching 'Tradeable' and a return type of 'string'");
 		}
 
 

@@ -12,61 +12,26 @@ namespace DynamicTradeInterface.UserInterface.Columns
 {
 	internal class ColumnExtraIcons
 	{
-		private static Dictionary<Tradeable, Stack<IDrawable>> _rowCache = new Dictionary<Tradeable, Stack<IDrawable>>();
+		private static Dictionary<Tradeable, List<(Texture, string?, Color?)>> _rowCache = new Dictionary<Tradeable, List<(Texture, string?, Color?)>>();
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
 				GenepackDrawableRow.PostOpen(rows, transactor);
 
-			List<MoreIconsDef> moreIconDefs = DefDatabase<MoreIconsDef>.AllDefsListForReading;
-
 			foreach (var row in rows)
 			{
 				if (!_rowCache.ContainsKey(row))
 				{
-					Stack<IDrawable> drawables = new Stack<IDrawable>();
-
-//					if (row.AnyThing is Pawn pawn)
-//					{
-//						IDrawable pawnDrawable = new PawnDrawable();
-//						pawnDrawable.Initialise(row);
-//						drawables.Push(pawnDrawable);
-//					}
-
-//#if V1_5
-//					if (row.AnyThing is Book book)
-//					{
-//						IDrawable bookDrawable = new BookDrawable();
-//						bookDrawable.Initialise(row);
-//						drawables.Push(bookDrawable);
-//					}
-//#endif
-
-//					if (GeneAssistant.Active && row.AnyThing is Genepack genepack)
-//					{
-//						IDrawable genepackDrawable = new GenepackDrawable();
-//						genepackDrawable.Initialise(row);
-//						drawables.Push(genepackDrawable);
-//					}
-
-//					if (Techprints.Active)
-//					{
-//						var techComp = row.AnyThing.TryGetComp<CompTechprint>();
-//						if (techComp != null)
-//						{
-//							IDrawable techprintDrawable = new TechprintDrawable();
-//							techprintDrawable.Initialise(row);
-//							drawables.Push(techprintDrawable);
-//						}
-//					}
-
-					foreach (MoreIconsDef iconDef in moreIconDefs)
+					List<(Texture, string?, Color?)> icons = new List<(Texture, string?, Color?)>();
+					foreach (MoreIconsDef iconDef in DefDatabase<MoreIconsDef>.AllDefsListForReading)
 					{
-						if (iconDef.Initialise(row))
-							drawables.Push(iconDef);
+						foreach (var item in iconDef.GetIcons(row))
+						{
+							icons.Add(item);
+						}
 					}
-					_rowCache[row] = drawables;
+					_rowCache[row] = icons;
 				}
 			}
 		}
@@ -82,8 +47,17 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			if (_rowCache.TryGetValue(row, out var cache))
 			{
-				foreach (IDrawable drawable in cache)
-					drawable.Draw(ref rect, row, transactor, ref refresh);
+				foreach ((Texture, string?, Color?) drawable in cache)
+				{
+					Rect iconRect = new Rect(rect.xMax - rect.height, rect.y, rect.height, rect.height).ContractedBy(1);
+					GUI.DrawTexture(iconRect, drawable.Item1, ScaleMode.ScaleToFit, true, 1, color: drawable.Item3 ?? Color.white, 0, 0);
+					if (Mouse.IsOver(iconRect))
+					{
+						Widgets.DrawHighlight(iconRect);
+						TooltipHandler.TipRegion(iconRect, drawable.Item2);
+					}
+					rect.x -= rect.width;
+				}
 			}
 		}
 
@@ -92,7 +66,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			if (_rowCache.TryGetValue(row, out var cache))
 			{
-				return string.Join(" ", cache.Select(x => x.GetSearchString(row)));
+				return string.Join(" ", DefDatabase<MoreIconsDef>.AllDefsListForReading.Select(x => x.GetSearchString(row)));
 			}
 			return string.Empty;
 		}

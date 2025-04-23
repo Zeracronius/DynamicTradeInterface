@@ -14,38 +14,6 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class BookDrawable
-	{
-		static Dictionary<Tradeable, BookDrawableRow> _drawableRows = new Dictionary<Tradeable, BookDrawableRow>();
-
-		public static bool Initialise(Tradeable item)
-		{
-			if (item.AnyThing is Book book)
-			{
-				_drawableRows[item] = new BookDrawableRow(book);
-				return true;
-			}
-
-			return false;
-		}
-
-		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
-		{
-			if (_drawableRows.TryGetValue(item, out BookDrawableRow row))
-				row.Draw(ref rect);
-		}
-
-		public static string GetSearchString(Tradeable item)
-		{
-			if (_drawableRows.TryGetValue(item, out BookDrawableRow row))
-				return row.GetSearchString();
-
-			return "";
-		}
-	}
-
-
-
 	internal class BookDrawableRow
 	{
 		Texture2D? _icon = null;
@@ -53,6 +21,87 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		string _tooltip;
 
 		AccessTools.FieldRef<ReadingOutcomeDoerGainResearch, Dictionary<ResearchProjectDef, float>> researchValues = AccessTools.FieldRefAccess<ReadingOutcomeDoerGainResearch, Dictionary<ResearchProjectDef, float>>("values");
+
+
+
+		public IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
+		{
+			if (tradeable.AnyThing is Book book)
+			{
+
+				List<BookOutcomeDoer> doers = book.BookComp.Doers.ToList();
+				StringBuilder tooltipBuilder = new StringBuilder();
+
+				// Check book for research projects
+				int researchCount = 0;
+				int finishedResearchCount = 0;
+				foreach (var researchDoer in doers.OfType<ReadingOutcomeDoerGainResearch>())
+				{
+					List<ResearchProjectDef> projects = researchValues(researchDoer).Keys.ToList();
+					foreach (ResearchProjectDef project in projects)
+					{
+						researchCount++;
+						if (project.IsFinished)
+							finishedResearchCount++;
+					}
+				}
+
+				Texture? icon = null;
+				Color? color = null;
+				if (researchCount > 0)
+				{
+					icon = Textures.Schematic;
+
+					if (finishedResearchCount == researchCount)
+					{
+						color = Color.green;
+					}
+					else if (finishedResearchCount > 0)
+					{
+						color = Color.yellow;
+					}
+					else
+					{
+						color = Color.red;
+					}
+					tooltipBuilder.AppendLine($"{finishedResearchCount}/{researchCount} projects researched.");
+				}
+
+				// ReadingOutcomeDoerGainResearch
+				// ReadingOutcomeDoerJoyFactorModifier
+				// BookOutcomeDoerGainSkillExp
+
+				if (_icon != null)
+					yield return (_icon, tooltipBuilder.ToString(), color);
+			}
+			yield break;
+		}
+
+		public string GetSearchString(Tradeable tradeable)
+		{
+			if (tradeable.AnyThing is Book book)
+			{
+				// Check book for research projects
+				string searchString = string.Empty;
+				List<BookOutcomeDoer> doers = book.BookComp.Doers.ToList();
+				foreach (var researchDoer in doers.OfType<ReadingOutcomeDoerGainResearch>())
+				{
+					List<ResearchProjectDef> projects = researchValues(researchDoer).Keys.ToList();
+					foreach (ResearchProjectDef project in projects)
+					{
+						if (searchString.Length > 0)
+							searchString += " ";
+
+						searchString += project.label;
+					}
+				}
+
+				return searchString;
+			}
+
+			return string.Empty;
+		}
+
 
 		public BookDrawableRow(Book book)
 		{

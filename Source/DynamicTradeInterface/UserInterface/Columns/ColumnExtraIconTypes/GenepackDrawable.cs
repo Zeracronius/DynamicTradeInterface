@@ -10,45 +10,80 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal static class GenepackDrawable
-	{
-
-		static Dictionary<Tradeable, GenepackDrawableRow> _drawableRows = new Dictionary<Tradeable, GenepackDrawableRow>();
-
-		public static bool Initialise(Tradeable item)
-		{
-			if (GeneAssistant.Active && item.AnyThing is Genepack genepack)
-			{
-				_drawableRows[item] = new GenepackDrawableRow(genepack);
-				return true;
-			}
-
-			return false;
-		}
-
-		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
-		{
-			if (_drawableRows.TryGetValue(item, out GenepackDrawableRow row))
-				row.Draw(ref rect);
-		}
-
-		public static string GetSearchString(Tradeable item)
-		{
-			if (_drawableRows.TryGetValue(item, out GenepackDrawableRow row))
-				return row.GetSearchString();
-
-			return "";
-		}
-	}
-
-
-	internal class GenepackDrawableRow
+	internal static class GenepackDrawableRow
 	{
 		private static Dictionary<GeneDef, GeneAssistant.GeneType> _bankedGenes = new Dictionary<GeneDef, GeneAssistant.GeneType>();
 
-		private GeneAssistant.GeneType _geneType = GeneAssistant.GeneType.None;
-		private Texture? _icon = null;
-		private string _tooltip = string.Empty;
+		public static IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
+		{
+			if (GeneAssistant.Active && tradeable.AnyThing is Genepack genepack)
+			{
+				List<GeneAssistant.GeneType>? types = genepack.GeneSet?.GenesListForReading?
+					.Select((gene) => _bankedGenes.TryGetValue(gene, GeneAssistant.GeneType.Missing))
+					.Distinct()
+					.ToList();
+
+				string tooltip = string.Empty;
+				GeneAssistant.GeneType geneType = GeneAssistant.GeneType.None;
+				if (types?.Count > 0)
+				{
+					if (types.Any((x) => x == GeneAssistant.GeneType.Missing))
+					{
+						geneType = GeneAssistant.GeneType.Missing;
+						tooltip = "DynamicTradeWindowGenepackMissing".Translate();
+					}
+					else if (types.All((x) => x == GeneAssistant.GeneType.Isolated))
+					{
+						geneType = GeneAssistant.GeneType.Isolated;
+						tooltip = "DynamicTradeWindowGenepackIsolated".Translate();
+					}
+					else
+					{
+						geneType = GeneAssistant.GeneType.Mixed;
+						tooltip = "DynamicTradeWindowGenepackMixed".Translate();
+					}
+				}
+
+				Texture? icon = GeneAssistant.IconFor(geneType);
+				if (icon != null)
+					yield return (icon, tooltip, null);
+			}
+
+			yield break;
+		}
+
+		public static string GetSearchString(Tradeable tradeable)
+		{
+			if (GeneAssistant.Active && tradeable.AnyThing is Genepack genepack)
+			{
+				List<GeneAssistant.GeneType>? types = genepack.GeneSet?.GenesListForReading?
+					.Select((gene) => _bankedGenes.TryGetValue(gene, GeneAssistant.GeneType.Missing))
+					.Distinct()
+					.ToList();
+
+				string tooltip = "";
+				if (types?.Count > 0)
+				{
+					if (types.Any((x) => x == GeneAssistant.GeneType.Missing))
+					{
+						tooltip = "DynamicTradeWindowGenepackMissing".Translate();
+					}
+					else if (types.All((x) => x == GeneAssistant.GeneType.Isolated))
+					{
+						tooltip = "DynamicTradeWindowGenepackIsolated".Translate();
+					}
+					else
+					{
+						tooltip = "DynamicTradeWindowGenepackMixed".Translate();
+					}
+				}
+
+				return tooltip;
+			}
+
+			return "";
+		}
+
 
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
@@ -105,52 +140,6 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 		{
 			if (transactor == Transactor.Colony)
 				_bankedGenes.Clear();
-		}
-
-		public GenepackDrawableRow(Genepack genepack)
-		{
-			List<GeneAssistant.GeneType>? types = genepack.GeneSet?.GenesListForReading?
-				.Select((gene) => _bankedGenes.TryGetValue(gene, GeneAssistant.GeneType.Missing))
-				.Distinct()
-				.ToList();
-
-			if (types?.Count > 0)
-			{
-				if (types.Any((x) => x == GeneAssistant.GeneType.Missing))
-				{
-					_geneType = GeneAssistant.GeneType.Missing;
-					_tooltip = "DynamicTradeWindowGenepackMissing".Translate();
-				}
-				else if (types.All((x) => x == GeneAssistant.GeneType.Isolated))
-				{
-					_geneType = GeneAssistant.GeneType.Isolated;
-					_tooltip = "DynamicTradeWindowGenepackIsolated".Translate();
-				}
-				else
-				{
-					_geneType = GeneAssistant.GeneType.Mixed;
-					_tooltip = "DynamicTradeWindowGenepackMixed".Translate();
-				}
-			}
-
-			_icon = GeneAssistant.IconFor(_geneType);
-		}
-
-		public void Draw(ref Rect rect)
-		{
-			if (_icon != null)
-			{
-				Rect iconRect = new Rect(rect.xMax - rect.height, rect.y, rect.height, rect.height).ContractedBy(1);
-				GUI.DrawTexture(iconRect, _icon);
-
-				if (Mouse.IsOver(iconRect))
-					TooltipHandler.TipRegion(iconRect, _tooltip);
-			}
-		}
-
-		public string GetSearchString()
-		{
-			return _tooltip;
 		}
 	}
 }

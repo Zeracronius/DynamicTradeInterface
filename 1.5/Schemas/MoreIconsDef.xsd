@@ -15,10 +15,10 @@
 	<xs:complexType name="MoreIconsDef">
 		<xs:all>
 			<xs:element name="defName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="drawCallbackHandler" type="xs:string" minOccurs="1" maxOccurs="1">
+			<xs:element name="getIconsCallbackHandler" type="xs:string" minOccurs="1" maxOccurs="1">
 				<xs:annotation>
 					<xs:documentation>
-						Colon-based method identifier string for the method called when icon is drawn.
+						Colon-based method identifier string for the method called when fetching icons.
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>
@@ -26,13 +26,6 @@
 				<xs:annotation>
 					<xs:documentation>
 						Colon-based method identifier string for method to allow this icon to provide additional searchable strings.
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="initialiseCallbackHandler" type="xs:string" minOccurs="1" maxOccurs="1">
-				<xs:annotation>
-					<xs:documentation>
-						Colon-based method identifier string for method to allow this icon to load and cache data.
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>

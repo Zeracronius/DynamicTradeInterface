@@ -10,90 +10,61 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-
 	internal class TechprintDrawable
 	{
-		static Dictionary<Tradeable, TechprintDrawableRow> _drawableRows = new Dictionary<Tradeable, TechprintDrawableRow>();
-
-		public static bool Initialise(Tradeable item)
+		public IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
 		{
 			if (Techprints.Active)
 			{
-				var techComp = item.AnyThing.TryGetComp<CompTechprint>();
+				var techComp = tradeable.AnyThing.TryGetComp<CompTechprint>();
 				if (techComp != null)
 				{
-					_drawableRows[item] = new TechprintDrawableRow(techComp);
-					return true;
+					ResearchProjectDef project = techComp.Props.project;
+					Texture? icon = Techprints.TechprintIcon_Missing;
+					if (project.TechprintRequirementMet)
+					{
+						icon = Techprints.TechprintIcon_Complete;
+					}
+					else if (project.TechprintsApplied > 0)
+					{
+						icon = Techprints.TechprintIcon_Part;
+					}
+
+					if (icon != null)
+					{
+						string tooltip = "ShowKnownTechprints.Tooltip".Translate(project.TechprintsApplied, project.TechprintCount, project.UnlockedDefs.Select(x => x.label).ToCommaList().CapitalizeFirst());
+						yield return (icon, tooltip, null);
+					}
 				}
 			}
-
-			return false;
+			yield break;
 		}
 
-		public static void Draw(ref Rect rect, Tradeable item, Transactor transactor, ref bool refresh)
+		public string GetSearchString(Tradeable tradeable)
 		{
-			if (_drawableRows.TryGetValue(item, out TechprintDrawableRow row))
-				row.Draw(ref rect);
-		}
-
-		public static string GetSearchString(Tradeable item)
-		{
-			if (_drawableRows.TryGetValue(item, out TechprintDrawableRow row))
-				return row.GetSearchString();
-
-			return "";
-		}
-	}
-
-
-
-	internal class TechprintDrawableRow
-	{
-		Texture? _icon;
-		string _tooltip;
-		string _searchTerm;
-
-		public TechprintDrawableRow(CompTechprint techprintComp)
-		{
-			ResearchProjectDef project = techprintComp.Props.project;
-			_searchTerm = project.label;
-			if (project.TechprintRequirementMet)
+			if (Techprints.Active)
 			{
-				_icon = InterfaceComponents.Techprints.TechprintIcon_Complete;
-				_searchTerm += " complete";
-			}
-			else if (project.TechprintsApplied > 0)
-			{
-				_icon = InterfaceComponents.Techprints.TechprintIcon_Part;
-				_searchTerm += " partial";
-			}
-			else
-			{
-				_icon = InterfaceComponents.Techprints.TechprintIcon_Missing;
-				_searchTerm += " missing";
-			}
-
-			_tooltip = "ShowKnownTechprints.Tooltip".Translate(project.TechprintsApplied, project.TechprintCount, project.UnlockedDefs.Select(x => x.label).ToCommaList().CapitalizeFirst());
-		}
-
-		public void Draw(ref Rect rect)
-		{
-			if (_icon != null)
-			{
-				Rect iconRect = new Rect(rect.xMax - rect.height, rect.y, rect.height, rect.height).ContractedBy(1);
-				GUI.DrawTexture(iconRect, _icon);
-
-				if (Mouse.IsOver(iconRect))
+				var techComp = tradeable.AnyThing.TryGetComp<CompTechprint>();
+				if (techComp != null)
 				{
-					Widgets.DrawHighlight(iconRect);
-					TooltipHandler.TipRegion(iconRect, _tooltip);
+					ResearchProjectDef project = techComp.Props.project;
+					string searchTerm = project.label;
+					if (project.TechprintRequirementMet)
+					{
+						searchTerm += " complete";
+					}
+					else if (project.TechprintsApplied > 0)
+					{
+						searchTerm += " partial";
+					}
+					else
+					{
+						searchTerm += " missing";
+					}
+					return searchTerm;
 				}
 			}
-		}
-
-		public string GetSearchString()
-		{
-			return _searchTerm;
+			return "";
 		}
 	}
 }
