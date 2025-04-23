@@ -47,16 +47,17 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			if (_rowCache.TryGetValue(row, out var cache))
 			{
+				Rect iconBoundary = new Rect(rect.xMax - rect.height, rect.y, rect.height, rect.height);
 				foreach ((Texture, string?, Color?) drawable in cache)
 				{
-					Rect iconRect = new Rect(rect.xMax - rect.height, rect.y, rect.height, rect.height).ContractedBy(1);
+					Rect iconRect = iconBoundary.ContractedBy(1);
 					GUI.DrawTexture(iconRect, drawable.Item1, ScaleMode.ScaleToFit, true, 1, color: drawable.Item3 ?? Color.white, 0, 0);
 					if (Mouse.IsOver(iconRect))
 					{
 						Widgets.DrawHighlight(iconRect);
 						TooltipHandler.TipRegion(iconRect, drawable.Item2);
 					}
-					rect.x -= rect.width;
+					iconBoundary.x -= iconBoundary.width;
 				}
 			}
 		}
