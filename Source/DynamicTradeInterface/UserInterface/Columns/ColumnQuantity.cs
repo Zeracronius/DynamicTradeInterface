@@ -39,7 +39,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				if (transactor == Transactor.Colony && Mod.DynamicTradeInterfaceMod.Settings.ShowAvailableOnMap)
 				{
 					Thing thing = row.AnyThing;
-					if (thing?.def != null && thing is Pawn == false)
+					if (thing?.def != null && thing.def.category == ThingCategory.Item)
 					{
 						Map? map = TradeSession.playerNegotiator?.Map;
 						if (map != null && map.listerThings != null)
@@ -55,7 +55,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 									Thing stack = things![i];
 
 									// Count only if stack is visible to player.
-									if (stack.Fogged() == false)
+									if (stack.Fogged() == false && thing.CanStackWith(stack))
 										thingsOnMap += stack.stackCount;
 								}
 
