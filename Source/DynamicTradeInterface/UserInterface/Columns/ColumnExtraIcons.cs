@@ -17,7 +17,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void PostOpen(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
-				GenepackDrawableRow.PostOpen(rows, transactor);
+				GenepackDrawable.PostOpen(rows, transactor);
 
 			foreach (var row in rows)
 			{
@@ -39,7 +39,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		public static void PostClosed(IEnumerable<Tradeable> rows, Transactor transactor)
 		{
 			if (GeneAssistant.Active)
-				GenepackDrawableRow.PostClosed(rows, transactor);
+				GenepackDrawable.PostClosed(rows, transactor);
 			_rowCache.Clear();
 		}
 
