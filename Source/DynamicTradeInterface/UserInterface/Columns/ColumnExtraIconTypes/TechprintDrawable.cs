@@ -10,9 +10,9 @@ using Verse;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
-	internal class TechprintDrawable
+	internal static class TechprintDrawable
 	{
-		public IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
+		public static IEnumerable<(Texture, string?, Color?)> GetIcons(Tradeable tradeable)
 		{
 			if (Techprints.Active)
 			{
@@ -40,7 +40,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			yield break;
 		}
 
-		public string GetSearchString(Tradeable tradeable)
+		public static string GetSearchString(Tradeable tradeable)
 		{
 			if (Techprints.Active)
 			{

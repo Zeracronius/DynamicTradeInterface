@@ -1,5 +1,4 @@
 ﻿using DynamicTradeInterface.Mod;
-using DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes;
 using HarmonyLib;
 using RimWorld;
 using System;
@@ -50,10 +49,10 @@ namespace DynamicTradeInterface.Defs
 		public void ParseCallbacks()
 		{
 			_getIconsCallback = ParseCallbackHandler<MoreIconsGetIconsCallback>(getIconsCallbackHandler,
-				$"Unable to locate draw callback '{getIconsCallbackHandler}' for IconDef {defName}.\nEnsure referenced method has arguments matching 'Tradeable' and a return type of 'IEnumerable<(Texture, string?, Color?)>'");
+				$"Unable to locate draw callback '{getIconsCallbackHandler}' for IconDef {defName}.\nEnsure referenced method is static and has arguments matching 'Tradeable' and a return type of 'IEnumerable<(Texture, string?, Color?)>'");
 
 			_searchValueCallback = ParseCallbackHandler<MoreIconsSearchValueCallback>(searchValueCallbackHandler,
-				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method has arguments matching 'Tradeable' and a return type of 'string'");
+				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method is static and has arguments matching 'Tradeable' and a return type of 'string'");
 		}
 
 
