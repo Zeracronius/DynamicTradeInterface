@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace DynamicTradeInterface.Collections
 {
-	internal class ListFilter<T>
+	public class ListFilter<T>
 	{
 		public delegate bool FilterCallbackDelegate(T item, string filterString);
 

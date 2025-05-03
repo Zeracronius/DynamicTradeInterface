@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
-	internal delegate void RowCallback<Rect, T>(ref Rect boundingBox, T item);
+	public delegate void RowCallback<Rect, T>(ref Rect boundingBox, T item);
 
-	abstract class TableColumn
+	public abstract class TableColumn
 	{
 		/// <summary>
 		/// Gets the title of the column.
@@ -59,7 +59,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 
 
-	internal class TableColumn<T> : TableColumn where T : ITableRow
+	public class TableColumn<T> : TableColumn where T : ITableRow
 	{
 		public RowCallback<Rect, T>? Callback;
 		public Table<T>.OrderByCallbackDelegate? OrderByCallback;

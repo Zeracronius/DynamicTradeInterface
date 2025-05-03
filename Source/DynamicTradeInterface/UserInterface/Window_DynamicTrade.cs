@@ -20,10 +20,14 @@ using Verse.Sound;
 namespace DynamicTradeInterface.UserInterface
 {
 	[HotSwappable]
-	internal class Window_DynamicTrade : Window
+	public class Window_DynamicTrade : Window
 	{
 		static Vector2 _mainButtonSize = new Vector2(160f, 40f);
 		static Vector2 _showSellableItemsIconSize = new Vector2(32f, 32f);
+
+		public Table<TableRow<Tradeable>> ColonyTable => _colonyTable;
+		public Table<TableRow<Tradeable>> TraderTable => _traderTable;
+
 
 		Table<TableRow<Tradeable>> _colonyTable;
 		Table<TableRow<Tradeable>> _traderTable;
