@@ -43,11 +43,13 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				foreach (var item in DoAnimalIcons(pawn))
 					yield return (item.Item1, item.Item2, null);
 
-				foreach (var item in DoBiotechIcons(pawn))
-					yield return (item.Item1, item.Item2, null);
+				if (ModsConfig.BiotechActive)
+					foreach (var item in DoBiotechIcons(pawn))
+						yield return (item.Item1, item.Item2, null);
 
-				foreach (var item in DoIdeologyIcons(tradeable, pawn))
-					yield return (item.Item1, item.Item2, null);
+				if (ModsConfig.IdeologyActive)
+					foreach (var item in DoIdeologyIcons(tradeable, pawn))
+						yield return (item.Item1, item.Item2, null);
 			}
 
 			yield break;
