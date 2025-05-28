@@ -33,20 +33,20 @@ namespace DynamicTradeInterface.Tests
 			Assert.IsTrue(incident.Worker.TryExecute(parms), "Could not spawn trader");
 
 			// Find spawned trader
+			Test.BeginGroup("Caravan");
 			foreach (Pawn target in map.mapPawns.PawnsInFaction(parms.faction))
 			{
-				Test.BeginGroup("Caravan");
-				if (target.kindDef.trader)
+				if (target.kindDef.trader && target.TraderKind != null)
 				{
 					// Start trade
-					Find.WindowStack.Add(new Dialog_Trade(playerTrader, target));
 					Test.BeginGroup(target.TraderKind.LabelCap);
+					Find.WindowStack.Add(new Dialog_Trade(playerTrader, target));
 					TestWindow();
 					Test.EndGroup(target.TraderKind.LabelCap);
 					break;
 				}
-				Test.EndGroup("Caravan");
 			}
+			Test.EndGroup("Caravan");
 
 
 			foreach (TraderKindDef traderKind in DefDatabase<TraderKindDef>.AllDefs.Where((TraderKindDef t) => t.orbital))
