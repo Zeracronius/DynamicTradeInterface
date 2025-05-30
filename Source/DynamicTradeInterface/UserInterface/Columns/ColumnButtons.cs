@@ -43,10 +43,11 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 			if (TradeSession.giftMode)
 			{
-				BuyKey = "DynamicTradeWindowGiftLess";
-				BuyAll = "DynamicTradeWindowGiftNone".Translate();
+				// Gift mode is inverted, positive (buying) is gifting and there is no negative direction.
+				SellKey = "DynamicTradeWindowGiftLess";
+				SellAll = "DynamicTradeWindowGiftNone".Translate();
 				BuyKey = "DynamicTradeWindowGiftMore";
-				SellAll = "DynamicTradeWindowGiftAll".Translate();
+				BuyAll = "DynamicTradeWindowGiftAll".Translate();
 			}
 			else
 			{
