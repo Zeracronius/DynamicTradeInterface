@@ -1,0 +1,22 @@
+<Defs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Schemas/MoreIconsDef.xsd">
+	<DynamicTradeInterface.Defs.MoreIconsDef>
+		<defName>BookIconDef</defName>
+		<getIconsCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.BookDrawable:GetIcons</getIconsCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.BookDrawable:GetSearchString</searchValueCallbackHandler>
+	</DynamicTradeInterface.Defs.MoreIconsDef>
+	<DynamicTradeInterface.Defs.MoreIconsDef>
+		<defName>PawnIconDef</defName>
+		<getIconsCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.PawnDrawable:GetIcons</getIconsCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.PawnDrawable:GetSearchString</searchValueCallbackHandler>
+	</DynamicTradeInterface.Defs.MoreIconsDef>
+	<DynamicTradeInterface.Defs.MoreIconsDef MayRequire="rimworld.randomcoughdrop.geneassistant">
+		<defName>GenepackIconDef</defName>
+		<getIconsCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.GenepackDrawable:GetIcons</getIconsCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.GenepackDrawable:GetSearchString</searchValueCallbackHandler>
+	</DynamicTradeInterface.Defs.MoreIconsDef>
+	<DynamicTradeInterface.Defs.MoreIconsDef MayRequire="Spacemoth.ShowKnownTechprints">
+		<defName>TechprintIconDef</defName>
+		<getIconsCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.TechprintDrawable:GetIcons</getIconsCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes.TechprintDrawable:GetSearchString</searchValueCallbackHandler>
+	</DynamicTradeInterface.Defs.MoreIconsDef>
+</Defs>

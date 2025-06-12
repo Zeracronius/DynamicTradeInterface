@@ -16,8 +16,8 @@ namespace DynamicTradeInterface.UserInterface
 		private List<Thing> _allPawnsAndItems;
 
 		private string _visibilityExplanation;
-		private Pair<float, float> _daysWorthOfFood;
-		private Pair<ThingDef, float> _foragedFoodPerDay;
+		private (float, float) _daysWorthOfFood;
+		private (ThingDef, float) _foragedFoodPerDay;
 		private string _foragedFoodPerDayExplanation;
 		private float _massCapacity;
 		private string _massCapacityExplanation;
@@ -53,7 +53,7 @@ namespace DynamicTradeInterface.UserInterface
 		}
 
 
-		public Pair<float, float> DaysWorthOfFood
+		public (float, float) DaysWorthOfFood
 		{
 			get
 			{
@@ -62,7 +62,7 @@ namespace DynamicTradeInterface.UserInterface
 					daysWorthOfFoodDirty = false;
 					TradeSession.deal.UpdateCurrencyCount();
 					float first = DaysWorthOfFoodCalculator.ApproxDaysWorthOfFoodLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, _playerTile, IgnorePawnsInventoryMode.Ignore, Faction.OfPlayer);
-					_daysWorthOfFood = new Pair<float, float>(first, DaysUntilRotCalculator.ApproxDaysUntilRotLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, _playerTile, IgnorePawnsInventoryMode.Ignore));
+					_daysWorthOfFood = (first, DaysUntilRotCalculator.ApproxDaysUntilRotLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, _playerTile, IgnorePawnsInventoryMode.Ignore));
 				}
 				return _daysWorthOfFood;
 			}
@@ -78,14 +78,14 @@ namespace DynamicTradeInterface.UserInterface
 					TradeSession.deal.UpdateCurrencyCount();
 					Caravan caravan = TradeSession.playerNegotiator.GetCaravan();
 					StringBuilder stringBuilder = new StringBuilder();
-					_tilesPerDay = TilesPerDayCalculator.ApproxTilesPerDayLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, MassUsage, MassCapacity, _playerTile, (caravan != null && caravan.pather.Moving) ? caravan.pather.nextTile : (-1), stringBuilder);
+					_tilesPerDay = TilesPerDayCalculator.ApproxTilesPerDayLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, MassUsage, MassCapacity, _playerTile, (caravan != null && caravan.pather.Moving) ? caravan.pather.nextTile : (-1), caravan?.Shuttle != null, stringBuilder);
 					_tilesPerDayExplanation = stringBuilder.ToString();
 				}
 				return _tilesPerDay;
 			}
 		}
 
-		public Pair<ThingDef, float> ForagedFoodPerDay
+		public (ThingDef, float) ForagedFoodPerDay
 		{
 			get
 			{
@@ -166,7 +166,7 @@ namespace DynamicTradeInterface.UserInterface
 			_tilesPerDayExplanation = string.Empty;
 			_allPawnsAndItems = new List<Thing>();
 			_playerTile = TradeSession.playerNegotiator.Tile;
-			_playerBiome = Find.WorldGrid[_playerTile].biome;
+			_playerBiome = Find.WorldGrid[_playerTile].PrimaryBiome;
 		}
 
 

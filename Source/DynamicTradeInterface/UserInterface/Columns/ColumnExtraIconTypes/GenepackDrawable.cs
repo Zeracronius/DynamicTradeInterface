@@ -130,7 +130,7 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 					{
 						// Don't overwrite if gene has already been logged as isolated.
 						if (_bankedGenes.ContainsKey(genes[i]) == false)
-							_bankedGenes.TryAdd(genes[i], GeneAssistant.GeneType.Mixed);
+							_bankedGenes.Add(genes[i], GeneAssistant.GeneType.Mixed);
 					}
 				}
 			}
