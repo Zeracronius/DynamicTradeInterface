@@ -5,52 +5,16 @@
 		<langVersion>10.0</langVersion>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Configurations>Debug;Hotswap;v1.4;v1.5</Configurations>
+		<Configurations>Debug;Hotswap;v1.6</Configurations>
+    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
   </PropertyGroup>
-	<Choose>
-		<When Condition="'$(Configuration)'=='v1.4'">
-			<PropertyGroup>
-				<OutputPath>..\..\1.4\Assemblies\</OutputPath>
-				<Optimize>True</Optimize>
-				<DebugType>None</DebugType>
-			</PropertyGroup>
-			<ItemGroup>
-				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704">
-					<ExcludeAssets>runtime</ExcludeAssets>
-				</PackageReference>
-				<PackageReference Include="Lib.Harmony" Version="2.2.2">
-					<ExcludeAssets>runtime</ExcludeAssets>
-				</PackageReference>
-			</ItemGroup>
-		</When>
-		<When Condition="'$(Configuration)'=='v1.5'">
-			<PropertyGroup>
-				<OutputPath>..\..\1.5\Assemblies\</OutputPath>
-				<Optimize>True</Optimize>
-				<DebugType>None</DebugType>
-			</PropertyGroup>
-			<ItemGroup>
-				<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.*">
-					<ExcludeAssets>runtime</ExcludeAssets>
-				</PackageReference>
-				<PackageReference Include="Lib.Harmony" Version="2.3.1.1">
-					<ExcludeAssets>runtime</ExcludeAssets>
-				</PackageReference>
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<PropertyGroup>
-				<OutputPath>..\..\1.5\Assemblies\</OutputPath>
-			</PropertyGroup>
-			<ItemGroup>
-        <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.*">
-          <ExcludeAssets>runtime</ExcludeAssets>
-        </PackageReference>
-        <PackageReference Include="Lib.Harmony" Version="2.3.1.1">
-          <ExcludeAssets>runtime</ExcludeAssets>
-        </PackageReference>
-			</ItemGroup>
-		</Otherwise>
-	</Choose>
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4489-beta">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Lib.Harmony" Version="2.3.6">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+	</ItemGroup>
 
 </Project>

@@ -968,7 +968,6 @@ namespace DynamicTradeInterface.UserInterface
 				if (actuallyTraded)
 				{
 					SoundDefOf.ExecuteTrade.PlayOneShotOnCamera();
-					TradeSession.playerNegotiator.GetCaravan()?.RecacheImmobilizedNow();
 					Close(doCloseSound: false);
 				}
 				else
