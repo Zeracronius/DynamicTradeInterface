@@ -20,10 +20,14 @@ using Verse.Sound;
 namespace DynamicTradeInterface.UserInterface
 {
 	[HotSwappable]
-	internal class Window_DynamicTrade : Window
+	public class Window_DynamicTrade : Window
 	{
 		static Vector2 _mainButtonSize = new Vector2(160f, 40f);
 		static Vector2 _showSellableItemsIconSize = new Vector2(32f, 32f);
+
+		public Table<TableRow<Tradeable>> ColonyTable => _colonyTable;
+		public Table<TableRow<Tradeable>> TraderTable => _traderTable;
+
 
 		Table<TableRow<Tradeable>> _colonyTable;
 		Table<TableRow<Tradeable>> _traderTable;
@@ -174,7 +178,11 @@ namespace DynamicTradeInterface.UserInterface
 			_traderHeader = _traderFaction?.Name ?? TradeSession.trader.TraderName;
 			if (_traderFaction != null)
 			{
-				_traderHeaderDescription = $"{_traderFaction.PlayerRelationKind} ({_traderFaction.PlayerGoodwill})";
+				_traderHeaderDescription = $"{_traderFaction.PlayerRelationKind}";
+				// Some mods allow trading with yourself, and Faction.PlayerGoodwill does not like that.
+				if (_traderFaction.IsPlayer == false)
+					_traderHeaderDescription = $" ({_traderFaction.PlayerGoodwill})";
+
 				_giftButtonTooltip = _traderHeader + ": " + _traderHeaderDescription;
 			}
 			else

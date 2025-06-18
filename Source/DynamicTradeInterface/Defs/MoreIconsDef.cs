@@ -11,7 +11,7 @@ using Verse;
 
 namespace DynamicTradeInterface.Defs
 {
-	internal class MoreIconsDef : Def
+	public class MoreIconsDef : Def
 	{
 		internal delegate IEnumerable<(Texture, string?, Color?)> MoreIconsGetIconsCallback(Tradeable tradeable);
 		internal delegate string MoreIconsSearchValueCallback(Tradeable item);

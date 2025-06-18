@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Testing": {
+      "commandName": "Executable",
+      "executablePath": "F:\\SteamLibrary\\steamapps\\common\\RimWorld\\RimWorldWin64.exe",
+      "commandLineArgs": "-pid zeracronius.dynamictradeinterface --test-all"
+    },
+    "Debugging": {
+      "commandName": "Executable",
+      "executablePath": "F:\\SteamLibrary\\steamapps\\common\\RimWorld\\RimWorldWin64.exe",
+      "commandLineArgs": "-savedatafolder=F:/Rimworld/DynamicTrade -pid zeracronius.dynamictradeinterface --test-all --doorstop-enabled true --doorstop-mono-debug-enabled true --doorstop-mono-debug-suspend true",
+      "nativeDebugging": false
+    }
+  }
+}

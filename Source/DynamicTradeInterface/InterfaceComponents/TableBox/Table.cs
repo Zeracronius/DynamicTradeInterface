@@ -10,9 +10,9 @@ using Verse;
 
 namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
-	internal class Table<T> where T : ITableRow
+	public class Table<T> where T : ITableRow
 	{
-		internal delegate void OrderByCallbackDelegate(ListFilter<T> rows, SortDirection sortDirection, TableColumn tableColumn, bool reset);
+		public delegate void OrderByCallbackDelegate(ListFilter<T> rows, SortDirection sortDirection, TableColumn tableColumn, bool reset);
 
 		public event Action<TableColumn>? ColumnResized;
 		public event Action<Table<T>, TableColumn>? ColumnVisibilityChanged;
