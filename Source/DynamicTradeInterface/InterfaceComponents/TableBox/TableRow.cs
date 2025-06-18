@@ -7,7 +7,7 @@ using Verse;
 
 namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
-	internal class TableRow<T> : ITableRow
+	public class TableRow<T> : ITableRow
 	{
 		private Dictionary<TableColumn, string> _rowData;
 		public T RowObject { get; private set; }

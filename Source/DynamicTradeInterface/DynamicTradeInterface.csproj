@@ -16,5 +16,10 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>
+  <ItemGroup>
+    <Reference Include="DevTools">
+      <HintPath>..\Dependencies\DevTools.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
 </Project>

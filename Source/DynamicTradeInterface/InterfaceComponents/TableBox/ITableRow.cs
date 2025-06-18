@@ -1,6 +1,6 @@
 ﻿namespace DynamicTradeInterface.InterfaceComponents.TableBox
 {
-	internal interface ITableRow
+	public interface ITableRow
 	{
 		/// <summary>
 		/// Shown when mouse is over the row.
