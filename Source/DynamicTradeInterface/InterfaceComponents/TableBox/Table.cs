@@ -377,14 +377,14 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 
 				case SortDirection.Ascending:
 					if (column.OrderByCallback == null)
-						_rows.OrderBy(x => x[column], reset.Value);
+						_rows.OrderBy(x => x[column], reset.Value, column);
 					else
 						column.OrderByCallback(_rows, SortDirection.Ascending, column, reset.Value);
 					break;
 
 				case SortDirection.Descending:
 					if (column.OrderByCallback == null)
-						_rows.OrderByDescending(x => x[column], reset.Value);
+						_rows.OrderByDescending(x => x[column], reset.Value, column);
 					else
 						column.OrderByCallback(_rows, SortDirection.Descending, column, reset.Value);
 					break;
@@ -642,8 +642,6 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			if (selectionHasChanged && SelectionChanged != null)
 				SelectionChanged.Invoke(this, _selectedRows);
 		}
-
-
 
 		private void ShowColumnContextMenu(TableColumn<T> currentColumn, bool canOrder)
 		{
