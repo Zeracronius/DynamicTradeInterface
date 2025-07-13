@@ -22,8 +22,9 @@
 	<ConfigurationWindowPauseAfterTradeTooltip>Mantiene el juego en pausa después de cerrar la ventana de comercio.</ConfigurationWindowPauseAfterTradeTooltip>
 	<ConfigurationWindowShowAvailableOnMap>Mostrar disponible en el mapa.</ConfigurationWindowShowAvailableOnMap>
     <ConfigurationWindowShowAvailableOnMapTooltip>Mostrar el total disponible en el mapa si es diferente de lo que está disponible para el comercio en la columna Disponible.</ConfigurationWindowShowAvailableOnMapTooltip>
+	<ConfigurationWindowAlternatingRowColors>Colores de fila.</ConfigurationWindowAlternatingRowColors>
+	<ConfigurationWindowAlternatingRowColorsTooltip>Activa para tener un color de fondo ligeramente alternado en cada fila.</ConfigurationWindowAlternatingRowColorsTooltip>
 
- 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Título</ConfigurationWindowColumnCaption>
 	<ConfigurationWindowColumnAvgMs>Prom ms</ConfigurationWindowColumnAvgMs>
@@ -38,6 +39,9 @@
 	<DynamicTradeWindowGiftMore>Regalar {0} más.</DynamicTradeWindowGiftMore>
 	<DynamicTradeWindowGiftAll>Regalar todo.</DynamicTradeWindowGiftAll>
  
+	<DynamicTradeWindowSaveAsPreset>Guardar filtro como preajuste.</DynamicTradeWindowSaveAsPreset>
+	<DynamicTradeWindowNotificationBell>Coincidencias encontradas, haz clic para mostrar.</DynamicTradeWindowNotificationBell>
+
 	<DynamicTradeWindowBuyMore>Comprar {0} más.</DynamicTradeWindowBuyMore>
 	<DynamicTradeWindowBuyAll>Comprar todo.</DynamicTradeWindowBuyAll>
 	<DynamicTradeWindowBuyAffordable>Comprar todo lo que pueda permitirme.</DynamicTradeWindowBuyAffordable>
@@ -51,7 +55,6 @@
    <DynamicTradeWindowGenepackIsolated>Paquete de genes poseído en un paquete aislado.</DynamicTradeWindowGenepackIsolated>
    <DynamicTradeWindowGenepackMixed>Paquete de genes poseído en un paquete mixto.</DynamicTradeWindowGenepackMixed>
    
- 
 	<DynamicTradeWindowExtraIconsColumnTrained>Entrenado</DynamicTradeWindowExtraIconsColumnTrained>
 	
 	<DynamicTradeWindowSummaryShow>Mostrar resumen</DynamicTradeWindowSummaryShow>
@@ -60,11 +63,16 @@
    <DynamicTradeWindowSummaryBuying>Compra ({0} {1})</DynamicTradeWindowSummaryBuying>
    <DynamicTradeWindowSummarySelling>Venta ({0} {1})</DynamicTradeWindowSummarySelling>
    
-   <DynamicTradeWindowNotificationsTooltip>Notificaciones\nHaz clic derecho para filtrar.</DynamicTradeWindowNotificationsTooltip>
-   <DynamicTradeWindowNotificationsTitle>Notificaciones</DynamicTradeWindowNotificationsTitle>
-   <DynamicTradeWindowNotificationsScopeFilter>Resultados, haz clic para mostrar.</DynamicTradeWindowNotificationsScopeFilter>
-   <DynamicTradeWindowNotificationsEnable>Habilitar o deshabilitar notificación.</DynamicTradeWindowNotificationsEnable>
-   <DynamicTradeWindowNotificationsAdd>Añadir nueva notificación.</DynamicTradeWindowNotificationsAdd>
-   <DynamicTradeWindowNotificationsDelete>Eliminar notificación.</DynamicTradeWindowNotificationsDelete>
+	<DynamicTradeWindowNotificationsTooltip>Preajustes de filtro</DynamicTradeWindowNotificationsTooltip>
+	<DynamicTradeWindowNotificationsTitle>Preajustes de filtro</DynamicTradeWindowNotificationsTitle>
+	<DynamicTradeWindowNotificationsScopeFilter>Haz clic para aplicar el filtro.</DynamicTradeWindowNotificationsScopeFilter>
+	<DynamicTradeWindowNotificationsEnable>Activar notificaciones.</DynamicTradeWindowNotificationsEnable>
+	<DynamicTradeWindowNotificationsAdd>Añadir nuevo preajuste.</DynamicTradeWindowNotificationsAdd>
+	<DynamicTradeWindowNotificationsDelete>Eliminar preajuste.</DynamicTradeWindowNotificationsDelete>
 
+	<DynamicTradeWindowColumnContextSortByAscending>Ordenar de forma ascendente</DynamicTradeWindowColumnContextSortByAscending>
+	<DynamicTradeWindowColumnContextSortByDescending>Ordenar de forma descendente</DynamicTradeWindowColumnContextSortByDescending>
+	<DynamicTradeWindowColumnContextClearSorting>Borrar ordenación</DynamicTradeWindowColumnContextClearSorting>
+	<DynamicTradeWindowColumnContextHideColumn>Ocultar columna</DynamicTradeWindowColumnContextHideColumn>
+	<DynamicTradeWindowColumnContextShowHiddenColumns>Mostrar columnas ocultas:</DynamicTradeWindowColumnContextShowHiddenColumns>
 </LanguageData>
