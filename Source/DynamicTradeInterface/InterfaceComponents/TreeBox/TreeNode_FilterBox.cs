@@ -76,7 +76,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TreeBox
 		/// Triggers draw callback if any.
 		/// </summary>
 		/// <param name="rect">The rect.</param>
-		public void Draw(in Rect rect)
+		public void Draw(ref Rect rect)
 		{
 			if (Callback == null)
 				return;

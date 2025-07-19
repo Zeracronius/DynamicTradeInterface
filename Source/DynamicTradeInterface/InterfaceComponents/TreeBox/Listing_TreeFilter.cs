@@ -70,7 +70,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TreeBox
 			_rect.height = lineHeight;
 
 			if (node.Callback != null)
-				node.Draw(in _rect);
+				node.Draw(ref _rect);
 
 			EndLine();
 			if (recursiveDraw)
