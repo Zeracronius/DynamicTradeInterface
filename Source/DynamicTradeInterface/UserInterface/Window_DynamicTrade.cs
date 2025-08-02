@@ -267,6 +267,16 @@ namespace DynamicTradeInterface.UserInterface
 			}
 		}
 
+		public override void Close(bool doCloseSound = true)
+		{
+			DragSliderManager.ForceStop();
+			base.Close(doCloseSound);
+			if (TradeSession.trader is Pawn pawn && pawn.mindState.hasQuest)
+			{
+				TradeUtility.ReceiveQuestFromTrader(pawn, TradeSession.playerNegotiator);
+			}
+		}
+
 		public override void PostClose()
 		{
 			// Trigger PostClosed for each column in both tables to allow them to clean up.
