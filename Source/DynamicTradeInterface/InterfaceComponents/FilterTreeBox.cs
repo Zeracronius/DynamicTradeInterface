@@ -182,10 +182,10 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 			// Begin listcontrol and add empty gap for all the space above scrollbox.
 			lineListing.Begin(listbox);
-			lineListing.Gap(_scrollPosition.y);
+			int currentIndex = Mathf.FloorToInt(_scrollPosition.y / lineHeight);
+			lineListing.Gap(lineHeight * currentIndex);
 
 			// Get index of first row visible in scrollbox
-			int currentIndex = Mathf.FloorToInt(_scrollPosition.y / lineHeight);
 			for (; currentIndex < count; currentIndex++)
 			{
 				TreeNode_FilterBox node = _items[currentIndex];
