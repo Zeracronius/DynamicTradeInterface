@@ -559,11 +559,11 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 			{
 				Widgets.BeginScrollView(boundingBox, ref _scrollPosition, listbox, _drawScrollbar);
 
-				rowRect.y = _scrollPosition.y;
+				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
+				rowRect.y = rowRect.height * currentIndex;
 
 				T currentRow;
 				// Get index of first row visible in scrollbox
-				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
 				int rowCount = _rows.Filtered.Count;
 				for (; currentIndex < rowCount; currentIndex++)
 				{
