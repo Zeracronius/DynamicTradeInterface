@@ -145,7 +145,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			Color buttonColor = normal;
 			// Draw left arrows
 			Rect button = new Rect(baseButtonRect);
-			if (CanAdjustBy(adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
+			if (Mod.DynamicTradeInterfaceMod.Settings.DynamicButtons == false || CanAdjustBy(adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
 			{
 				if ((canBuyAny == false && positiveDirection == TransferablePositiveCountDirection.Source) ||
 					(canSellAny == false && positiveDirection == TransferablePositiveCountDirection.Destination))
@@ -228,9 +228,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 				GUI.color = buttonColor;
 				if (Widgets.ButtonText(button, "<") || (!largeRange && DragSelect.IsPainting(button, DragSelect.PaintingDirection.Left)))
 				{
-					row.AdjustBy(adjustAmount);
-					refresh = true;
-					SoundDefOf.Tick_High.PlayOneShotOnCamera();
+					if (CanAdjustBy(adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
+					{
+						row.AdjustBy(adjustAmount);
+						refresh = true;
+						SoundDefOf.Tick_High.PlayOneShotOnCamera();
+					}
+					else
+						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+
 				}
 				GUI.color = normal;
 
@@ -242,19 +248,19 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			}
 
 			// Draw reset
-			if (currentAmountToTransfer != 0)
+			if (Mod.DynamicTradeInterfaceMod.Settings.DynamicButtons == false || currentAmountToTransfer != 0)
 			{
 				if (Widgets.ButtonText(baseButtonRect, "0") || DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Middle))
 				{
 					row.AdjustTo(0);
 					refresh = true;
-					SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+					SoundDefOf.Tick_High.PlayOneShotOnCamera();
 				}
 			}
 			baseButtonRect.x += baseButtonRect.width + gap;
 
 			// Draw right arrows
-			if (CanAdjustBy(-adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
+			if (Mod.DynamicTradeInterfaceMod.Settings.DynamicButtons == false || CanAdjustBy(-adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
 			{
 				buttonColor = normal;
 				if ((canSellAny == false && positiveDirection == TransferablePositiveCountDirection.Source) ||
@@ -288,10 +294,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				GUI.color = buttonColor;
 				if (Widgets.ButtonText(baseButtonRect, ">") || (!largeRange && DragSelect.IsPainting(baseButtonRect, DragSelect.PaintingDirection.Right)))
-				{
-					row.AdjustBy(-adjustAmount);
-					refresh = true;
-					SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+{
+					if (CanAdjustBy(-adjustAmount, currentAmountToTransfer, cached.MinimumQuantity, cached.MaximumQuantity))
+					{
+						row.AdjustBy(-adjustAmount);
+						refresh = true;
+						SoundDefOf.Tick_High.PlayOneShotOnCamera();
+					}
+					else
+						SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 
 				}
 				GUI.color = normal;
@@ -367,7 +378,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			if (TradeSession.giftMode || Event.current.shift)
 			{
-				row.AdjustTo(row.GetMinimumToTransfer());
+				AdjustTo(row, row.GetMinimumToTransfer());
 				return;
 			}
 
@@ -380,9 +391,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			int traderCanBuy = -MaxAmount(row, TradeAction.PlayerSells);
 			if (currentAmount > traderCanBuy)
-				row.AdjustTo(traderCanBuy);
+				AdjustTo(row, traderCanBuy);
 			else
-				row.AdjustTo(row.GetMinimumToTransfer());
+				AdjustTo(row, row.GetMinimumToTransfer());
 		}
 
 		/// <summary>
@@ -393,9 +404,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			int traderCanBuy = -MaxAmount(row, TradeAction.PlayerSells);
 			if (currentAmount < traderCanBuy)
-				row.AdjustTo(traderCanBuy);
+				AdjustTo(row, traderCanBuy);
 			else
-				row.AdjustTo(0);
+				AdjustTo(row, 0);
 		}
 
 		/// <summary>
@@ -406,7 +417,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			if (TradeSession.giftMode || Event.current.shift)
 			{
-				row.AdjustTo(row.GetMaximumToTransfer());
+				AdjustTo(row, row.GetMaximumToTransfer());
 				return;
 			}
 
@@ -421,9 +432,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			// If current value is below what the colony can buy, stop at that first.
 			if (currentAmount < colonyCanBuy)
-				row.AdjustTo(colonyCanBuy);
+				AdjustTo(row, colonyCanBuy);
 			else
-				row.AdjustTo(row.GetMaximumToTransfer());
+				AdjustTo(row, row.GetMaximumToTransfer());
 		}
 
 		/// <summary>
@@ -434,9 +445,15 @@ namespace DynamicTradeInterface.UserInterface.Columns
 		{
 			int traderCanBuy = MaxAmount(row, TradeAction.PlayerBuys);
 			if (currentAmount > traderCanBuy)
-				row.AdjustTo(traderCanBuy);
+				AdjustTo(row, traderCanBuy);
 			else
-				row.AdjustTo(0);
+				AdjustTo(row, 0);
+		}
+
+		private static void AdjustTo(Tradeable row, int amount)
+		{
+			if (row.CanAdjustTo(amount))
+				row.AdjustTo(amount);
 		}
 
 		private static int MaxAmount(Tradeable row, TradeAction action)
