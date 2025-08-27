@@ -13,7 +13,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 
 		static QualityColors()
 		{
-			Active = ModsConfig.IsActive("legodude17.qualcolor");
+			Active = ModsConfig.IsActive("DawnsGlow.qualcolor");
 			if (Active)
 			{
 				MethodInfo original = AccessTools.Method("QualityColors.QualityColorsMod:AddColors");
