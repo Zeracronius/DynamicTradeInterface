@@ -45,11 +45,11 @@ namespace DynamicTradeInterface.InterfaceComponents
 			{
 				Widgets.BeginScrollView(inRect, ref _scrollPosition, listbox, true);
 
-				rowRect.y = _scrollPosition.y;
+				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / rowRect.height);
+				rowRect.y = rowRect.height * currentIndex;
 
 				T currentRow;
 				// Get index of first row visible in scrollbox
-				int currentIndex = Mathf.FloorToInt(_scrollPosition.y / spacedRowHeight);
 				for (; currentIndex < _collection.Count; currentIndex++)
 				{
 					currentRow = _collection[currentIndex];

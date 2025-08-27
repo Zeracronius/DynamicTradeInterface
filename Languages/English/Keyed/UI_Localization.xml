@@ -24,6 +24,8 @@
 	<ConfigurationWindowShowAvailableOnMapTooltip>Show total available on map if different from what is available for trade in Available column.</ConfigurationWindowShowAvailableOnMapTooltip>
 	<ConfigurationWindowAlternatingRowColors>Row colors.</ConfigurationWindowAlternatingRowColors>
 	<ConfigurationWindowAlternatingRowColorsTooltip>Enable to have a slightly alternating background color per row.</ConfigurationWindowAlternatingRowColorsTooltip>
+	<ConfigurationWindowDynamicButtons>Dynamic buttons</ConfigurationWindowDynamicButtons>
+	<ConfigurationWindowDynamicButtonsTooltip>When enabled, invalid buttons are hidden.</ConfigurationWindowDynamicButtonsTooltip>
 
 	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
