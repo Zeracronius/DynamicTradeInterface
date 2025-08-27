@@ -97,15 +97,6 @@ namespace DynamicTradeInterface.Tests
 			tradeWindow.Close();
 		}
 
-		[Test]
-		[ExecutionPriority(Priority.Last)]
-		public void Close()
-		{
-			// Can close without exception
-			UserInterface.Window_DynamicTrade window = Find.WindowStack.WindowOfType<UserInterface.Window_DynamicTrade>();
-			window.Close();
-		}
-
 		public void ColumnButtons()
 		{
 			// Min, Max, Increments, Affordable
