@@ -76,6 +76,7 @@ namespace DynamicTradeInterface.Mod
 
 		internal Dictionary<TradeColumnDef, Queue<long>> TradeColumnProfilings => _tradeColumnProfilings;
 
+		public List<Notifications.NotificationEntry> Notifications = new List<Notifications.NotificationEntry>();
 
 		public bool ProfilingEnabled;
 		public float TradeWidthPercentage = DEFAULT_TRADE_WIDTH;
@@ -128,6 +129,16 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref DynamicButtons, nameof(DynamicButtons), true);
 
 
+			try
+			{
+				Scribe_Collections.Look(ref Notifications, "DTI_Notifications", LookMode.Deep);
+			}
+			catch (Exception e)
+			{
+				Log.Warning("[Dynamic Trade Interface] Unable to load saved filters presets: " + e.Message);
+			}
+			if (Notifications == null)
+				Notifications = new List<Notifications.NotificationEntry>();
 
 			if (TradeWidthPercentage < 0.01)
 				TradeWidthPercentage = DEFAULT_TRADE_WIDTH;

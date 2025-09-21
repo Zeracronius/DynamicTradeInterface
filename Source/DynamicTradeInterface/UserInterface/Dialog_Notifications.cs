@@ -1,4 +1,5 @@
-﻿using DynamicTradeInterface.InterfaceComponents;
+﻿using DynamicTradeInterface.Attributes;
+using DynamicTradeInterface.InterfaceComponents;
 using DynamicTradeInterface.Mod;
 using DynamicTradeInterface.Notifications;
 using DynamicTradeInterface.Patches;
@@ -10,9 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 namespace DynamicTradeInterface.UserInterface
 {
+	[HotSwappable]
 	internal class Dialog_Notifications : Window
 	{
 		private string? _windowTitle;
@@ -21,19 +24,21 @@ namespace DynamicTradeInterface.UserInterface
 		private string? _addTooltip;
 		private string? _removeTooltip;
 		private string? _newRowText;
+		private ListBox<NotificationEntry>? _notificationListBoxCurrent;
+		private ListBox<NotificationEntry>? _notificationListBoxShared;
 		private ListBox<NotificationEntry>? _notificationListBox;
-		private Vector2 _initialPosition;
 		private Action<string>? _applyFilterCallback;
 		private InterfaceComponents.Notifications _notifications;
+		private int selectedTab = 0;
+		private List<TabRecord> _tabs = new List<TabRecord>();
 
-        public Dialog_Notifications(Vector2 initialPosition, Action<string> applyFilterCallback, InterfaceComponents.Notifications notifications)
+		public Dialog_Notifications(Action<string> applyFilterCallback, InterfaceComponents.Notifications notifications)
         {
 			resizeable = true;
 			closeOnClickedOutside = true;
 			doCloseButton = false;
 			doCloseX = false;
 			absorbInputAroundWindow = true;
-			_initialPosition = initialPosition;
 			_applyFilterCallback = applyFilterCallback;
 			_notifications = notifications;
 			soundClose = null;
@@ -43,7 +48,7 @@ namespace DynamicTradeInterface.UserInterface
 		{
 			base.PreOpen();
 
-
+			
 
 			_windowTitle = "DynamicTradeWindowNotificationsTitle".Translate();
 			_filterToThisTooltip = "DynamicTradeWindowNotificationsScopeFilter".Translate();
@@ -51,13 +56,17 @@ namespace DynamicTradeInterface.UserInterface
 			_addTooltip = "DynamicTradeWindowNotificationsAdd".Translate();
 			_removeTooltip = "DynamicTradeWindowNotificationsDelete".Translate();
 
-			var notifications = GameSettings.Notifications;
-			_notificationListBox = new ListBox<NotificationEntry>(notifications);
-			_notificationListBox.RowSpacing = 7;
+			_notificationListBoxCurrent = new ListBox<NotificationEntry>(GameSettings.Notifications);
+			_notificationListBoxCurrent.RowSpacing = 7;
+
+			_notificationListBoxShared = new ListBox<NotificationEntry>(DynamicTradeInterfaceMod.Settings.Notifications);
+			_notificationListBoxShared.RowSpacing = 7;
+
+			_notificationListBox = _notificationListBoxCurrent;
+
+
 			base.windowRect.width = 400;
 			base.windowRect.height = Text.LineHeight * 20;
-			//base.windowRect.x = _initialPosition.x; // - (windowRect.width / 2);
-			//base.windowRect.y = _initialPosition.y; // + (windowRect.height / 2);
 
 			Vector2 mousePosition = UI.MousePositionOnUIInverted;
 
@@ -69,6 +78,14 @@ namespace DynamicTradeInterface.UserInterface
 
 			base.windowRect.x = mousePosition.x;
 			base.windowRect.y = mousePosition.y + 20;
+
+			_tabs.Add(new("DynamicTradeWindowNotificationsTabsCurrent".Translate(), 
+				() => _notificationListBox = _notificationListBoxCurrent, 
+				() => _notificationListBox == _notificationListBoxCurrent));
+
+			_tabs.Add(new("DynamicTradeWindowNotificationsTabsShared".Translate(), 
+				() => _notificationListBox = _notificationListBoxShared, 
+				() => _notificationListBox == _notificationListBoxShared));
 		}
 
 		public override void PreClose()
@@ -82,24 +99,36 @@ namespace DynamicTradeInterface.UserInterface
 			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
 				return;
 
-			inRect = inRect.ContractedBy(GenUI.GapTiny);
 			inRect.SplitHorizontallyWithMargin(out Rect top, out Rect bottom, out _, GenUI.GapTiny, Constants.SQUARE_BUTTON_SIZE);
 
+			DrawTitle(top);
 
-			//if (Mouse.IsOver(newButtonRect))
-			//	TooltipHandler.TipRegion(newButtonRect, _addTooltip);
+			bottom.SplitHorizontallyWithMargin(out Rect tabs, out bottom, out _, topHeight: TabDrawer.TabHeight);
+			Widgets.DrawMenuSection(bottom);
+			tabs.height += GenUI.GapTiny - 1;
 
-			Text.Anchor = TextAnchor.UpperCenter;
-			Widgets.Label(top, _windowTitle);
-			Text.Anchor = TextAnchor.UpperLeft;
-			
-			bottom.SplitHorizontallyWithMargin(out Rect listRect, out Rect newRowRect, out _, GenUI.GapTiny, bottomHeight: Text.LineHeight);
+			Widgets.BeginGroup(tabs);
+			TabDrawer.DrawTabs(tabs, _tabs, tabs.width);
+			Widgets.EndGroup();
+
+
+			bottom.ContractedBy(GenUI.GapSmall).SplitHorizontallyWithMargin(out Rect listRect, out Rect newRowRect, out _, GenUI.GapTiny, bottomHeight: Text.LineHeight);
 
 			float height = 0;
 			_notificationListBox?.Draw(listRect, out height, DrawNotificationLine);
 
 			newRowRect.y = listRect.y + height + GenUI.GapTiny;
 			DrawNewRowLine(newRowRect);
+		}
+
+
+		private void DrawTitle(Rect inRect)
+		{
+			Text.Anchor = TextAnchor.UpperCenter;
+			Text.Font = GameFont.Medium;
+			Widgets.Label(inRect, _windowTitle);
+			Text.Font = GameFont.Small;
+			Text.Anchor = TextAnchor.UpperLeft;
 		}
 
 		private void DrawNewRowLine(Rect inRect)
@@ -196,7 +225,9 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void NewNotification(string value)
 		{
-			GameSettings.Notifications.Add(new(value));
+			NotificationEntry entry = new(value);
+			_notificationListBox?.Items.Add(entry);
+			_notifications.Refresh(entry);
 		}
 
 		private void ApplyFilter(NotificationEntry entry)
@@ -207,7 +238,8 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void DeleteNotification(NotificationEntry entry)
 		{
-			GameSettings.Notifications.Remove(entry);
+			_notificationListBox?.Items.Remove(entry);
+			_notifications.Refresh(entry);
 		}
 	}
 }

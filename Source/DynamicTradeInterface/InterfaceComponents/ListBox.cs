@@ -17,6 +17,8 @@ namespace DynamicTradeInterface.InterfaceComponents
 		private List<T> _collection;
 		public float RowSpacing { get; set; } = 3;
 
+		public List<T> Items => _collection;
+
 		public ListBox(List<T> collection)
 		{
 			_collection = collection;
