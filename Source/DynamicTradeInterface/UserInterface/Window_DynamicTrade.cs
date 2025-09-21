@@ -81,7 +81,7 @@ namespace DynamicTradeInterface.UserInterface
 			_rowFont = GameFont.Small;
 			_currencyFont = GameFont.Medium;
 			_giftOnly = giftOnly;
-			_notifications = new InterfaceComponents.Notifications(GameSettings.Notifications);
+			_notifications = new InterfaceComponents.Notifications(GameSettings.Notifications.Concat(DynamicTradeInterfaceMod.Settings.Notifications));
 
 			_colonyTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
@@ -931,7 +931,7 @@ namespace DynamicTradeInterface.UserInterface
 
 		private void ShowPresetFiltersWindow()
 		{
-			Find.WindowStack.Add(new Dialog_Notifications(UI.MousePositionOnUI, ApplyFilter, _notifications));
+			Find.WindowStack.Add(new Dialog_Notifications(ApplyFilter, _notifications));
 		}
 
 		private void ConfirmTrade()

@@ -1,5 +1,5 @@
 ﻿using DevTools;
-using DevTools.UnitTesting;
+using DevTools.Testing;
 using RimWorld;
 using System;
 using Verse;
@@ -67,8 +67,7 @@ namespace DynamicTradeInterface.Tests
 				TestWindow();
 				Test.EndGroup(tradeShip.TraderKind.LabelCap);
 			}
-
-
+			
 			//ColumnButtons();
 			//ColumnCaption();
 			//ColumnCategory();

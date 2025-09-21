@@ -4,11 +4,20 @@
     <langVersion>10.0</langVersion>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Debug</Configurations>
-  </PropertyGroup>
-  <PropertyGroup>
+    <Configurations>Debug;Hotswap;v1.6</Configurations>
     <OutputPath>..\..\1.6\Assemblies\</OutputPath>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Hotswap|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='v1.6|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\DynamicTradeInterface\DynamicTradeInterface.csproj" />
   </ItemGroup>

@@ -71,7 +71,10 @@
 	<DynamicTradeWindowNotificationsEnable>Enable notifications.</DynamicTradeWindowNotificationsEnable>
 	<DynamicTradeWindowNotificationsAdd>Add new preset.</DynamicTradeWindowNotificationsAdd>
 	<DynamicTradeWindowNotificationsDelete>Delete preset.</DynamicTradeWindowNotificationsDelete>
-	
+	<DynamicTradeWindowNotificationsTabsCurrent>Current game</DynamicTradeWindowNotificationsTabsCurrent>
+	<DynamicTradeWindowNotificationsTabsShared>Shared</DynamicTradeWindowNotificationsTabsShared>
+
+
 	<DynamicTradeWindowColumnContextSortByAscending>Sort by Ascending</DynamicTradeWindowColumnContextSortByAscending>
 	<DynamicTradeWindowColumnContextSortByDescending>Sort by Descending</DynamicTradeWindowColumnContextSortByDescending>
 	<DynamicTradeWindowColumnContextClearSorting>Clear sorting</DynamicTradeWindowColumnContextClearSorting>

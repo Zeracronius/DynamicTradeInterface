@@ -11,14 +11,14 @@ namespace DynamicTradeInterface.InterfaceComponents
 {
 	internal class Notifications
 	{
-		List<NotificationEntry> _entries;
+		IEnumerable<NotificationEntry> _entries;
 		Dictionary<NotificationEntry, (int, string)> _notifications;
 		List<TableRow<Tradeable>> _wares;
 
 		public int TotalHits { get; private set; }
 		public string TotalHitsText { get; private set; }
 
-		public Notifications(List<NotificationEntry> notifications)
+		public Notifications(IEnumerable<NotificationEntry> notifications)
         {
 			_entries = notifications;
 			_notifications = new Dictionary<NotificationEntry, (int, string)>();
