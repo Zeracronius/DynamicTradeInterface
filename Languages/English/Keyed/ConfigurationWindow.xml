@@ -1,0 +1,37 @@
+<LanguageData>
+	<ConfigurationWindowTitle>Trade window Configuration</ConfigurationWindowTitle>
+	<ConfigurationWindowHideUnwilling>Exclude unwilling items</ConfigurationWindowHideUnwilling>
+	<ConfigurationWindowHideUnwillingTooltip>Exclude all items trader is unwilling to buy.</ConfigurationWindowHideUnwillingTooltip>
+	<ConfigurationWindowSelectedColumns>Selected columns</ConfigurationWindowSelectedColumns>
+	<ConfigurationWindowAvailableColumns>Available columns</ConfigurationWindowAvailableColumns>
+	<ConfigurationWindowEnableProfiling>Enable profiling</ConfigurationWindowEnableProfiling>
+	<ConfigurationWindowEnableGhostButtons>Ghost buttons</ConfigurationWindowEnableGhostButtons>
+	<ConfigurationWindowEnableGhostButtonsTooltip>Improve performance by only showing trade buttons near the cursor.</ConfigurationWindowEnableGhostButtonsTooltip>
+	<ConfigurationWindowRememberSortings>Remember sorting</ConfigurationWindowRememberSortings>
+	<ConfigurationWindowRememberSortingsTooltip>Save column sortings in mod configurations.</ConfigurationWindowRememberSortingsTooltip>
+	<ConfigurationWindowResetWidths>Reset widths</ConfigurationWindowResetWidths>
+	<ConfigurationWindowEnableBulkDurability>Stacked durability</ConfigurationWindowEnableBulkDurability>
+	<ConfigurationWindowEnableBulkDurabilityTooltip>Show averaged durability for stacked items in durability column.</ConfigurationWindowEnableBulkDurabilityTooltip>
+	<ConfigurationWindowAutoRefocus>Auto refocus</ConfigurationWindowAutoRefocus>
+	<ConfigurationWindowAutoRefocusTooltip>Attempts to retain focus on input field when unfocused by changing interface.</ConfigurationWindowAutoRefocusTooltip>
+	<ConfigurationWindowOpenAsDefault>Default trade window</ConfigurationWindowOpenAsDefault>
+	<ConfigurationWindowOpenAsDefaultTooltip>Use as default trade window. The non-default window can be opened by holding down Ctrl as the window opens.</ConfigurationWindowOpenAsDefaultTooltip>
+	<ConfigurationWindowPauseAfterTrade>Pause after trade</ConfigurationWindowPauseAfterTrade>
+	<ConfigurationWindowPauseAfterTradeTooltip>Keeps the game paused after trade window is closed.</ConfigurationWindowPauseAfterTradeTooltip>
+	<ConfigurationWindowShowAvailableOnMap>Show available on map.</ConfigurationWindowShowAvailableOnMap>
+	<ConfigurationWindowShowAvailableOnMapTooltip>Show total available on map if different from what is available for trade in Available column.</ConfigurationWindowShowAvailableOnMapTooltip>
+	<ConfigurationWindowAlternatingRowColors>Row colors.</ConfigurationWindowAlternatingRowColors>
+	<ConfigurationWindowAlternatingRowColorsTooltip>Enable to have a slightly alternating background color per row.</ConfigurationWindowAlternatingRowColorsTooltip>
+	<ConfigurationWindowDynamicButtons>Dynamic buttons</ConfigurationWindowDynamicButtons>
+	<ConfigurationWindowDynamicButtonsTooltip>When enabled, invalid buttons are hidden.</ConfigurationWindowDynamicButtonsTooltip>
+	<ConfigurationWindowColumnDef>Def</ConfigurationWindowColumnDef>
+	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
+	<ConfigurationWindowColumnAvgMs>Avg ms</ConfigurationWindowColumnAvgMs>
+	<ConfigurationWindowColumnMaxMs>Max ms</ConfigurationWindowColumnMaxMs>
+
+	<ConfigurationWindowRowFont>Row size</ConfigurationWindowRowFont>
+	<ConfigurationWindowRowFontTooltip>Changes the font size of the trade window rows.</ConfigurationWindowRowFontTooltip>
+	<ConfigurationWindowFontTiny>Tiny</ConfigurationWindowFontTiny>
+	<ConfigurationWindowFontSmall>Small</ConfigurationWindowFontSmall>
+	<ConfigurationWindowFontMedium>Medium</ConfigurationWindowFontMedium>
+</LanguageData>
