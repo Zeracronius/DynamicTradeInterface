@@ -788,6 +788,7 @@ namespace DynamicTradeInterface.UserInterface
 			LoadWares();
 			_currency = TradeSession.deal.CurrencyTradeable;
 			TradeSummary.Refresh(_tradeables);
+			TradeSummary.LineFont = _settings.RowFont - 1;
 
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);

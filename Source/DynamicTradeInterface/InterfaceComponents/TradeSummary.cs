@@ -27,9 +27,6 @@ namespace DynamicTradeInterface.InterfaceComponents
 			public string Count { get; }
 		}
 
-
-
-
 		private const float LINE_SPACING = 3;
 		static List<(Tradeable, float)> _buffer;
 		static List<SummaryItem> _tradeablesSelling;
@@ -40,10 +37,11 @@ namespace DynamicTradeInterface.InterfaceComponents
 		static string _giftingLabel;
 		static string _sellingLabelKey;
 		static string _buyingLabelKey;
-
 		static string _buyingSumLabel;
 		static string _sellingSumLabel;
 		static string _currency;
+
+		public static GameFont LineFont = GameFont.Tiny;
 
 		static TradeSummary()
         {
@@ -134,7 +132,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 			DrawHeader(buyingRect.x, ref y, buyingRect.width, label);
 			if (_tradeablesBuying.Count > 0)
 			{
-				_buyingListBox.Draw(new Rect(buyingRect.x, y + LINE_SPACING, buyingRect.width, buyingRect.height - 28f), out float height, DrawItem);
+				_buyingListBox.Draw(new Rect(buyingRect.x, y + LINE_SPACING, buyingRect.width, buyingRect.height - 28f), out float height, DrawItem, LineFont);
 				y += height;
 			}
 
@@ -144,7 +142,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 				DrawHeader(sellingRect.x, ref y, sellingRect.width, _sellingSumLabel);
 				if (_tradeablesSelling.Count > 0)
 				{
-					_sellingListBox.Draw(new Rect(sellingRect.x, y + LINE_SPACING, sellingRect.width, sellingRect.height - 28f), out float height, DrawItem);
+					_sellingListBox.Draw(new Rect(sellingRect.x, y + LINE_SPACING, sellingRect.width, sellingRect.height - 28f), out float height, DrawItem, LineFont);
 					y += height;
 				}
 			}
@@ -154,7 +152,7 @@ namespace DynamicTradeInterface.InterfaceComponents
 		private static void DrawHeader(float x, ref float y, float width, string label)
 		{
 			Text.Anchor = TextAnchor.UpperCenter;
-			Text.Font = GameFont.Small;
+			Text.Font = LineFont + 1;
 			Widgets.Label(new Rect(x, y + LINE_SPACING, width, 28f), label);
 			Widgets.DrawHighlight(new Rect(x, y + LINE_SPACING, width, 22f));
 			y += 28f;

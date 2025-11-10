@@ -406,7 +406,7 @@ namespace DynamicTradeInterface.InterfaceComponents.TableBox
 		/// <param name="boundingBox">Decides the size and position of the table.</param>
 		public void Draw(Rect boundingBox)
 		{
-			Text.Font = GameFont.Small;
+			Text.Font = _lineFont;
 			if (string.IsNullOrEmpty(_caption) == false)
 			{
 				float height = Text.LineHeight;
