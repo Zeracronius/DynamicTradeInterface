@@ -40,7 +40,6 @@ namespace DynamicTradeInterface.UserInterface
 		bool _refresh;
 		bool _giftOnly;
 		bool _resizingSummary;
-		GameFont _rowFont;
 		GameFont _currencyFont;
 		float _headerHeight;
 		Faction? _traderFaction;
@@ -73,12 +72,11 @@ namespace DynamicTradeInterface.UserInterface
 		string _summaryShowText = string.Empty;
 		string _summaryHideText = string.Empty;
 		string _focusedControl = string.Empty;
-		string _notificationsTooltip = string.Empty;
 		string _notificationsBellTooltip = string.Empty;
 
 		public Window_DynamicTrade(bool giftOnly = false)
 		{
-			_rowFont = GameFont.Small;
+			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 			_currencyFont = GameFont.Medium;
 			_giftOnly = giftOnly;
 			_notifications = new InterfaceComponents.Notifications(GameSettings.Notifications.Concat(DynamicTradeInterfaceMod.Settings.Notifications));
@@ -86,22 +84,19 @@ namespace DynamicTradeInterface.UserInterface
 			_colonyTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
 				DrawScrollbarAlways = true,
-				LineFont = _rowFont,
+				LineFont = _settings.RowFont,
 				CanSelectRows = false,
 				DrawSearchBox = false,
 				DrawBorder = true,
 			};
-			_colonyTable.LineFont = GameFont.Small;
 			_traderTable = new Table<TableRow<Tradeable>>(ApplySearch)
 			{
 				DrawScrollbarAlways = true,
-				LineFont = _rowFont,
+				LineFont = _settings.RowFont,
 				CanSelectRows = false,
 				DrawSearchBox = false,
 				DrawBorder = true,
 			};
-			_traderTable.LineFont = GameFont.Small;
-			_settings = Mod.DynamicTradeInterfaceMod.Settings;
 			_tradeables = new List<Tradeable>();
 			_stopWatch = new Stopwatch();
 			_columns = _settings.GetVisibleTradeColumns();
@@ -200,7 +195,6 @@ namespace DynamicTradeInterface.UserInterface
 			_unlockedTooltip = "DynamicTradeWindowUnlocked".Translate();
 			_summaryShowText = "DynamicTradeWindowSummaryShow".Translate();
 			_summaryHideText = "DynamicTradeWindowSummaryHide".Translate();
-			_notificationsTooltip = "DynamicTradeWindowNotificationsTooltip".Translate();
 			_saveTooltip = "DynamicTradeWindowSaveAsPreset".Translate();
 			_notificationsBellTooltip = "DynamicTradeWindowNotificationBell".Translate();
 
@@ -294,6 +288,7 @@ namespace DynamicTradeInterface.UserInterface
 		private void PopulateTable(Table<TableRow<Tradeable>> table, Transactor transactor)
 		{
 			table.Clear();
+			table.LineFont = _settings.RowFont;
 
 			ColumnCallback callback = ColumnCallbackSimple;
 			if (_settings.ProfilingEnabled)
@@ -338,7 +333,7 @@ namespace DynamicTradeInterface.UserInterface
 
 
 			// Allow columns to cache data.
-			Text.Font = _rowFont;
+			Text.Font = table.LineFont;
 			foreach (TradeColumnDef column in _columns)
 				column._postOpenCallback?.Invoke(table.RowItems.Select(x => x.RowObject), transactor);
 
@@ -793,6 +788,7 @@ namespace DynamicTradeInterface.UserInterface
 			LoadWares();
 			_currency = TradeSession.deal.CurrencyTradeable;
 			TradeSummary.Refresh(_tradeables);
+			TradeSummary.LineFont = _settings.RowFont - 1;
 
 			PopulateTable(_colonyTable, Transactor.Colony);
 			PopulateTable(_traderTable, Transactor.Trader);

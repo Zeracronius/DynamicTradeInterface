@@ -32,11 +32,11 @@ namespace DynamicTradeInterface.InterfaceComponents
 		/// <param name="y">Y position.</param>
 		/// <param name="height">Filterbox height.</param>
 		/// <param name="callback">The callback.</param>
-		public void Draw(Rect inRect, out float height, Action<Rect, T> callback)
+		public void Draw(Rect inRect, out float height, Action<Rect, T> callback, GameFont font = GameFont.Tiny)
 		{
 			float curY = inRect.y;
 
-			Text.Font = GameFont.Tiny;
+			Text.Font = font;
 
 			float width = inRect.width - GenUI.ScrollBarWidth - GenUI.GapTiny;
 			Rect rowRect = new Rect(0, 0, width, Text.LineHeight + GenUI.GapTiny);

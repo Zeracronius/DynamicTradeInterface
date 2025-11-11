@@ -98,6 +98,18 @@ namespace DynamicTradeInterface.UserInterface
 					new TreeNode_FilterBox("ConfigurationWindowDynamicButtons".Translate(), "ConfigurationWindowDynamicButtonsTooltip".Translate(),
 						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.DynamicButtons, x.height)),
 
+					new TreeNode_FilterBox("ConfigurationWindowRowFont".Translate(), "ConfigurationWindowRowFontTooltip".Translate(),
+						(in Rect x) => {
+							if (Widgets.ButtonText(x, ("ConfigurationWindowFont" + _settings.RowFont).Translate()))
+								Find.WindowStack.Add(
+									new FloatMenu(
+										Enum.GetValues(typeof(GameFont))
+										.Cast<GameFont>()
+										.Select(size => new FloatMenuOption(("ConfigurationWindowFont" + size).Translate(), () => _settings.RowFont = size))
+										.ToList()
+								));
+						}),
+
 					new TreeNode_FilterBox("ConfigurationWindowResetWidths".Translate(), null,
 						(in Rect x) => {
 							if (Widgets.ButtonText(x, "ConfigurationWindowResetWidths".Translate()))
@@ -200,7 +212,7 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Anchor = TextAnchor.UpperCenter;
 			Text.Font = GameFont.Medium;
 			Widgets.Label(header, _windowTitle);
-			Text.Font = GameFont.Small;
+			Text.Font = _settings.RowFont;
 			Text.Anchor = TextAnchor.UpperLeft;
 
 			body.SplitHorizontallyWithMargin(out body, out Rect footer, out _, GenUI.GapTiny, bottomHeight: MAIN_BUTTON_SIZE.y + GenUI.GapTiny);
@@ -208,15 +220,17 @@ namespace DynamicTradeInterface.UserInterface
 			body.SplitVerticallyWithMargin(out body, out Rect configurations, out _, GenUI.GapTiny, rightWidth: 250);
 
 			Text.Anchor = TextAnchor.UpperLeft;
-			float optionEntry = Text.LineHeightOf(GameFont.Small) + GenUI.GapTiny;
+			float optionEntry = Text.LineHeightOf(Text.Font) + GenUI.GapTiny;
 
 			_optionsBox?.Draw(configurations);
 
 
 			float margin = COLUMN_BUTTON_SIZE + GenUI.GapSmall;
 			body.SplitVerticallyWithMargin(out Rect left, out Rect right, out _, margin, leftWidth: body.width / 2 - margin / 2);
-
+			_selectedColumnsTable!.LineFont = _settings.RowFont;
 			_selectedColumnsTable!.Draw(left);
+
+			_availableColumnsTable!.LineFont = _settings.RowFont;
 			_availableColumnsTable!.Draw(right);
 
 			Rect buttonRect = new Rect(left.xMax + GenUI.GapSmall / 2, left.center.y - (COLUMN_BUTTON_SIZE * 2), COLUMN_BUTTON_SIZE, COLUMN_BUTTON_SIZE);
