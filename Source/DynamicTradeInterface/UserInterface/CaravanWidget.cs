@@ -77,8 +77,14 @@ namespace DynamicTradeInterface.UserInterface
 					tilesPerDayDirty = false;
 					TradeSession.deal.UpdateCurrencyCount();
 					Caravan caravan = TradeSession.playerNegotiator.GetCaravan();
+					if (caravan.Shuttle != null)
+					{
+						_tilesPerDayExplanation = "CaravanMovementSpeedShuttle".Translate();
+						return 0f;
+					}
+
 					StringBuilder stringBuilder = new StringBuilder();
-					_tilesPerDay = TilesPerDayCalculator.ApproxTilesPerDayLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, MassUsage, MassCapacity, _playerTile, (caravan != null && caravan.pather.Moving) ? caravan.pather.nextTile : (-1), caravan?.Shuttle != null, stringBuilder);
+					_tilesPerDay = TilesPerDayCalculator.ApproxTilesPerDayLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, MassUsage, MassCapacity, _playerTile, (caravan != null && caravan.pather.Moving) ? caravan.pather.nextTile : (-1), false, stringBuilder);
 					_tilesPerDayExplanation = stringBuilder.ToString();
 				}
 				return _tilesPerDay;
@@ -127,6 +133,12 @@ namespace DynamicTradeInterface.UserInterface
 				if (massCapacityDirty)
 				{
 					massCapacityDirty = false;
+					Building_PassengerShuttle shuttle = TradeSession.playerNegotiator.GetCaravan().Shuttle;
+					if (shuttle != null)
+					{
+						_massCapacity = shuttle.TransporterComp.MassCapacity;
+						return _massCapacity;
+					}
 					TradeSession.deal.UpdateCurrencyCount();
 					StringBuilder stringBuilder = new StringBuilder();
 					_massCapacity = CollectionsMassCalculator.CapacityLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, stringBuilder);
@@ -145,7 +157,16 @@ namespace DynamicTradeInterface.UserInterface
 				{
 					massUsageDirty = false;
 					TradeSession.deal.UpdateCurrencyCount();
-					_massUsage = CollectionsMassCalculator.MassUsageLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, IgnorePawnsInventoryMode.Ignore);
+
+
+					Building_PassengerShuttle shuttle = TradeSession.playerNegotiator.GetCaravan().Shuttle;
+					if (shuttle != null)
+					{
+						_massUsage = CollectionsMassCalculator.MassUsageLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, IgnorePawnsInventoryMode.Ignore, includePawnsMass: true);
+						_massUsage -= shuttle.GetStatValue(StatDefOf.Mass);
+					}
+					else
+						_massUsage = CollectionsMassCalculator.MassUsageLeftAfterTradeableTransfer(_allPawnsAndItems, _tradeables, IgnorePawnsInventoryMode.Ignore);
 				}
 				return _massUsage;
 			}
