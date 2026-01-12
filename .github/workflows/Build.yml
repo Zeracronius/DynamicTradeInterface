@@ -53,7 +53,7 @@ jobs:
         if ("${{ env.Branch }}" -ne "refs/heads/master") {
             $branch = $env:Branch.replace("refs/heads/", "") + "-"
         }
-        $name = "$env:Name-$($branch)$(get-date -f MM-dd)"
+        $name = "$env:Name-$($branch)$(get-date -f yyyy-MM-dd)"
 
         echo "ReleaseName=$name" >> $env:GITHUB_OUTPUT
         echo ArtifactName=$name >> $env:GITHUB_ENV
