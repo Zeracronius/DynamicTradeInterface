@@ -48,7 +48,7 @@ namespace DynamicTradeInterface.Tests
 				break;
 			}
 
-			yield return Test.Suspend(300);
+			yield return Test.Suspend(-1);
 		}
 	}
 }

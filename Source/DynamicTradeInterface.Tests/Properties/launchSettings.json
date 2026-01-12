@@ -8,7 +8,7 @@
     "Manual": {
       "commandName": "Executable",
       "executablePath": "F:\\SteamLibrary\\steamapps\\common\\RimWorld\\RimWorldWin64.exe",
-      "commandLineArgs": "--pid zeracronius.dynamictradeinterface --test --where \"category == manual\""
+      "commandLineArgs":"-savedatafolder=F:/Rimworld/DynamicTrade --pid zeracronius.dynamictradeinterface --test --where \"category == manual\""
     },
     "Debugging": {
       "commandName": "Executable",
