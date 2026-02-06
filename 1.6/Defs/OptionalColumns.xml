@@ -51,4 +51,18 @@
 		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCategory:PostClosed</postClosedCallbackHandler>
 		<defaultWidth>80</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>
+
+	<DynamicTradeInterface.Defs.TradeColumnDef>
+		<defName>colQualityDef</defName>
+		<label>quality</label>
+		<description>Shows the quality of the thing.</description>
+		<showCaption>true</showCaption>
+		<defaultVisible>false</defaultVisible>
+		<callbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuality:Draw</callbackHandler>
+		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuality:OrderbyValue</orderValueCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuality:SearchValue</searchValueCallbackHandler>
+		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuality:PostOpen</postOpenCallbackHandler>
+		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnQuality:PostClosed</postClosedCallbackHandler>
+		<defaultWidth>80</defaultWidth>
+	</DynamicTradeInterface.Defs.TradeColumnDef>
 </Defs>
