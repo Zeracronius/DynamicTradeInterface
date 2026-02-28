@@ -110,7 +110,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			if (TradeSession.giftMode == false)
 			{
-				if (_invalidatePostDeal && Event.current.type == EventType.Repaint)
+				if ((_invalidatePostDeal || refresh) && Event.current.type == EventType.Repaint)
 				{
 					_invalidatePostDeal = false;
 					_colonyPostDeal = TradeSession.deal.CurrencyTradeable.CountPostDealFor(Transactor.Colony);

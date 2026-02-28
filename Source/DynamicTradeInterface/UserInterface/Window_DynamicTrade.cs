@@ -38,6 +38,7 @@ namespace DynamicTradeInterface.UserInterface
 		InterfaceComponents.Notifications _notifications;
 		Regex? _searchRegex;
 		bool _refresh;
+		bool _globalRefresh;
 		bool _giftOnly;
 		bool _resizingSummary;
 		GameFont _currencyFont;
@@ -398,13 +399,22 @@ namespace DynamicTradeInterface.UserInterface
 
 		public override void DoWindowContents(Rect inRect)
 		{
+			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
+				return;
+
+			if (_globalRefresh)
+			{
+				// Allow all columns to react to a refresh.
+				_globalRefresh = false;
+				_refresh = true;
+			}
+
 			bool drawColonyColumn = true;
 			bool drawTraderColumn = true;
 
 			Text.Font = GameFont.Small;
-			if (Event.current.type == EventType.Layout) // this gets sent every frame but can only draw behind every window
-				return;
 			
+			// Reset profiling data if active.
 			if (_frameCache != null)
 				_frameCache.Clear();
 
@@ -607,8 +617,8 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				SoundDefOf.Tick_Low.PlayOneShotOnCamera();
 				ResetTrade();
-				_refresh = true;
 			}
+
 			if (Mouse.IsOver(resetButtonRect))
 				TooltipHandler.TipRegion(resetButtonRect, _resetButtonText);
 
@@ -1003,6 +1013,7 @@ namespace DynamicTradeInterface.UserInterface
 			{
 				_tradeables[i].ForceTo(0);
 			}
+			_globalRefresh = true;
 		}
 
 		public void FlashSilver()
