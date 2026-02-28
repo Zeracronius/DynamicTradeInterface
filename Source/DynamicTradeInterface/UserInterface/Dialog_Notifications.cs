@@ -29,7 +29,6 @@ namespace DynamicTradeInterface.UserInterface
 		private ListBox<NotificationEntry>? _notificationListBox;
 		private Action<string>? _applyFilterCallback;
 		private InterfaceComponents.Notifications _notifications;
-		private int selectedTab = 0;
 		private List<TabRecord> _tabs = new List<TabRecord>();
 
 		public Dialog_Notifications(Action<string> applyFilterCallback, InterfaceComponents.Notifications notifications)
