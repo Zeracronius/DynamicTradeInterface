@@ -415,8 +415,7 @@ namespace DynamicTradeInterface.UserInterface
 			Text.Font = GameFont.Small;
 			
 			// Reset profiling data if active.
-			if (_frameCache != null)
-				_frameCache.Clear();
+			_frameCache?.Clear();
 
 			bool giftMode = TradeSession.giftMode;
 

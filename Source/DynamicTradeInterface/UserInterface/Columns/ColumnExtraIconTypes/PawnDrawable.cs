@@ -10,6 +10,7 @@ using UnityEngine;
 using Verse;
 using DynamicTradeInterface.Attributes;
 using HarmonyLib;
+using System.Reflection;
 
 namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 {
@@ -29,10 +30,12 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			return base.GetIconTip(pawn);
 		}
 	}
-
+	
 	[HotSwappable]
 	internal static class PawnDrawable
 	{
+		static FieldInfo _pawnRecruitable = AccessTools.Field(typeof(Pawn_GuestTracker), "recruitable");
+
 		static PawnColumnLifeStageProxy _columnWorkerProxy = new PawnColumnLifeStageProxy();
 		static Func<Pawn_TrainingTracker, TrainableDef, int> _getStepsDelegate = AccessTools.MethodDelegate<Func<Pawn_TrainingTracker, TrainableDef, int>>("RimWorld.Pawn_TrainingTracker:GetSteps");
 
@@ -55,7 +58,6 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			yield break;
 		}
 
-
 		private static IEnumerable<(Texture, string?)> DoAnimalIcons(Pawn pawn)
 		{
 			Texture ageIcon = _columnWorkerProxy.GetIcon(pawn);
@@ -68,11 +70,11 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 
 			// Bonded
 			if (pawn.relations?.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond) != null)
-				yield return (ContentFinder<Texture2D>.Get("UI/Icons/Animal/Bond"), TrainableUtility.GetIconTooltipText(pawn));
+				yield return (Textures.Bond, TrainableUtility.GetIconTooltipText(pawn));
 
 			// Is pregnant
 			if (pawn.health?.hediffSet?.HasHediff(HediffDefOf.Pregnant, mustBeVisible: true) == true)
-				yield return (ContentFinder<Texture2D>.Get("UI/Icons/Animal/Pregnant"), PawnColumnWorker_Pregnant.GetTooltipText(pawn));
+				yield return (Textures.Pregnant, PawnColumnWorker_Pregnant.GetTooltipText(pawn));
 
 			// Is sick
 			if (pawn.health?.hediffSet?.AnyHediffMakesSickThought == true)
@@ -120,6 +122,14 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 				Pawn overseerPawn = pawn.GetOverseer();
 				if (overseerPawn != null)
 					yield return (PortraitsCache.Get(overseerPawn, new Vector2(36, 36), Rot4.South), "MechOverseer".Translate(overseerPawn));
+			}
+
+			if (pawn.guest != null)
+			{
+				if ((bool)_pawnRecruitable.GetValue(pawn.guest) == false)
+				{
+					yield return (Textures.UnwaveringlyLoyal, "NonRecruitable".Translate());
+				}
 			}
 
 			XenotypeDef? xeno = pawn.genes?.Xenotype;
@@ -181,6 +191,12 @@ namespace DynamicTradeInterface.UserInterface.Columns.ColumnExtraIconTypes
 			if (pawn.training != null)
 			{
 				result.Append("DynamicTradeWindowExtraIconsColumnTrained".Translate());
+				result.Append(' ');
+			}
+
+			if (pawn.guest != null && (bool)_pawnRecruitable.GetValue(pawn.guest) == false)
+			{
+				result.Append("NonRecruitable".Translate());
 				result.Append(' ');
 			}
 

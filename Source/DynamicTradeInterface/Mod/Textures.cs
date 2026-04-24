@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,10 @@ namespace DynamicTradeInterface.Mod
 		public static readonly Texture2D Save = ContentFinder<Texture2D>.Get("Icons/Save");
 		public static readonly Texture2D Schematic = ContentFinder<Texture2D>.Get("Things/Item/Book/Schematic/Schematic");
 		public static readonly Texture2D Book = ContentFinder<Texture2D>.Get("Things/Item/Book/Textbook/Textbook");
+
+		public static readonly Texture2D UnwaveringlyLoyal = ContentFinder<Texture2D>.Get("UI/Icons/UnwaveringlyLoyal");
+		public static readonly Texture2D Bond = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Bond");
+		public static readonly Texture2D Pregnant = ContentFinder<Texture2D>.Get("UI/Icons/Animal/Pregnant");
 
 		public static Texture2D GenerateTexture(Texture2D source, Color32 tint)
 		{
