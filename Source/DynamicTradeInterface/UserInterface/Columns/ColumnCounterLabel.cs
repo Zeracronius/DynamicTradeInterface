@@ -38,7 +38,9 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 			_dynamicTradeUnwilling = "DynamicTradeWindowUnwilling".Translate();
 			_positiveBuysNegativeSells = "PositiveBuysNegativeSells".Translate();
-			_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name);
+
+			if (ModsConfig.IdeologyActive)
+				_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name);
 		}
 
 
