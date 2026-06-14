@@ -41,12 +41,14 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					MaximumQuantity = row.GetMaximumToTransfer(),
 					SellingToSlavery = TransferableUIUtility.TradeIsPlayerSellingToSlavery(row, TradeSession.trader.Faction),
 					CanSellToSlavery = new HistoryEvent(HistoryEventDefOf.SoldSlave, TradeSession.playerNegotiator.Named(HistoryEventArgsNames.Doer)).DoerWillingToDo(),
-					Identity = row.AnyThing.ToString(),
+					Identity = row.AnyThing?.ToString(),
 				};
 
 			_dynamicTradeUnwilling = "DynamicTradeWindowUnwilling".Translate();
 			_positiveBuysNegativeSells = "PositiveBuysNegativeSells".Translate();
-			_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo.name);
+
+			if (ModsConfig.IdeologyActive)
+				_negotiatorWillNotTradeSlavesTip = "NegotiatorWillNotTradeSlavesTip".Translate(TradeSession.playerNegotiator, TradeSession.playerNegotiator.Ideo?.name ?? "");
 		}
 
 
