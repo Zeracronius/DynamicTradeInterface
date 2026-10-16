@@ -361,5 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-1.6/Assemblies/*
+1.7/Assemblies/*
 *.dds
