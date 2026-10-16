@@ -5,9 +5,9 @@
 		<langVersion>10.0</langVersion>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Configurations>Debug;Hotswap;v1.6</Configurations>
-    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
-    <Version>1.6.0.8</Version>
+		<Configurations>Debug;Hotswap;v1.7</Configurations>
+    <OutputPath>..\..\1.7\Assemblies\</OutputPath>
+    <Version>1.7.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
