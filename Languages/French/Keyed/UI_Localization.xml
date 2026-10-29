@@ -1,0 +1,78 @@
+<LanguageData>
+	<DynamicTableControlSearchPlaceholder>Rechercher...</DynamicTableControlSearchPlaceholder>
+ 
+	<ConfigurationWindowTitle>Configuration de la fenêtre de commerce</ConfigurationWindowTitle>
+	<ConfigurationWindowHideUnwilling>Exclure les objets non désirés</ConfigurationWindowHideUnwilling>
+	<ConfigurationWindowHideUnwillingTooltip>Exclure tous les objets que le marchand ne souhaite pas acheter.</ConfigurationWindowHideUnwillingTooltip>
+	<ConfigurationWindowSelectedColumns>Colonnes sélectionnées</ConfigurationWindowSelectedColumns>
+	<ConfigurationWindowAvailableColumns>Colonnes disponibles</ConfigurationWindowAvailableColumns>
+	<ConfigurationWindowEnableProfiling>Activer le profilage</ConfigurationWindowEnableProfiling>
+	<ConfigurationWindowEnableGhostButtons>Boutons fantômes</ConfigurationWindowEnableGhostButtons>
+	<ConfigurationWindowEnableGhostButtonsTooltip>Améliore les performances en n'affichant les boutons de commerce qu'à proximité du curseur.</ConfigurationWindowEnableGhostButtonsTooltip>
+	<ConfigurationWindowRememberSortings>Mémoriser les tris</ConfigurationWindowRememberSortings>
+	<ConfigurationWindowRememberSortingsTooltip>Enregistrer les tris de colonnes dans les paramètres du mod.</ConfigurationWindowRememberSortingsTooltip>
+	<ConfigurationWindowResetWidths>Réinitialiser les largeurs</ConfigurationWindowResetWidths>
+	<ConfigurationWindowEnableBulkDurability>Durabilité groupée</ConfigurationWindowEnableBulkDurability>
+	<ConfigurationWindowEnableBulkDurabilityTooltip>Afficher la durabilité moyenne des objets empilés dans la colonne Durabilité.</ConfigurationWindowEnableBulkDurabilityTooltip>
+	<ConfigurationWindowAutoRefocus>Recentrage automatique</ConfigurationWindowAutoRefocus>
+	<ConfigurationWindowAutoRefocusTooltip>Tente de maintenir le focus sur le champ de saisie lorsqu'il le perd lors d'un changement d'interface.</ConfigurationWindowAutoRefocusTooltip>
+    <ConfigurationWindowOpenAsDefault>Fenêtre de commerce par défaut</ConfigurationWindowOpenAsDefault>
+    <ConfigurationWindowOpenAsDefaultTooltip>Utiliser comme fenêtre de commerce par défaut. La fenêtre non par défaut peut être ouverte en maintenant la touche Ctrl enfoncée lors de l'ouverture de la fenêtre.</ConfigurationWindowOpenAsDefaultTooltip>
+	<ConfigurationWindowPauseAfterTrade>Mettre en pause après le commerce</ConfigurationWindowPauseAfterTrade>
+	<ConfigurationWindowPauseAfterTradeTooltip>Maintient le jeu en pause après la fermeture de la fenêtre de commerce.</ConfigurationWindowPauseAfterTradeTooltip>
+	<ConfigurationWindowShowAvailableOnMap>Afficher la quantité disponible sur la carte.</ConfigurationWindowShowAvailableOnMap>
+    <ConfigurationWindowShowAvailableOnMapTooltip>Afficher le total disponible sur la carte s'il diffère de ce qui est disponible pour le commerce dans la colonne Disponible.</ConfigurationWindowShowAvailableOnMapTooltip>
+	<ConfigurationWindowAlternatingRowColors>Couleurs de lignes alternées.</ConfigurationWindowAlternatingRowColors>
+	<ConfigurationWindowAlternatingRowColorsTooltip>Active une couleur d'arrière-plan légèrement alternée sur chaque ligne.</ConfigurationWindowAlternatingRowColorsTooltip>
+
+	<ConfigurationWindowColumnDef>Déf</ConfigurationWindowColumnDef>
+	<ConfigurationWindowColumnCaption>Titre</ConfigurationWindowColumnCaption>
+	<ConfigurationWindowColumnAvgMs>Moy ms</ConfigurationWindowColumnAvgMs>
+	<ConfigurationWindowColumnMaxMs>Max ms</ConfigurationWindowColumnMaxMs>
+ 
+	<DynamicTradeWindowUnwilling>Non désiré</DynamicTradeWindowUnwilling>
+	<DynamicTradeWindowLocked>La fenêtre est verrouillée en place.</DynamicTradeWindowLocked>
+	<DynamicTradeWindowUnlocked>La fenêtre peut être déplacée.</DynamicTradeWindowUnlocked>
+ 
+	<DynamicTradeWindowGiftLess>Offrir {0} de moins.</DynamicTradeWindowGiftLess>
+	<DynamicTradeWindowGiftNone>Ne rien offrir.</DynamicTradeWindowGiftNone>
+	<DynamicTradeWindowGiftMore>Offrir {0} de plus.</DynamicTradeWindowGiftMore>
+	<DynamicTradeWindowGiftAll>Tout offrir.</DynamicTradeWindowGiftAll>
+ 
+	<DynamicTradeWindowSaveAsPreset>Enregistrer le filtre comme préréglage.</DynamicTradeWindowSaveAsPreset>
+	<DynamicTradeWindowNotificationBell>Correspondances trouvées, cliquez pour afficher.</DynamicTradeWindowNotificationBell>
+
+	<DynamicTradeWindowBuyMore>Acheter {0} de plus.</DynamicTradeWindowBuyMore>
+	<DynamicTradeWindowBuyAll>Tout acheter.</DynamicTradeWindowBuyAll>
+	<DynamicTradeWindowBuyAffordable>Acheter tout ce que je peux me permettre.</DynamicTradeWindowBuyAffordable>
+	<DynamicTradeWindowSellMore>Vendre {0} de plus.</DynamicTradeWindowSellMore>
+	<DynamicTradeWindowSellAll>Tout vendre.</DynamicTradeWindowSellAll>
+	<DynamicTradeWindowSellAffordable>Vendre la quantité que le marchand peut se permettre.</DynamicTradeWindowSellAffordable>
+ 
+	<DynamicTradeWindowUnaffordable>Inabordable.</DynamicTradeWindowUnaffordable>
+ 
+	<DynamicTradeWindowGenepackMissing>Pack de gènes non possédé.</DynamicTradeWindowGenepackMissing>
+	<DynamicTradeWindowGenepackIsolated>Pack de gènes possédé dans un pack isolé.</DynamicTradeWindowGenepackIsolated>
+	<DynamicTradeWindowGenepackMixed>Pack de gènes possédé dans un pack mixte.</DynamicTradeWindowGenepackMixed>
+   
+	<DynamicTradeWindowExtraIconsColumnTrained>Entraîné</DynamicTradeWindowExtraIconsColumnTrained>
+	
+	<DynamicTradeWindowSummaryShow>Afficher le résumé</DynamicTradeWindowSummaryShow>
+	<DynamicTradeWindowSummaryHide>Masquer le résumé</DynamicTradeWindowSummaryHide>
+	<DynamicTradeWindowSummaryGifting>Cadeaux</DynamicTradeWindowSummaryGifting>
+	<DynamicTradeWindowSummaryBuying>Achat ({0} {1})</DynamicTradeWindowSummaryBuying>
+	<DynamicTradeWindowSummarySelling>Vente ({0} {1})</DynamicTradeWindowSummarySelling>
+   
+	<DynamicTradeWindowNotificationsTooltip>Préréglages de filtre</DynamicTradeWindowNotificationsTooltip>
+	<DynamicTradeWindowNotificationsTitle>Préréglages de filtre</DynamicTradeWindowNotificationsTitle>
+	<DynamicTradeWindowNotificationsScopeFilter>Cliquez pour appliquer le filtre.</DynamicTradeWindowNotificationsScopeFilter>
+	<DynamicTradeWindowNotificationsEnable>Activer les notifications.</DynamicTradeWindowNotificationsEnable>
+	<DynamicTradeWindowNotificationsAdd>Ajouter un nouveau préréglage.</DynamicTradeWindowNotificationsAdd>
+	<DynamicTradeWindowNotificationsDelete>Supprimer le préréglage.</DynamicTradeWindowNotificationsDelete>
+
+	<DynamicTradeWindowColumnContextSortByAscending>Trier par ordre croissant</DynamicTradeWindowColumnContextSortByAscending>
+	<DynamicTradeWindowColumnContextSortByDescending>Trier par ordre décroissant</DynamicTradeWindowColumnContextSortByDescending>
+	<DynamicTradeWindowColumnContextClearSorting>Effacer le tri</DynamicTradeWindowColumnContextClearSorting>
+	<DynamicTradeWindowColumnContextHideColumn>Masquer la colonne</DynamicTradeWindowColumnContextHideColumn>
+	<DynamicTradeWindowColumnContextShowHiddenColumns>Afficher les colonnes masquées :</DynamicTradeWindowColumnContextShowHiddenColumns>
+</LanguageData>
