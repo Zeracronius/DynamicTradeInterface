@@ -24,6 +24,10 @@
     <ConfigurationWindowShowAvailableOnMapTooltip>Afficher le total disponible sur la carte s'il diffère de ce qui est disponible pour le commerce dans la colonne Disponible.</ConfigurationWindowShowAvailableOnMapTooltip>
 	<ConfigurationWindowAlternatingRowColors>Couleurs de lignes alternées.</ConfigurationWindowAlternatingRowColors>
 	<ConfigurationWindowAlternatingRowColorsTooltip>Active une couleur d'arrière-plan légèrement alternée sur chaque ligne.</ConfigurationWindowAlternatingRowColorsTooltip>
+	
+	<!-- Boutons dynamiques -->
+	<ConfigurationWindowDynamicButtons>Boutons dynamiques</ConfigurationWindowDynamicButtons>
+	<ConfigurationWindowDynamicButtonsTooltip>Lorsque cette option est activée, les boutons invalides sont masqués.</ConfigurationWindowDynamicButtonsTooltip>
 
 	<ConfigurationWindowColumnDef>Déf</ConfigurationWindowColumnDef>
 	<ConfigurationWindowColumnCaption>Titre</ConfigurationWindowColumnCaption>
@@ -51,17 +55,17 @@
  
 	<DynamicTradeWindowUnaffordable>Inabordable.</DynamicTradeWindowUnaffordable>
  
-	<DynamicTradeWindowGenepackMissing>Pack de gènes non possédé.</DynamicTradeWindowGenepackMissing>
-	<DynamicTradeWindowGenepackIsolated>Pack de gènes possédé dans un pack isolé.</DynamicTradeWindowGenepackIsolated>
-	<DynamicTradeWindowGenepackMixed>Pack de gènes possédé dans un pack mixte.</DynamicTradeWindowGenepackMixed>
+   <DynamicTradeWindowGenepackMissing>Pack de gènes non possédé.</DynamicTradeWindowGenepackMissing>
+   <DynamicTradeWindowGenepackIsolated>Pack de gènes possédé dans un pack isolé.</DynamicTradeWindowGenepackIsolated>
+   <DynamicTradeWindowGenepackMixed>Pack de gènes possédé dans un pack mixte.</DynamicTradeWindowGenepackMixed>
    
 	<DynamicTradeWindowExtraIconsColumnTrained>Entraîné</DynamicTradeWindowExtraIconsColumnTrained>
 	
 	<DynamicTradeWindowSummaryShow>Afficher le résumé</DynamicTradeWindowSummaryShow>
-	<DynamicTradeWindowSummaryHide>Masquer le résumé</DynamicTradeWindowSummaryHide>
-	<DynamicTradeWindowSummaryGifting>Cadeaux</DynamicTradeWindowSummaryGifting>
-	<DynamicTradeWindowSummaryBuying>Achat ({0} {1})</DynamicTradeWindowSummaryBuying>
-	<DynamicTradeWindowSummarySelling>Vente ({0} {1})</DynamicTradeWindowSummarySelling>
+   <DynamicTradeWindowSummaryHide>Masquer le résumé</DynamicTradeWindowSummaryHide>
+   <DynamicTradeWindowSummaryGifting>Cadeaux</DynamicTradeWindowSummaryGifting>
+   <DynamicTradeWindowSummaryBuying>Achat ({0} {1})</DynamicTradeWindowSummaryBuying>
+   <DynamicTradeWindowSummarySelling>Vente ({0} {1})</DynamicTradeWindowSummarySelling>
    
 	<DynamicTradeWindowNotificationsTooltip>Préréglages de filtre</DynamicTradeWindowNotificationsTooltip>
 	<DynamicTradeWindowNotificationsTitle>Préréglages de filtre</DynamicTradeWindowNotificationsTitle>
@@ -69,6 +73,17 @@
 	<DynamicTradeWindowNotificationsEnable>Activer les notifications.</DynamicTradeWindowNotificationsEnable>
 	<DynamicTradeWindowNotificationsAdd>Ajouter un nouveau préréglage.</DynamicTradeWindowNotificationsAdd>
 	<DynamicTradeWindowNotificationsDelete>Supprimer le préréglage.</DynamicTradeWindowNotificationsDelete>
+	
+	<!-- Taille des lignes -->
+	<ConfigurationWindowRowFont>Taille des lignes</ConfigurationWindowRowFont>
+	<ConfigurationWindowRowFontTooltip>Modifie la taille de police des lignes de la fenêtre de commerce.</ConfigurationWindowRowFontTooltip>
+	<ConfigurationWindowFontTiny>Minuscule</ConfigurationWindowFontTiny>
+	<ConfigurationWindowFontSmall>Petite</ConfigurationWindowFontSmall>
+	<ConfigurationWindowFontMedium>Moyenne</ConfigurationWindowFontMedium>
+
+	<!-- Onglets des notifications -->
+	<DynamicTradeWindowNotificationsTabsCurrent>Partie actuelle</DynamicTradeWindowNotificationsTabsCurrent>
+	<DynamicTradeWindowNotificationsTabsShared>Global</DynamicTradeWindowNotificationsTabsShared>
 
 	<DynamicTradeWindowColumnContextSortByAscending>Trier par ordre croissant</DynamicTradeWindowColumnContextSortByAscending>
 	<DynamicTradeWindowColumnContextSortByDescending>Trier par ordre décroissant</DynamicTradeWindowColumnContextSortByDescending>
