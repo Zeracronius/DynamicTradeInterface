@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <ConfigurationWindowAlternatingRowColors>Чередовать цвет строк</ConfigurationWindowAlternatingRowColors>
+  <ConfigurationWindowAlternatingRowColorsTooltip>Слегка изменять цвет фона у соседних строк.</ConfigurationWindowAlternatingRowColorsTooltip>
+  <ConfigurationWindowAutoRefocus>Возвращать фокус ввода</ConfigurationWindowAutoRefocus>
+  <ConfigurationWindowAutoRefocusTooltip>Пытается сохранить фокус на поле ввода, если он пропадает при изменении интерфейса.</ConfigurationWindowAutoRefocusTooltip>
+  <ConfigurationWindowAvailableColumns>Доступные столбцы</ConfigurationWindowAvailableColumns>
+  <ConfigurationWindowColumnAvgMs>В среднем, мс</ConfigurationWindowColumnAvgMs>
+  <ConfigurationWindowColumnCaption>Название</ConfigurationWindowColumnCaption>
+  <ConfigurationWindowColumnDef>Определение</ConfigurationWindowColumnDef>
+  <ConfigurationWindowColumnMaxMs>Максимум, мс</ConfigurationWindowColumnMaxMs>
+  <ConfigurationWindowDynamicButtons>Скрывать недоступные кнопки</ConfigurationWindowDynamicButtons>
+  <ConfigurationWindowDynamicButtonsTooltip>Скрывать кнопки, действие которых сейчас недоступно.</ConfigurationWindowDynamicButtonsTooltip>
+  <ConfigurationWindowEnableBulkDurability>Прочность стопки</ConfigurationWindowEnableBulkDurability>
+  <ConfigurationWindowEnableBulkDurabilityTooltip>Показывать в столбце прочности среднюю прочность предметов в стопке.</ConfigurationWindowEnableBulkDurabilityTooltip>
+  <ConfigurationWindowEnableGhostButtons>Кнопки при наведении</ConfigurationWindowEnableGhostButtons>
+  <ConfigurationWindowEnableGhostButtonsTooltip>Повышает производительность, показывая торговые кнопки только рядом с указателем мыши.</ConfigurationWindowEnableGhostButtonsTooltip>
+  <ConfigurationWindowEnableProfiling>Включить замеры производительности</ConfigurationWindowEnableProfiling>
+  <ConfigurationWindowFontMedium>Средний</ConfigurationWindowFontMedium>
+  <ConfigurationWindowFontSmall>Мелкий</ConfigurationWindowFontSmall>
+  <ConfigurationWindowFontTiny>Очень мелкий</ConfigurationWindowFontTiny>
+  <ConfigurationWindowHideUnwilling>Скрывать товары, которые не покупает торговец</ConfigurationWindowHideUnwilling>
+  <ConfigurationWindowHideUnwillingTooltip>Не показывать предметы, которые торговец не желает покупать.</ConfigurationWindowHideUnwillingTooltip>
+  <ConfigurationWindowOpenAsDefault>Окно торговли по умолчанию</ConfigurationWindowOpenAsDefault>
+  <ConfigurationWindowOpenAsDefaultTooltip>Использовать это окно торговли по умолчанию. Чтобы открыть другое окно, удерживайте Ctrl при начале торговли.</ConfigurationWindowOpenAsDefaultTooltip>
+  <ConfigurationWindowPauseAfterTrade>Оставлять паузу после торговли</ConfigurationWindowPauseAfterTrade>
+  <ConfigurationWindowPauseAfterTradeTooltip>Не снимать игру с паузы после закрытия окна торговли.</ConfigurationWindowPauseAfterTradeTooltip>
+  <ConfigurationWindowRememberSortings>Запоминать сортировку</ConfigurationWindowRememberSortings>
+  <ConfigurationWindowRememberSortingsTooltip>Сохранять сортировку столбцов в настройках мода.</ConfigurationWindowRememberSortingsTooltip>
+  <ConfigurationWindowResetWidths>Сбросить ширину столбцов</ConfigurationWindowResetWidths>
+  <ConfigurationWindowRowFont>Размер текста строк</ConfigurationWindowRowFont>
+  <ConfigurationWindowRowFontTooltip>Меняет размер шрифта в строках окна торговли.</ConfigurationWindowRowFontTooltip>
+  <ConfigurationWindowSelectedColumns>Выбранные столбцы</ConfigurationWindowSelectedColumns>
+  <ConfigurationWindowShowAvailableOnMap>Показывать количество на карте</ConfigurationWindowShowAvailableOnMap>
+  <ConfigurationWindowShowAvailableOnMapTooltip>Показывать в столбце «Доступно» общее количество на карте, если оно отличается от количества, доступного для торговли.</ConfigurationWindowShowAvailableOnMapTooltip>
+  <ConfigurationWindowTitle>Настройка окна торговли</ConfigurationWindowTitle>
+  <DynamicTableControlSearchPlaceholder>Поиск...</DynamicTableControlSearchPlaceholder>
+  <DynamicTradeWindowBuyAffordable>Купить на имеющиеся средства.</DynamicTradeWindowBuyAffordable>
+  <DynamicTradeWindowBuyAll>Купить всё.</DynamicTradeWindowBuyAll>
+  <DynamicTradeWindowBuyMore>Купить ещё {0}.</DynamicTradeWindowBuyMore>
+  <DynamicTradeWindowColumnContextClearSorting>Убрать сортировку</DynamicTradeWindowColumnContextClearSorting>
+  <DynamicTradeWindowColumnContextHideColumn>Скрыть столбец</DynamicTradeWindowColumnContextHideColumn>
+  <DynamicTradeWindowColumnContextShowHiddenColumns>Показать скрытые столбцы:</DynamicTradeWindowColumnContextShowHiddenColumns>
+  <DynamicTradeWindowColumnContextSortByAscending>Сортировать по возрастанию</DynamicTradeWindowColumnContextSortByAscending>
+  <DynamicTradeWindowColumnContextSortByDescending>Сортировать по убыванию</DynamicTradeWindowColumnContextSortByDescending>
+  <DynamicTradeWindowExtraIconsColumnTrained>Дрессировано</DynamicTradeWindowExtraIconsColumnTrained>
+  <DynamicTradeWindowGenepackIsolated>Эти гены уже есть в отдельном генном пакете.</DynamicTradeWindowGenepackIsolated>
+  <DynamicTradeWindowGenepackMissing>Такого генного пакета ещё нет.</DynamicTradeWindowGenepackMissing>
+  <DynamicTradeWindowGenepackMixed>Эти гены уже есть в смешанном генном пакете.</DynamicTradeWindowGenepackMixed>
+  <DynamicTradeWindowGiftAll>Подарить всё.</DynamicTradeWindowGiftAll>
+  <DynamicTradeWindowGiftLess>Подарить на {0} меньше.</DynamicTradeWindowGiftLess>
+  <DynamicTradeWindowGiftMore>Подарить ещё {0}.</DynamicTradeWindowGiftMore>
+  <DynamicTradeWindowGiftNone>Не дарить.</DynamicTradeWindowGiftNone>
+  <DynamicTradeWindowLocked>Положение окна закреплено.</DynamicTradeWindowLocked>
+  <DynamicTradeWindowNotificationBell>Найдены совпадения. Нажмите, чтобы показать.</DynamicTradeWindowNotificationBell>
+  <DynamicTradeWindowNotificationsAdd>Добавить набор настроек.</DynamicTradeWindowNotificationsAdd>
+  <DynamicTradeWindowNotificationsDelete>Удалить набор настроек.</DynamicTradeWindowNotificationsDelete>
+  <DynamicTradeWindowNotificationsEnable>Включить уведомления.</DynamicTradeWindowNotificationsEnable>
+  <DynamicTradeWindowNotificationsScopeFilter>Нажмите, чтобы применить фильтр.</DynamicTradeWindowNotificationsScopeFilter>
+  <DynamicTradeWindowNotificationsTabsCurrent>Текущая игра</DynamicTradeWindowNotificationsTabsCurrent>
+  <DynamicTradeWindowNotificationsTabsShared>Общие</DynamicTradeWindowNotificationsTabsShared>
+  <DynamicTradeWindowNotificationsTitle>Наборы фильтров</DynamicTradeWindowNotificationsTitle>
+  <DynamicTradeWindowNotificationsTooltip>Наборы фильтров</DynamicTradeWindowNotificationsTooltip>
+  <DynamicTradeWindowSaveAsPreset>Сохранить фильтр в набор.</DynamicTradeWindowSaveAsPreset>
+  <DynamicTradeWindowSellAffordable>Продать на имеющиеся у торговца средства.</DynamicTradeWindowSellAffordable>
+  <DynamicTradeWindowSellAll>Продать всё.</DynamicTradeWindowSellAll>
+  <DynamicTradeWindowSellMore>Продать ещё {0}.</DynamicTradeWindowSellMore>
+  <DynamicTradeWindowSummaryBuying>Покупка ({0} {1})</DynamicTradeWindowSummaryBuying>
+  <DynamicTradeWindowSummaryGifting>Подарки</DynamicTradeWindowSummaryGifting>
+  <DynamicTradeWindowSummaryHide>Скрыть сводку</DynamicTradeWindowSummaryHide>
+  <DynamicTradeWindowSummarySelling>Продажа ({0} {1})</DynamicTradeWindowSummarySelling>
+  <DynamicTradeWindowSummaryShow>Показать сводку</DynamicTradeWindowSummaryShow>
+  <DynamicTradeWindowUnaffordable>Недостаточно средств.</DynamicTradeWindowUnaffordable>
+  <DynamicTradeWindowUnlocked>Окно можно перетаскивать.</DynamicTradeWindowUnlocked>
+  <DynamicTradeWindowUnwilling>Не покупает</DynamicTradeWindowUnwilling>
+</LanguageData>
