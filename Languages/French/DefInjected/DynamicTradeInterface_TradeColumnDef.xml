@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <colTradeIconDef.label>icône</colTradeIconDef.label>
+  <colTradeIconDef.description>Une petite image de ce que vous échangez.</colTradeIconDef.description>
+  <colTradeInfoDef.description>Bouton pour ouvrir la fenêtre d'information.</colTradeInfoDef.description>
+  <colTradeInfoDef.tooltip>bouton d'information</colTradeInfoDef.tooltip>
+  <colTradeCaptionDef.label>libellé</colTradeCaptionDef.label>
+  <colTradeCaptionDef.description>Affiche le nom.</colTradeCaptionDef.description>
+  <colTradeExtraIconsDef.label>icônes supplémentaires</colTradeExtraIconsDef.label>
+  <colTradeExtraIconsDef.description>Icônes supplémentaires affichées dans différentes situations.</colTradeExtraIconsDef.description>
+  <colTradeQuantityDef.label>disponible</colTradeQuantityDef.label>
+  <colTradeQuantityDef.description>Quantité disponible à l'achat ou à la vente.</colTradeQuantityDef.description>
+  <colTradePriceDef.label>prix</colTradePriceDef.label>
+  <colTradePriceDef.description>Affiche le prix.</colTradePriceDef.description>
+  <colTradeCounterDef.label>échange</colTradeCounterDef.label>
+  <colTradeCounterDef.description>Case numérique où la quantité actuellement achetée ou vendue est affichée et peut être saisie manuellement.</colTradeCounterDef.description>
+  <colTradeButtonsDef.label>boutons</colTradeButtonsDef.label>
+  <colTradeButtonsDef.description>Boutons utilisés pour augmenter ou diminuer la quantité achetée ou vendue.\nCliquer sur les boutons à double flèche augmentera au maximum abordable par l'une ou l'autre des parties au premier clic, puis à la quantité maximale si cliqué à nouveau. Maintenez Maj pour passer.</colTradeButtonsDef.description>
+  <colDurabilityDef.label>d</colDurabilityDef.label>
+  <colDurabilityDef.description>Affiche les points de vie restants (le cas échéant) en pourcentage.</colDurabilityDef.description>
+  <colPricePerWeightDef.label>/kg</colPricePerWeightDef.label>
+  <colPricePerWeightDef.description>Affiche le prix divisé par la masse.</colPricePerWeightDef.description>
+  <colPricePerWeightDef.tooltip>prix / kg</colPricePerWeightDef.tooltip>
+  <colTradeCounterLabelDef.label>échange</colTradeCounterLabelDef.label>
+  <colTradeCounterLabelDef.description>Une version en lecture seule plus rapide de la case de compteur où la quantité actuellement achetée ou vendue est affichée.</colTradeCounterLabelDef.description>
+  <colCategoryDef.label>catégorie</colCategoryDef.label>
+  <colCategoryDef.description>Affiche la catégorie principale de l'objet.</colCategoryDef.description>
+  <colQualityDef.label>qualité</colQualityDef.label>
+  <colQualityDef.description>Affiche la qualité de l'objet.</colQualityDef.description>
+
+</LanguageData>
