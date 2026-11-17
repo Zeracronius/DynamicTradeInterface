@@ -109,7 +109,7 @@ namespace DynamicTradeInterface.Defs
 			}
 
 			_searchValueCallback = ParseCallbackHandler<TradeColumnSearchValueCallback>(searchValueCallbackHandler,
-				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, object>'");
+				$"Unable to locate search value callback '{searchValueCallbackHandler}' for column {defName}.\nEnsure referenced method has argument of 'Tradeable item, Transactor transactor' and return type of 'string'");
 
 			_orderValueCallback = ParseCallbackHandler<TradeColumnOrderValueCallback>(orderValueCallbackHandler,
 				$"Unable to locate order value callback '{orderValueCallbackHandler}' for column {defName}.\nEnsure referenced method has argument of 'List<Tradeable>' and return type of 'Func<Tradeable, IComparable>'");

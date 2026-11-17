@@ -21,6 +21,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			public string? JoinAs;
 			public string? JoinAsDesc;
 			public float JoinAsWidth;
+			public string SearchValue;
 		}
 
 		private static Dictionary<Tradeable, Cache> _labelCache = new Dictionary<Tradeable, Cache>();
@@ -44,6 +45,12 @@ namespace DynamicTradeInterface.UserInterface.Columns
 
 				}
 
+				string searchValue = "";
+				if (row.AnyThing?.ContentSource != null)
+				{
+					searchValue = "#" + row.AnyThing.ContentSource.Name;
+				}
+
 				Color color = row.TraderWillTrade ? Color.white : TradeUI.NoTradeColor;
 				if (QualityColors.Active)
 					QualityColors.GetColor(row, default, ref color);
@@ -56,6 +63,7 @@ namespace DynamicTradeInterface.UserInterface.Columns
 					JoinAs = joinAsLabel,
 					JoinAsDesc = joinAsDesc,
 					JoinAsWidth = joinAsWidth,
+					SearchValue = searchValue
 				};
 
 				_labelCache[row] = cache;
@@ -123,6 +131,13 @@ namespace DynamicTradeInterface.UserInterface.Columns
 			//if (width > rect.width)
 			//	label.Truncate(rect.width);
 			Widgets.Label(rect, label);
+		}
+
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static string SearchValue(Tradeable row, Transactor transactor)
+		{
+			return _labelCache[row].SearchValue;
 		}
 
 		public static Func<Tradeable, IComparable> OrderbyValue(Transactor transactor)

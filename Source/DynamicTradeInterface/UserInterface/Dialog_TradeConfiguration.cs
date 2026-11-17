@@ -98,6 +98,9 @@ namespace DynamicTradeInterface.UserInterface
 					new TreeNode_FilterBox("ConfigurationWindowDynamicButtons".Translate(), "ConfigurationWindowDynamicButtonsTooltip".Translate(),
 						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.DynamicButtons, x.height)),
 
+					new TreeNode_FilterBox("ConfigurationWindowMirrorColumns".Translate(), "ConfigurationWindowMirrorColumnsTooltip".Translate(),
+						(in Rect x) => Widgets.Checkbox(x.xMax - x.height, x.y, ref _settings.MirrorColumns, x.height)),
+
 					new TreeNode_FilterBox("ConfigurationWindowRowFont".Translate(), "ConfigurationWindowRowFontTooltip".Translate(),
 						(in Rect x) => {
 							if (Widgets.ButtonText(x, ("ConfigurationWindowFont" + _settings.RowFont).Translate()))

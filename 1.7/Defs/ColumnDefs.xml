@@ -28,6 +28,7 @@
 		<orderValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:OrderbyValue</orderValueCallbackHandler>
 		<postOpenCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:PostOpen</postOpenCallbackHandler>
 		<postClosedCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:PostClosed</postClosedCallbackHandler>
+		<searchValueCallbackHandler>DynamicTradeInterface.UserInterface.Columns.ColumnCaption:SearchValue</searchValueCallbackHandler>
 		<initialSort>Ascending</initialSort>
 		<defaultWidth>1</defaultWidth>
 	</DynamicTradeInterface.Defs.TradeColumnDef>

@@ -28,6 +28,8 @@
 	<ConfigurationWindowColumnCaption>Caption</ConfigurationWindowColumnCaption>
 	<ConfigurationWindowColumnAvgMs>Avg ms</ConfigurationWindowColumnAvgMs>
 	<ConfigurationWindowColumnMaxMs>Max ms</ConfigurationWindowColumnMaxMs>
+  <ConfigurationWindowMirrorColumns>Mirror columns</ConfigurationWindowMirrorColumns>
+  <ConfigurationWindowMirrorColumnsTooltip>When enabled, the columns are mirrored for the trader.</ConfigurationWindowMirrorColumnsTooltip>
 
 	<ConfigurationWindowRowFont>Row size</ConfigurationWindowRowFont>
 	<ConfigurationWindowRowFontTooltip>Changes the font size of the trade window rows.</ConfigurationWindowRowFontTooltip>

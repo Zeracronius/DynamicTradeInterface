@@ -305,7 +305,11 @@ namespace DynamicTradeInterface.UserInterface
 			table.AlternatingRowColors = _settings.AlternatingRowColor;
 
 			DynamicTradeInterfaceSettings.TableType type = transactor == Transactor.Colony ? DynamicTradeInterfaceSettings.TableType.Colony : DynamicTradeInterfaceSettings.TableType.Trader;
-			foreach (Defs.TradeColumnDef columnDef in _columns)
+			IEnumerable<TradeColumnDef> columns = _columns;
+			if (_settings.MirrorColumns && transactor == Transactor.Trader)
+				columns = _columns.Reverse();
+
+			foreach (Defs.TradeColumnDef columnDef in columns)
 			{
 				var column = table.AddColumn(columnDef.LabelCap, columnDef.defaultWidth, tooltip: columnDef.tooltip,
 						callback: (ref Rect rect, TableRow<Tradeable> row) => callback(ref rect, row, columnDef, transactor),

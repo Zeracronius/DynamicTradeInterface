@@ -4,8 +4,8 @@
     <langVersion>10.0</langVersion>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Debug;Hotswap;v1.6</Configurations>
-    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
+    <Configurations>Debug;Hotswap</Configurations>
+    <OutputPath>..\..\1.7\Assemblies\</OutputPath>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,16 +20,12 @@
   
   <ItemGroup>
     <ProjectReference Include="..\DynamicTradeInterface\DynamicTradeInterface.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\Harmony\1.6\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4489-beta">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Lib.Harmony" Version="2.3.6">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
     <Reference Include="DevTools">
       <HintPath>..\Dependencies\DevTools.dll</HintPath>
       <Private>True</Private>
