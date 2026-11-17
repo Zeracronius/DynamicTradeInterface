@@ -1,31 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-		<TargetFramework>NET48</TargetFramework>
 		<langVersion>10.0</langVersion>
 		<Nullable>enable</Nullable>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<Configurations>Debug;Hotswap</Configurations>
-    <OutputPath>..\..\1.7\Assemblies\</OutputPath>
+		<Configurations>Debug;Hotswap;v1.6;v1.7;</Configurations>
     <Version>1.7.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TargetFramework>net10.0</TargetFramework>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Hotswap|AnyCPU'">
+    <TargetFramework>net10.0</TargetFramework>
     <DebugType>none</DebugType>
   </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='v1.6|AnyCPU'">
+    <TargetFramework>NET48</TargetFramework>
     <DebugType>portable</DebugType>
+    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4489-beta">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Lib.Harmony" Version="2.3.6">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='v1.7|AnyCPU'">
+    <TargetFramework>net10.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <OutputPath>..\..\1.7\Assemblies\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.7.5011-unstable">
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="Lib.Harmony" Version="3.0.0-rc.6">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
 	</ItemGroup>

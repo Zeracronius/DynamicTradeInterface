@@ -4,7 +4,7 @@
     <langVersion>10.0</langVersion>
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <Configurations>Debug;Hotswap</Configurations>
+    <Configurations>Debug;Hotswap;v1.6;v1.7</Configurations>
     <OutputPath>..\..\1.7\Assemblies\</OutputPath>
   </PropertyGroup>
   
@@ -15,6 +15,9 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='v1.6|AnyCPU'">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='1.7|AnyCPU'">
     <DebugType>portable</DebugType>
   </PropertyGroup>
   

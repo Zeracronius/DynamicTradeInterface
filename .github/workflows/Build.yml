@@ -12,7 +12,7 @@ jobs:
     env:
       Solution_Name: "Source/DynamicTradeInterface/DynamicTradeInterface.sln"
       Name: DynamicTradeInterface
-      Versions: "v1.7"
+      Versions: "v1.6;v1.7"
 
     steps:
     - name: Checkout
