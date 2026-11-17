@@ -93,6 +93,7 @@ namespace DynamicTradeInterface.Mod
 		public bool ShowAvailableOnMap;
 		public bool AlternatingRowColor;
 		public bool DynamicButtons;
+		public bool MirrorColumns;
 		public GameFont RowFont;
 		public int TradeSummaryWidthPixels = DEFAULT_TRADE_SUMMARY_WIDTH;
 
@@ -129,8 +130,8 @@ namespace DynamicTradeInterface.Mod
 			Scribe_Values.Look(ref AlternatingRowColor, nameof(AlternatingRowColor), false);
 			Scribe_Values.Look(ref DynamicButtons, nameof(DynamicButtons), true);
 			Scribe_Values.Look(ref RowFont, nameof(RowFont), GameFont.Small);
-
-
+			Scribe_Values.Look(ref MirrorColumns, nameof(MirrorColumns), false);
+			
 			try
 			{
 				Scribe_Collections.Look(ref Notifications, "DTI_Notifications", LookMode.Deep);
